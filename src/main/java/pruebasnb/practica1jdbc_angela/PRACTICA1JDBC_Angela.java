@@ -12,6 +12,6 @@ package pruebasnb.practica1jdbc_angela;
 public class PRACTICA1JDBC_Angela {
 
     public static void main(String[] args) {
-        System.out.println("Hello World! 1");
+        System.out.println("Hello World! 2");
     }
 }
