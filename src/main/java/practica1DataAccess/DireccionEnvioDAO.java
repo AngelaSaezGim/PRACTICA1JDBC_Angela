@@ -5,15 +5,73 @@
 package practica1DataAccess;
 
 import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.List;
+import practica1Objetos.DireccionEnvio;
 
 /**
  *
  * @author angsaegim
  */
 public class DireccionEnvioDAO extends DataAccessObject {
-    
+
     DireccionEnvioDAO(Connection cnt) {
         super(cnt);
     }
+
+    private class DireccionEnvioTableColumns {
+
+        private final static String COLUMN_IDDIRECCION = "idDireccion";
+        private final static String COLUMN_NUMERO = "numero";
+        private final static String COLUMN_CALLE = "calle";
+        private final static String COLUMN_COMUNA = "comuna";
+        private final static String COLUMN_CIUDAD = "ciudad";
+        private final static String COLUMN_IDCLIENTE = "idCliente";
+    }
+
+    private static DireccionEnvio readDireccionEnvioFromResultSet(ResultSet rs) throws SQLException {
+
+        int idDireccion = rs.getInt(DireccionEnvioDAO.DireccionEnvioTableColumns.COLUMN_IDDIRECCION);
+        int numero = rs.getInt(DireccionEnvioDAO.DireccionEnvioTableColumns.COLUMN_NUMERO);
+        String calle = rs.getString(DireccionEnvioDAO.DireccionEnvioTableColumns.COLUMN_CALLE);
+        String comuna = rs.getString(DireccionEnvioDAO.DireccionEnvioTableColumns.COLUMN_COMUNA);
+        String ciudad = rs.getString(DireccionEnvioDAO.DireccionEnvioTableColumns.COLUMN_CIUDAD);
+        int idCliente = rs.getInt(DireccionEnvioDAO.DireccionEnvioTableColumns.COLUMN_IDCLIENTE);
+
+        DireccionEnvio direccionEnvio = new DireccionEnvio(idDireccion, numero, calle, comuna, ciudad, idCliente);
+        return direccionEnvio;
+    }
+
+    protected List<DireccionEnvio> loadAllDireccionesEnvio() throws SQLException {
+
+        List<DireccionEnvio> direccionesEnvios = new ArrayList<>();
+        try ( PreparedStatement stmt = cnt.prepareStatement("SELECT * FROM DireccionEnvio");  ResultSet result = stmt.executeQuery()) {
+
+            while (result.next()) {
+                DireccionEnvio direccionEnvio = readDireccionEnvioFromResultSet(result);
+                direccionesEnvios.add(direccionEnvio);
+            }
+        } catch (SQLException e) {
+            throw new SQLException("Error al cargar direccion envio: " + e.getMessage());
+        }
+        return direccionesEnvios;
+    }
     
+    
+      protected List<DireccionEnvio> loadDireccionEnvioContaining(String content) throws SQLException {
+        List<DireccionEnvio> direccionesEnvios = new ArrayList<>();
+
+        PreparedStatement stmt = cnt.prepareStatement("SELECT * FROM DireccionEnvio WHERE idDireccion LIKE ?");
+        stmt.setString(1, content);
+        ResultSet result = stmt.executeQuery();
+
+        while (result.next()) {
+            direccionesEnvios.add(readDireccionEnvioFromResultSet(result));
+        }
+        return direccionesEnvios;
+    }
+
 }

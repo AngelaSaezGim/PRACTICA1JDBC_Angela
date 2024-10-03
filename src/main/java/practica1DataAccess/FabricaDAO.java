@@ -15,4 +15,11 @@ public class FabricaDAO extends DataAccessObject {
     FabricaDAO(Connection cnt) {
         super(cnt);
     }
+    
+    private class FabricaTableColumns {
+
+        private final static String COLUMN_IDFABRICAPRINCIPAL = "idFabrica";
+        private final static String COLUMN_IDFABRICAALTERNATIVA = "telefonoContacto";
+
+    }
 }
