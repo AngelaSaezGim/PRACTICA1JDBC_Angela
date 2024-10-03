@@ -54,7 +54,7 @@ public class ArticuloDAO extends DataAccessObject {
      protected List<Articulo> loadArticulosContaining(String content) throws SQLException {
         List<Articulo> articulos = new ArrayList<>();
 
-        PreparedStatement stmt = cnt.prepareStatement("SELECT * FROM Articulo WHERE CodigoEmpleado LIKE ?");
+        PreparedStatement stmt = cnt.prepareStatement("SELECT * FROM Articulo WHERE idArticulo LIKE ?");
         stmt.setString(1, content);
         ResultSet result = stmt.executeQuery();
 
