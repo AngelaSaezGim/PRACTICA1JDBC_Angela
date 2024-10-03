@@ -15,6 +15,10 @@ import practica1Objetos.Articulo;
 import practica1Objetos.Cliente;
 import practica1Objetos.Fabrica;
 import practica1Objetos.Pedido;
+import practica1Objetos.ArticuloFabrica;
+import practica1Objetos.DireccionEnvio;
+import practica1Objetos.FabricaAlternativa;
+import practica1Objetos.LineaPedido;
 
 /**
  *
@@ -51,6 +55,11 @@ public class DataAccessManager implements AutoCloseable {
                 singleton.clienteDAO = new ClienteDAO(singleton.cnx);
                 singleton.articuloDAO = new ArticuloDAO(singleton.cnx);
                 singleton.fabricaDAO = new FabricaDAO(singleton.cnx);
+                singleton.articuloFabricaDAO = new ArticuloFabricaDAO(singleton.cnx);
+                singleton.direccionEnvioDAO = new DireccionEnvioDAO(singleton.cnx);
+                singleton.fabricaAlternativaDAO = new FabricaAlternativaDAO(singleton.cnx);
+                singleton.lineaPedidoDAO = new LineaPedidoDAO(singleton.cnx);
+                
             } catch (Exception e) {
                 singleton = null;
                 throw new RuntimeException(e);
@@ -119,6 +128,10 @@ public class DataAccessManager implements AutoCloseable {
     private ClienteDAO clienteDAO;
     private FabricaDAO fabricaDAO;
     private PedidoDAO pedidoDAO;
+    private ArticuloFabricaDAO articuloFabricaDAO;
+    private DireccionEnvioDAO direccionEnvioDAO;
+    private FabricaAlternativaDAO fabricaAlternativaDAO;
+    private LineaPedidoDAO lineaPedidoDAO;
 
     private static Connection createConnection() {
 
@@ -162,6 +175,4 @@ public class DataAccessManager implements AutoCloseable {
             singleton = null;
         }
     }
-    
-
 }
