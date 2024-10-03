@@ -26,6 +26,6 @@ public class Constans {
     //(utilizadas en caso de error en la carga del fichero de configuración)
     public final static String DEFAULT_DATA_BASE__USER = "tester";
     public final static String DEFAULT_DATA_BASE__PWD = "tester";
-    public final static String DEFAULT_DATA_BASE__URL = "jdbc:mysql://localhost:3306/practica1jdbc";
+    public final static String DEFAULT_DATA_BASE__URL = "jdbc:mysql://localhost:3306/practica1";
     
 }

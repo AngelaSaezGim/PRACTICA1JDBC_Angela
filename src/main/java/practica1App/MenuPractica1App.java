@@ -5,13 +5,44 @@
 
 package practica1App;
 
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.sql.Statement;
+
 /**
  *
  * @author angsaegim
  */
 public class MenuPractica1App {
 
-    public static void main(String[] args) {
-        System.out.println("Hello World! 2");
+    public static void main(String[] args) throws ClassNotFoundException {
+       
+        String url="jdbc:mysql://localhost:3306/practica1?useSSL=false&useTimezone=true&serverTimezone=UTC&allowPublicKeyRetrieval=true";
+        
+         try {
+            //puede ser que sea requerido lo siguiente
+            Class.forName("com.mysql.cj.jdbc.Driver");
+            Connection conexion = DriverManager.getConnection(url, "root", "serpis");
+
+            //Tipo statement
+            Statement instruccion = conexion.createStatement();
+            String sql = "SELECT idArticulo, descripcion FROM Articulo";
+            ResultSet resultado = instruccion.executeQuery(sql);
+            while (resultado.next()) {
+                System.out.println("Id Articulo: " + resultado.getInt("idArticulo"));
+                System.out.println("Descripcion: " + resultado.getString("descripcion"));
+                System.out.println(" ");
+            }
+                       
+            resultado.close();
+            instruccion.close();
+            conexion.close();
+
+        } catch (SQLException ex) {
+            ex.printStackTrace(System.out);
+        }
+
     }
 }
