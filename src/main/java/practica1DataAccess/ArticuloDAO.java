@@ -10,10 +10,9 @@ import java.sql.Connection;
  *
  * @author angsaegim
  */
-public class ClienteDAO extends DataAccessObject {
+public class ArticuloDAO extends DataAccessObject {
     
-    ClienteDAO(Connection cnt) {
+    ArticuloDAO(Connection cnt) {
         super(cnt);
     }
-    
 }
