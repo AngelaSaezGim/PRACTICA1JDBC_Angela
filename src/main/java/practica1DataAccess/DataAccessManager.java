@@ -9,6 +9,7 @@ import java.io.IOException;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
+import java.util.List;
 import java.util.Properties;
 import static practica1DataAccess.Constans.*;
 import practica1Objetos.Articulo;
@@ -59,7 +60,7 @@ public class DataAccessManager implements AutoCloseable {
                 singleton.direccionEnvioDAO = new DireccionEnvioDAO(singleton.cnx);
                 singleton.fabricaAlternativaDAO = new FabricaAlternativaDAO(singleton.cnx);
                 singleton.lineaPedidoDAO = new LineaPedidoDAO(singleton.cnx);
-                
+
             } catch (Exception e) {
                 singleton = null;
                 throw new RuntimeException(e);
@@ -148,7 +149,7 @@ public class DataAccessManager implements AutoCloseable {
                     .append("Existe un problema de conexión a la base de datos. ")
                     .append("Revise: \n")
                     .append("\t- Que tiene levantado el servidor de MySQL.\n")
-                    .append("\t- Que la base de datos Jardineri está instalada.\n")
+                    .append("\t- Que la base de datos Practica1 está instalada.\n")
                     .append("\t- Que la configuración del fichero resources/db.properties es corecta.\n")
                     .append("Error: ")
                     .append(sqle.getMessage());
@@ -157,7 +158,7 @@ public class DataAccessManager implements AutoCloseable {
         }
 
     }
-    
+
     @Override
     public void close() {
         try {
@@ -175,4 +176,132 @@ public class DataAccessManager implements AutoCloseable {
             singleton = null;
         }
     }
+
+    /* FUNCIONES CON DATOS */
+    
+    /*--------------SELECT - TODO*------------------------*/
+    
+    
+    public List<Articulo> loadAllArticulos() throws SQLException {
+
+        return this.articuloDAO.loadAllArticulos();
+    }
+
+    public List<ArticuloFabrica> loadAllArticulosFabrica() throws SQLException {
+
+        return this.articuloFabricaDAO.loadAllArticulosFabricas();
+    }
+
+    public List<Cliente> loadAllClientesFabrica() throws SQLException {
+
+        return this.clienteDAO.loadAllClientes();
+    }
+
+    public List<DireccionEnvio> loadAllDireccionesEnvio() throws SQLException {
+
+        return this.direccionEnvioDAO.loadAllDireccionesEnvio();
+
+    }
+
+    public List<FabricaAlternativa> loadAllFabricasAlternativas() throws SQLException {
+
+        return this.fabricaAlternativaDAO.loadAllFabricasAlternativas();
+
+    }
+
+    public List<Fabrica> loadAllFabricas() throws SQLException {
+
+        return this.fabricaDAO.loadAllFabricas();
+
+    }
+
+    public List<LineaPedido> loadAllLineasPedido() throws SQLException {
+
+        return this.lineaPedidoDAO.loadAllLineasPedido();
+
+    }
+
+    public List<Pedido> loadAllPedidos() throws SQLException {
+
+        return this.pedidoDAO.loadAllPedidos();
+
+    }
+    
+    /*----------------------------------------------------------*/
+
+    /*--------------SELECT - CONTAINING *------------------------*/
+    
+    
+    public List<Articulo> loadArticulosContaining(String content) throws SQLException {
+        if (content == null || content.length() == 0) {
+            throw new IllegalArgumentException("Debe indicar el filtro de búsqueda");
+        }
+
+        return this.articuloDAO.loadArticulosContaining(content);
+    }
+
+    public List<ArticuloFabrica> loadArticulosFabricaContaining(String content, String content2) throws SQLException {
+        if (content == null || content.length() == 0) {
+            throw new IllegalArgumentException("Debe indicar el filtro de búsqueda");
+        }
+
+        if (content2 == null || content2.length() == 0) {
+            throw new IllegalArgumentException("Debe indicar el filtro de búsqueda");
+        }
+
+        return this.articuloFabricaDAO.loadAllArticulosFabricaContaining(content, content);
+    }
+
+    public List<Cliente> loadClienteContaining(String content) throws SQLException {
+        if (content == null || content.length() == 0) {
+            throw new IllegalArgumentException("Debe indicar el filtro de búsqueda");
+        }
+
+        return this.clienteDAO.loadClienteContaining(content);
+    }
+
+    public List<DireccionEnvio> loadDireccionesEnvioContaining(String content) throws SQLException {
+        if (content == null || content.length() == 0) {
+            throw new IllegalArgumentException("Debe indicar el filtro de búsqueda");
+        }
+
+        return this.direccionEnvioDAO.loadDireccionEnvioContaining(content);
+    }
+
+    public List<FabricaAlternativa> loadFabricasAlternativasContaining(String content, String content2) throws SQLException {
+        if (content == null || content.length() == 0) {
+            throw new IllegalArgumentException("Debe indicar el filtro de búsqueda");
+        }
+        if (content2 == null || content2.length() == 0) {
+            throw new IllegalArgumentException("Debe indicar el filtro de búsqueda");
+        }
+
+        return this.fabricaAlternativaDAO.loadFabricaAlternativaContaining(content, content);
+    }
+
+    public List<Fabrica> loadFabricasContaining(String content) throws SQLException {
+        if (content == null || content.length() == 0) {
+            throw new IllegalArgumentException("Debe indicar el filtro de búsqueda");
+        }
+
+        return this.fabricaDAO.loadFabricasContaining(content);
+    }
+
+    public List<LineaPedido> loadLineasPedidoContaining(String content) throws SQLException {
+        if (content == null || content.length() == 0) {
+            throw new IllegalArgumentException("Debe indicar el filtro de búsqueda");
+        }
+
+        return this.lineaPedidoDAO.loadLineasPedidoContaining(content);
+    }
+
+    public List<Pedido> loadPedidosContaining(String content) throws SQLException {
+        if (content == null || content.length() == 0) {
+            throw new IllegalArgumentException("Debe indicar el filtro de búsqueda");
+        }
+
+        return this.pedidoDAO.loadPedidosContaining(content);
+    }
+    
+     /*----------------------------------------------------------*/
 }

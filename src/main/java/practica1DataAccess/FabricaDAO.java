@@ -38,7 +38,7 @@ public class FabricaDAO extends DataAccessObject {
     }
     
     
-    protected List<Fabrica> loadAllFabrica() throws SQLException {
+    protected List<Fabrica> loadAllFabricas() throws SQLException {
 
         List<Fabrica> fabricas = new ArrayList<>();
         try ( PreparedStatement stmt = cnt.prepareStatement("SELECT * FROM Fabrica");  ResultSet result = stmt.executeQuery()) {
@@ -54,7 +54,7 @@ public class FabricaDAO extends DataAccessObject {
     }
     
     
-    protected List<Fabrica> loadFabricaContaining(String content) throws SQLException {
+    protected List<Fabrica> loadFabricasContaining(String content) throws SQLException {
         List<Fabrica> fabricas = new ArrayList<>();
 
         PreparedStatement stmt = cnt.prepareStatement("SELECT * FROM Fabrica WHERE idFabrica LIKE ?");

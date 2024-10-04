@@ -29,7 +29,7 @@ public class FabricaAlternativaDAO extends DataAccessObject {
 
     }
 
-    private static FabricaAlternativa readFabricaAlternativaFromResultSet(ResultSet rs) throws SQLException {
+    private static FabricaAlternativa readFabricasAlternativaFromResultSet(ResultSet rs) throws SQLException {
 
         int idFabricaPrincipal = rs.getInt(FabricaAlternativaDAO.FabricaAlternativaTableColumns.COLUMN_IDFABRICAPRINCIPAL);
         int idFabricaAlternativa = rs.getInt(FabricaAlternativaDAO.FabricaAlternativaTableColumns.COLUMN_IDFABRICAALTERNATIVA);
@@ -38,13 +38,13 @@ public class FabricaAlternativaDAO extends DataAccessObject {
         return fabricaAlternativa;
     }
 
-    protected List<FabricaAlternativa> loadAllFabricaAlternativa() throws SQLException {
+    protected List<FabricaAlternativa> loadAllFabricasAlternativas() throws SQLException {
 
         List<FabricaAlternativa> fabricasAlternativas = new ArrayList<>();
         try ( PreparedStatement stmt = cnt.prepareStatement("SELECT * FROM FabricaAlternativa");  ResultSet result = stmt.executeQuery()) {
 
             while (result.next()) {
-                FabricaAlternativa fabricaAlternativa = readFabricaAlternativaFromResultSet(result);
+                FabricaAlternativa fabricaAlternativa = readFabricasAlternativaFromResultSet(result);
                 fabricasAlternativas.add(fabricaAlternativa);
             }
         } catch (SQLException e) {
@@ -62,7 +62,7 @@ public class FabricaAlternativaDAO extends DataAccessObject {
         ResultSet result = stmt.executeQuery();
 
         while (result.next()) {
-            fabricasAlternativas.add(readFabricaAlternativaFromResultSet(result));
+            fabricasAlternativas.add(readFabricasAlternativaFromResultSet(result));
         }
         return fabricasAlternativas;
     }

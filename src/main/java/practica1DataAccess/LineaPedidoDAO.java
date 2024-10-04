@@ -41,7 +41,7 @@ public class LineaPedidoDAO extends DataAccessObject {
         return lineaPedido;
     }
 
-    protected List<LineaPedido> loadAllLineaPedido() throws SQLException {
+    protected List<LineaPedido> loadAllLineasPedido() throws SQLException {
 
         List<LineaPedido> lineasPedido = new ArrayList<>();
         try (PreparedStatement stmt = cnt.prepareStatement("SELECT * FROM LineaPedido"); ResultSet result = stmt.executeQuery()) {
@@ -56,7 +56,7 @@ public class LineaPedidoDAO extends DataAccessObject {
         return lineasPedido;
     }
 
-    protected List<LineaPedido> loadLineaPedidoContaining(String content) throws SQLException {
+    protected List<LineaPedido> loadLineasPedidoContaining(String content) throws SQLException {
         List<LineaPedido> lineasPedidos = new ArrayList<>();
 
         PreparedStatement stmt = cnt.prepareStatement("SELECT * FROM LineaPedido WHERE idLineaPedido LIKE ?");
