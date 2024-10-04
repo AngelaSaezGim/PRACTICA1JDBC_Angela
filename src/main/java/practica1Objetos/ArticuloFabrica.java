@@ -13,16 +13,19 @@ public class ArticuloFabrica {
     private int idArticulo;
     private int idFabrica;  
     private int existencias;
+    private double precio;
 
     // Constructor
-    public ArticuloFabrica(int idArticulo, int idFabrica, int existencias) {
+    public ArticuloFabrica(int idArticulo, int idFabrica, int existencias, double precio) {
         this.idArticulo = idArticulo;
         this.idFabrica = idFabrica;
         this.existencias = existencias;
+        this.precio = precio;
     }
     
-    public ArticuloFabrica(int existencias) {
+    public ArticuloFabrica(int existencias, double precio) {
         this.existencias = existencias;
+        this.precio = precio;
     }
     
     public ArticuloFabrica(int idArticulo, int idFabrica) {
@@ -52,7 +55,19 @@ public class ArticuloFabrica {
     public void setExistencias(int existencias) {
         this.existencias = existencias;
     }
+
+    public double getPrecio() {
+        return precio;
+    }
+
+    public void setPrecio(double precio) {
+        this.precio = precio;
+    }
     
     
+     @Override
+    public String toString() {
+        return "-> ArticuloFabrica [" + idArticulo + "] " + " idFabrica = " + idFabrica + " | Existencias = " + existencias + " | Precio = " + precio;
+    }
     
 }

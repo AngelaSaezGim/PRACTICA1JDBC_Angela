@@ -37,7 +37,7 @@ public class MenuPractica1App {
         QUERY_ARTICULOS, QUERY_ARTICULOSFABRICA, QUERY_CLIENTES, QUERY_DIRECCIONESENVIO,
         QUERY_FABRICASALTERNATIVAS, QUERY_FABRICAS, QUERY_LINEASPEDIDO, QUERY_PEDIDOS, ATRAS
     };
-    
+
     private enum MenuOption2 {
         QUERY_ARTICULOS, QUERY_ARTICULOSFABRICA, QUERY_CLIENTES, QUERY_DIRECCIONESENVIO,
         QUERY_FABRICASALTERNATIVAS, QUERY_FABRICAS, QUERY_LINEASPEDIDO, QUERY_PEDIDOS, ATRAS
@@ -62,20 +62,35 @@ public class MenuPractica1App {
                             switch (opcionElegidaAll) {
                                 case QUERY_ARTICULOS:
                                     verArticulos(dam);
+                                    esperarIntro();
                                     break;
                                 case QUERY_ARTICULOSFABRICA:
+                                    verArticulosFabrica(dam);
+                                    esperarIntro();
                                     break;
                                 case QUERY_CLIENTES:;
+                                    verClientes(dam);
+                                    esperarIntro();
                                     break;
                                 case QUERY_DIRECCIONESENVIO:
+                                    verDireccionesEnvio(dam);
+                                    esperarIntro();
                                     break;
                                 case QUERY_FABRICASALTERNATIVAS:
+                                    verFabricasAlternativas(dam);
+                                    esperarIntro();
                                     break;
                                 case QUERY_FABRICAS:
+                                    verFabricas(dam);
+                                    esperarIntro();
                                     break;
                                 case QUERY_LINEASPEDIDO:
+                                    verLineasPedido(dam);
+                                    esperarIntro();
                                     break;
                                 case QUERY_PEDIDOS:
+                                    verPedidos(dam);
+                                    esperarIntro();
                                     break;
                                 case ATRAS:
                             }
@@ -87,28 +102,28 @@ public class MenuPractica1App {
                             opcionElegidaContaining = readChoice2();
                             switch (opcionElegidaContaining) {
                                 case QUERY_ARTICULOS:
-
+                                    esperarIntro();
                                     break;
                                 case QUERY_ARTICULOSFABRICA:
-
+                                    esperarIntro();
                                     break;
                                 case QUERY_CLIENTES:
-
+                                    esperarIntro();
                                     break;
                                 case QUERY_DIRECCIONESENVIO:
-
+                                    esperarIntro();
                                     break;
                                 case QUERY_FABRICASALTERNATIVAS:
- 
+                                    esperarIntro();
                                     break;
                                 case QUERY_FABRICAS:
-
+                                    esperarIntro();
                                     break;
                                 case QUERY_LINEASPEDIDO:
-
+                                    esperarIntro();
                                     break;
                                 case QUERY_PEDIDOS:
-                                    
+                                    esperarIntro();
                                     break;
                                 case ATRAS:
                             }
@@ -125,10 +140,8 @@ public class MenuPractica1App {
         System.out.println("\n\n  ADIOS !!!! \n\n");
         tcl.close();
     }
-    
-    //**************** MÉTODOS PRINTEAR ********************//
-    
 
+    //**************** MÉTODOS PRINTEAR ********************//
     private static void printOptions() {
         StringBuilder sb = new StringBuilder()
                 .append("\n\n\nElija una opción:\n")
@@ -154,7 +167,7 @@ public class MenuPractica1App {
                 .append("Opción: ");
         System.out.print(sb.toString());
     }
-    
+
     private static void printOptionsCode() {
         StringBuilder sb = new StringBuilder()
                 .append("\n\n\nElija que quieres consultar:\n")
@@ -170,8 +183,7 @@ public class MenuPractica1App {
                 .append("Opción: ");
         System.out.print(sb.toString());
     }
-    
-    
+
     private static MenuOption readChoice() {
         try {
             int choiceInt = Integer.valueOf(tcl.nextLine());
@@ -201,16 +213,19 @@ public class MenuPractica1App {
             return readChoice2();
         }
     }
-    
-    
+
+    private static void esperarIntro() {
+        System.out.println("Presione Enter para continuar...");
+        tcl.nextLine();
+    }
+
     //***************************** FUNCIONES LANZADAS - DATA ACCESS MANAGER *****************************/
-    
     private static void verArticulos(DataAccessManager dam) throws SQLException {
         List<Articulo> allArticulos = dam.loadAllArticulos();
         printArticulos(allArticulos);
     }
-    
-     private static void printArticulos(List<Articulo> articulos) {
+
+    private static void printArticulos(List<Articulo> articulos) {
         if (articulos == null || articulos.isEmpty()) {
             System.out.println("No hay registros...");
             return;
@@ -218,6 +233,125 @@ public class MenuPractica1App {
 
         for (Articulo articulo : articulos) {
             System.out.println("\t" + articulo);
+        }
+        System.out.println();
+    }
+
+    private static void verArticulosFabrica(DataAccessManager dam) throws SQLException {
+        List<ArticuloFabrica> allArticulosFabrica = dam.loadAllArticulosFabrica();
+        printArticulosFabrica(allArticulosFabrica);
+    }
+
+    private static void printArticulosFabrica(List<ArticuloFabrica> articulosFabrica) {
+        if (articulosFabrica == null || articulosFabrica.isEmpty()) {
+            System.out.println("No hay registros...");
+            return;
+        }
+
+        for (ArticuloFabrica articuloFabrica : articulosFabrica) {
+            System.out.println("\t" + articuloFabrica);
+        }
+        System.out.println();
+    }
+
+    private static void verClientes(DataAccessManager dam) throws SQLException {
+        List<Cliente> allClientes = dam.loadAllClientes();
+        printClientes(allClientes);
+    }
+
+    private static void printClientes(List<Cliente> clientes) {
+        if (clientes == null || clientes.isEmpty()) {
+            System.out.println("No hay registros...");
+            return;
+        }
+
+        for (Cliente cliente : clientes) {
+            System.out.println("\t" + cliente);
+        }
+        System.out.println();
+    }
+
+    private static void verDireccionesEnvio(DataAccessManager dam) throws SQLException {
+        List<DireccionEnvio> allDireccionesEnvio = dam.loadAllDireccionesEnvio();
+        printDireccionesEnvio(allDireccionesEnvio);
+    }
+
+    private static void printDireccionesEnvio(List<DireccionEnvio> direccionesEnvio) {
+        if (direccionesEnvio == null || direccionesEnvio.isEmpty()) {
+            System.out.println("No hay registros...");
+            return;
+        }
+
+        for (DireccionEnvio direccionEnvio : direccionesEnvio) {
+            System.out.println("\t" + direccionEnvio);
+        }
+        System.out.println();
+    }
+
+    private static void verFabricasAlternativas(DataAccessManager dam) throws SQLException {
+        List<FabricaAlternativa> allFabricasAlternativas = dam.loadAllFabricasAlternativas();
+        printFabricasAlternativas(allFabricasAlternativas);
+    }
+
+    private static void printFabricasAlternativas(List<FabricaAlternativa> fabricasAlternativas) {
+        if (fabricasAlternativas == null || fabricasAlternativas.isEmpty()) {
+            System.out.println("No hay registros...");
+            return;
+        }
+
+        for (FabricaAlternativa fabricaAlternativa : fabricasAlternativas) {
+            System.out.println("\t" + fabricaAlternativa);
+        }
+        System.out.println();
+    }
+
+    private static void verFabricas(DataAccessManager dam) throws SQLException {
+        List<Fabrica> allFabricas = dam.loadAllFabricas();
+        printFabricas(allFabricas);
+    }
+
+    private static void printFabricas(List<Fabrica> fabricas) {
+        if (fabricas == null || fabricas.isEmpty()) {
+            System.out.println("No hay registros...");
+            return;
+        }
+
+        for (Fabrica fabrica : fabricas) {
+            System.out.println("\t" + fabrica);
+        }
+        System.out.println();
+    }
+
+    private static void verLineasPedido(DataAccessManager dam) throws SQLException {
+        List<LineaPedido> allLineasPedido = dam.loadAllLineasPedido();
+        printLineasPedido(allLineasPedido);
+    }
+
+    private static void printLineasPedido(List<LineaPedido> lineasPedido) {
+        if (lineasPedido == null || lineasPedido.isEmpty()) {
+            System.out.println("No hay registros...");
+            return;
+        }
+
+        for (LineaPedido lineaPedido : lineasPedido) {
+            System.out.println("\t" + lineaPedido);
+        }
+        System.out.println();
+    }
+
+    private static void verPedidos(DataAccessManager dam) throws SQLException {
+        List<Pedido> allPedidos = dam.loadAllPedidos();
+        printPedidos(allPedidos);
+    }
+
+    private static void printPedidos(List<Pedido> pedidos) {
+        if (pedidos == null || pedidos.isEmpty()) {
+            System.out.println("No hay registros...");
+            return;
+        }
+
+        for (Pedido pedido : pedidos) {
+            System.out.println("\t" + pedido);
         }
         System.out.println();
     }

@@ -42,6 +42,10 @@ public class Fabrica {
         this.telefonoContacto = telefonoContacto;
     }
     
+    public String toString() {
+        return "-> Fabrica [" + idFabrica + "] " + " Telefono Contacto = " + telefonoContacto;
+    }
+    
     
     
 }

@@ -63,5 +63,10 @@ public class Cliente {
     public void setDescuento(double descuento) {
         this.descuento = descuento;
     }
+    
+     @Override
+    public String toString() {
+        return "-> Cliente [" + idCliente + "] " + " Saldo = " + saldo + " | Limite Credito = " + limiteCredito + " | Descuento = " + descuento;
+    }
 
 }

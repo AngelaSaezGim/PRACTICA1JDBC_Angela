@@ -85,6 +85,9 @@ public class DireccionEnvio {
         this.idCliente = idCliente;
     }
     
-    
+    @Override
+    public String toString() {
+        return "-> Direccion [" + idDireccion + "] " + " Numero = " + numero + " | Calle = " + calle + " | Comuna = " + comuna + " | Ciudad = " + ciudad + " | IdCliente " + idCliente;
+    }
 
 }

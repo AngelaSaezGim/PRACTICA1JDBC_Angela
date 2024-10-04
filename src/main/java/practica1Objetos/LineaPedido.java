@@ -64,6 +64,8 @@ public class LineaPedido {
         this.cantidad = cantidad;
     }
     
-    
+     public String toString() {
+        return "-> Linea Pedido [" + idLineaPedido + "] " + " Id del pedido relacionado = " + idPedido + " | Id del articulo relacionado = " + idArticulo + " | Cantidad = " + cantidad;
+    }
     
 }

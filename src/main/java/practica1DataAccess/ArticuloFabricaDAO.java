@@ -27,13 +27,15 @@ public class ArticuloFabricaDAO extends DataAccessObject {
         private final static String COLUMN_IDARTICULO = "idArticulo";
         private final static String COLUMN_IDFABRICA = "idFabrica";
         private final static String COLUMN_EXISTENCIAS = "existencias";
+        private final static String COLUMN_PRECIO = "precio";
     }
 
     private static ArticuloFabrica readArticuloFabricaFromResultSet(ResultSet rs) throws SQLException {
         int idArticulo = rs.getInt(ArticuloFabricaDAO.ArticuloFabricaTableColumns.COLUMN_IDARTICULO);
         int idFabrica = rs.getInt(ArticuloFabricaDAO.ArticuloFabricaTableColumns.COLUMN_IDFABRICA);
         int existencias = rs.getInt(ArticuloFabricaDAO.ArticuloFabricaTableColumns.COLUMN_EXISTENCIAS);
-        ArticuloFabrica articuloFabrica = new ArticuloFabrica(idArticulo, idFabrica, existencias);
+        double precio = rs.getDouble(ArticuloFabricaDAO.ArticuloFabricaTableColumns.COLUMN_PRECIO);
+        ArticuloFabrica articuloFabrica = new ArticuloFabrica(idArticulo, idFabrica, existencias, precio);
         return articuloFabrica;
     }
 

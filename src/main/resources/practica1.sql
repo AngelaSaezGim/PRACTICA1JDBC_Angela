@@ -71,11 +71,11 @@ CREATE TABLE ArticuloFabrica (
   idArticulo INT,
   idFabrica INT,
   existencias INT,
+  precio DECIMAL(10,2),
   PRIMARY KEY (idArticulo, idFabrica), -- Clave primaria compuesta (tipo artículo que existe en una fábrica)
 	CONSTRAINT fk_ArticuloFabrica_Articulo FOREIGN KEY (idArticulo) REFERENCES Articulo(idArticulo),
 	CONSTRAINT fk_ArticuloFabrica_Fabrica FOREIGN KEY (idFabrica) REFERENCES Fabrica(idFabrica) -- Se podría almacenar una fábrica de la cual no se tenga ningún artículo.
 );
-
 -- TABLA FABRICAS ALTERNATIVAS - posibilidad de regitrar fabricas alternativas
 -- También, por información estratégica, se podría incluir información de fábricas alternativas respecto a las que ya fabrican artículos para esta empresa.
 
@@ -141,11 +141,11 @@ INSERT INTO Fabrica (telefonoContacto) VALUES ('77777777'); -- Hago 2 para fabri
 SELECT * FROM fabrica;
 */
 
-/*
-INSERT INTO ArticuloFabrica(idArticulo,idFabrica,existencias)
-VALUES(1,1,200);
-SELECT * FROM ArticuloFabrica;
-*/
+
+/*INSERT INTO ArticuloFabrica(idArticulo,idFabrica,existencias,precio)
+VALUES(1,1,200,850);
+SELECT * FROM ArticuloFabrica;*/
+
 
 /*
 INSERT INTO FabricaAlternativa (idFabricaPrincipal, idFabricaAlternativa) VALUES (1, 2); -- La fábrica 1 tiene como alternativa la fábrica 2

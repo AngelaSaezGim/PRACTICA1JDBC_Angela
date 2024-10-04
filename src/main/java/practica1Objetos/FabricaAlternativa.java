@@ -35,6 +35,8 @@ public class FabricaAlternativa {
         this.idFabricaAlternativa = idFabricaAlternativa;
     }
     
-    
+    public String toString() {
+        return "-> Fabrica Alternativa =  Id Fabrica Principal [" + idFabricaPrincipal + "] " + " | Id Fabrica Alternativa = [" + idFabricaAlternativa + "]";
+    }
     
 }

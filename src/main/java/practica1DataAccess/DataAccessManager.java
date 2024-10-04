@@ -60,6 +60,7 @@ public class DataAccessManager implements AutoCloseable {
                 singleton.direccionEnvioDAO = new DireccionEnvioDAO(singleton.cnx);
                 singleton.fabricaAlternativaDAO = new FabricaAlternativaDAO(singleton.cnx);
                 singleton.lineaPedidoDAO = new LineaPedidoDAO(singleton.cnx);
+                singleton.pedidoDAO = new PedidoDAO(singleton.cnx);
 
             } catch (Exception e) {
                 singleton = null;
@@ -128,11 +129,12 @@ public class DataAccessManager implements AutoCloseable {
     private ArticuloDAO articuloDAO;
     private ClienteDAO clienteDAO;
     private FabricaDAO fabricaDAO;
-    private PedidoDAO pedidoDAO;
     private ArticuloFabricaDAO articuloFabricaDAO;
     private DireccionEnvioDAO direccionEnvioDAO;
     private FabricaAlternativaDAO fabricaAlternativaDAO;
     private LineaPedidoDAO lineaPedidoDAO;
+    private PedidoDAO pedidoDAO;
+    
 
     private static Connection createConnection() {
 
@@ -185,6 +187,11 @@ public class DataAccessManager implements AutoCloseable {
     public List<Articulo> loadAllArticulos() throws SQLException {
 
         return this.articuloDAO.loadAllArticulos();
+    }
+    
+    public List<Cliente> loadAllClientes() throws SQLException {
+
+        return this.clienteDAO.loadAllClientes();
     }
 
     public List<ArticuloFabrica> loadAllArticulosFabrica() throws SQLException {

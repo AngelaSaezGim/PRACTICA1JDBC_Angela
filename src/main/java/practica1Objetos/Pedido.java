@@ -75,5 +75,9 @@ public class Pedido {
     public void setIdDireccion(int idDireccion) {
         this.idDireccion = idDireccion;
     }
+    
+     public String toString() {
+        return "-> Pedido [" + idPedido + "] " + " Fecha del pedido = " + fecha + " | Numero Comanda = " + numeroComanda + " | Id cliente relacionado = " + idCliente + " | Direccion = " + idDireccion;
+    }
 
 }
