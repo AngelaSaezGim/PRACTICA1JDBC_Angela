@@ -68,5 +68,68 @@ public class LineaPedidoDAO extends DataAccessObject {
         }
         return lineasPedidos;
     }
-    
+
+    protected int insertLineaPedido(LineaPedido lineaPedido) throws SQLException {
+        int filasAfectadas = 0;
+
+        // Consulta SQL para insertar una nueva línea de pedido
+        String sentenciaSQL = "INSERT INTO LineaPedido ("
+                + LineaPedidoTableColumns.COLUMN_IDLINEAPEDIDO + ", "
+                + LineaPedidoTableColumns.COLUMN_IDPEDIDO + ", "
+                + LineaPedidoTableColumns.COLUMN_IDARTICULO + ", "
+                + LineaPedidoTableColumns.COLUMN_CANTIDAD + ") "
+                + "VALUES (?, ?, ?, ?)";
+
+        try (PreparedStatement stmt = cnt.prepareStatement(sentenciaSQL)) {
+
+            // Generar el nuevo id para la línea de pedido (puedes usar una función similar a obtenerMaxId())
+            int idLineaPedido = obtenerMaxId() + 1;
+            stmt.setInt(1, idLineaPedido);
+            stmt.setInt(2, lineaPedido.getIdPedido());
+            stmt.setInt(3, lineaPedido.getIdArticulo());
+            stmt.setInt(4, lineaPedido.getCantidad());
+
+            // Ejecutar la consulta
+            filasAfectadas = stmt.executeUpdate();
+
+            // Establecer el nuevo ID a la línea de pedido
+            lineaPedido.setIdLineaPedido(idLineaPedido);
+        } catch (SQLException e) {
+            System.err.println("Error al insertar la línea de pedido: " + e.getMessage());
+            throw e;
+        }
+
+        return filasAfectadas;
+    }
+
+    private Integer obtenerMaxId() throws SQLException {
+
+        PreparedStatement stmt = cnt.prepareStatement("SELECT max(idLineaPedido) FROM LineaPedido");
+        ResultSet result = stmt.executeQuery();
+
+        if (result.next()) {
+            return result.getInt(1);
+        } else {
+            return 0;
+        }
+    }
+
+    protected boolean pedidoExiste(int idPedido) throws SQLException {
+        String sql = "SELECT COUNT(*) FROM Pedido WHERE idPedido = ?";
+        try (PreparedStatement stmt = cnt.prepareStatement(sql)) {
+            stmt.setInt(1, idPedido);
+            ResultSet rs = stmt.executeQuery();
+            return rs.next() && rs.getInt(1) > 0;
+        }
+    }
+
+    protected boolean articuloExiste(int idArticulo) throws SQLException {
+        String sql = "SELECT COUNT(*) FROM Articulo WHERE idArticulo = ?";
+        try (PreparedStatement stmt = cnt.prepareStatement(sql)) {
+            stmt.setInt(1, idArticulo);
+            ResultSet rs = stmt.executeQuery();
+            return rs.next() && rs.getInt(1) > 0;
+        }
+    }
+
 }

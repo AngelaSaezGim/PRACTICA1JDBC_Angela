@@ -63,5 +63,42 @@ public class ArticuloDAO extends DataAccessObject {
         }
         return articulos;
     }
+     
+      protected int insertArticulo(Articulo articulo) {
+        
+        int filasAfectadas = 0;
+        
+        String sentenciaSQL = "INSERT INTO Articulo ("
+                + ArticuloTableColumns.COLUMN_IDARTICULO + ", "
+                + ArticuloTableColumns.COLUMN_DESCRIPCION
+                + ") VALUES (?, ?)";
+        
+        try ( PreparedStatement stmt = cnt.prepareStatement(sentenciaSQL)) {
+
+            int idArticulo = obtenerMaxId() + 1;
+            stmt.setInt(1, idArticulo);
+            stmt.setString(2, articulo.getDescripcion());
+
+            filasAfectadas = stmt.executeUpdate();
+
+            articulo.setIdArticulo(idArticulo);
+        }catch (SQLException e) {
+            throw new IllegalArgumentException("Error al insertar");
+        }
+        
+        return filasAfectadas;
+    }
+      
+       private Integer obtenerMaxId() throws SQLException {
+
+        PreparedStatement stmt = cnt.prepareStatement("SELECT max(idArticulo) FROM Articulo");
+        ResultSet result = stmt.executeQuery();
+
+        if (result.next()) {
+            return result.getInt(1);
+        } else {
+            return 0; //no hay datos en la tabla
+        }
+    }
 
 }

@@ -23,7 +23,8 @@ public class ArticuloFabrica {
         this.precio = precio;
     }
     
-    public ArticuloFabrica(int existencias, double precio) {
+    public ArticuloFabrica(int idFabrica, int existencias, double precio) {
+        this.idFabrica = idFabrica;
         this.existencias = existencias;
         this.precio = precio;
     }

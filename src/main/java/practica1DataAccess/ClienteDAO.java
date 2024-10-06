@@ -68,5 +68,45 @@ public class ClienteDAO extends DataAccessObject {
         }
         return clientes;
     }
+     
+    protected int insertCliente(Cliente cliente) throws SQLException {
+        int filasAfectadas = 0;
+
+        String sentenciaSQL = "INSERT INTO Cliente ("
+                + ClienteTableColumns.COLUMN_IDCLIENTE + ", "
+                + ClienteTableColumns.COLUMN_SALDO + ", "
+                + ClienteTableColumns.COLUMN_LIMITECREDITO + ", "
+                + ClienteTableColumns.COLUMN_DESCUENTO + ") "
+                + "VALUES (?, ?, ?, ?)";
+
+        try (PreparedStatement stmt = cnt.prepareStatement(sentenciaSQL)) {
+
+            int idCliente = obtenerMaxId() + 1; 
+            stmt.setInt(1, idCliente);
+            stmt.setDouble(2, cliente.getSaldo());
+            stmt.setDouble(3, cliente.getLimiteCredito());
+            stmt.setDouble(4, cliente.getDescuento());
+
+            filasAfectadas = stmt.executeUpdate();
+            cliente.setIdCliente(idCliente);
+        } catch (SQLException e) {
+            System.err.println("Error en la ejecución de la sentencia SQL: " + e.getMessage());
+            throw e;
+        }
+
+        return filasAfectadas;
+    }
     
+     private Integer obtenerMaxId() throws SQLException {
+
+        PreparedStatement stmt = cnt.prepareStatement("SELECT max(idCliente) FROM Cliente");
+        ResultSet result = stmt.executeQuery();
+
+        if (result.next()) {
+            return result.getInt(1);
+        } else {
+            return 0; 
+        }
+    }
+
 }

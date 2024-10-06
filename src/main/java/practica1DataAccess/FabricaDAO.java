@@ -67,4 +67,39 @@ public class FabricaDAO extends DataAccessObject {
         return fabricas;
     }
 
+    protected int insertFabrica(Fabrica fabrica) throws SQLException {
+        int filasAfectadas = 0;
+
+        String sentenciaSQL = "INSERT INTO Fabrica ("
+                + FabricaTableColumns.COLUMN_IDFABRICA + ", "
+                + FabricaTableColumns.COLUMN_TELEFONOCONTACTO + ") "
+                + "VALUES (?, ?)";
+
+        try (PreparedStatement stmt = cnt.prepareStatement(sentenciaSQL)) {
+            int idFabrica = obtenerMaxId() + 1; 
+            stmt.setInt(1, idFabrica);
+            stmt.setString(2, fabrica.getTelefonoContacto());
+
+            filasAfectadas = stmt.executeUpdate();
+            fabrica.setIdFabrica(idFabrica);
+        } catch (SQLException e) {
+            System.err.println("Error en la ejecución de la sentencia SQL: " + e.getMessage());
+            throw e;
+        }
+
+        return filasAfectadas;
+    }
+    
+     private Integer obtenerMaxId() throws SQLException {
+
+        PreparedStatement stmt = cnt.prepareStatement("SELECT max(idFabrica) FROM Fabrica");
+        ResultSet result = stmt.executeQuery();
+
+        if (result.next()) {
+            return result.getInt(1);
+        } else {
+            return 0; 
+        }
+    }
+
 }

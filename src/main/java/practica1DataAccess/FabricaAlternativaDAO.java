@@ -41,7 +41,7 @@ public class FabricaAlternativaDAO extends DataAccessObject {
     protected List<FabricaAlternativa> loadAllFabricasAlternativas() throws SQLException {
 
         List<FabricaAlternativa> fabricasAlternativas = new ArrayList<>();
-        try ( PreparedStatement stmt = cnt.prepareStatement("SELECT * FROM FabricaAlternativa");  ResultSet result = stmt.executeQuery()) {
+        try (PreparedStatement stmt = cnt.prepareStatement("SELECT * FROM FabricaAlternativa"); ResultSet result = stmt.executeQuery()) {
 
             while (result.next()) {
                 FabricaAlternativa fabricaAlternativa = readFabricasAlternativaFromResultSet(result);
@@ -65,6 +65,27 @@ public class FabricaAlternativaDAO extends DataAccessObject {
             fabricasAlternativas.add(readFabricasAlternativaFromResultSet(result));
         }
         return fabricasAlternativas;
+    }
+
+    protected int insertFabricaAlternativa(FabricaAlternativa fabricaAlternativa) throws SQLException {
+        int filasAfectadas = 0;
+
+        String sentenciaSQL = "INSERT INTO FabricaAlternativa ("
+                + FabricaAlternativaTableColumns.COLUMN_IDFABRICAPRINCIPAL + ", "
+                + FabricaAlternativaTableColumns.COLUMN_IDFABRICAALTERNATIVA + ") "
+                + "VALUES (?, ?)";
+
+        try (PreparedStatement stmt = cnt.prepareStatement(sentenciaSQL)) {
+            stmt.setInt(1, fabricaAlternativa.getIdFabricaPrincipal());
+            stmt.setInt(2, fabricaAlternativa.getIdFabricaAlternativa());
+
+            filasAfectadas = stmt.executeUpdate();
+        } catch (SQLException e) {
+            System.err.println("Error en la ejecución de la sentencia SQL: " + e.getMessage());
+            throw e;
+        }
+
+        return filasAfectadas;
     }
 
 }

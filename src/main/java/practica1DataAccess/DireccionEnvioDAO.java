@@ -48,7 +48,7 @@ public class DireccionEnvioDAO extends DataAccessObject {
     protected List<DireccionEnvio> loadAllDireccionesEnvio() throws SQLException {
 
         List<DireccionEnvio> direccionesEnvios = new ArrayList<>();
-        try ( PreparedStatement stmt = cnt.prepareStatement("SELECT * FROM DireccionEnvio");  ResultSet result = stmt.executeQuery()) {
+        try (PreparedStatement stmt = cnt.prepareStatement("SELECT * FROM DireccionEnvio"); ResultSet result = stmt.executeQuery()) {
 
             while (result.next()) {
                 DireccionEnvio direccionEnvio = readDireccionEnvioFromResultSet(result);
@@ -59,9 +59,8 @@ public class DireccionEnvioDAO extends DataAccessObject {
         }
         return direccionesEnvios;
     }
-    
-    
-      protected List<DireccionEnvio> loadDireccionEnvioContaining(String content) throws SQLException {
+
+    protected List<DireccionEnvio> loadDireccionEnvioContaining(String content) throws SQLException {
         List<DireccionEnvio> direccionesEnvios = new ArrayList<>();
 
         PreparedStatement stmt = cnt.prepareStatement("SELECT * FROM DireccionEnvio WHERE idDireccion LIKE ?");
@@ -73,5 +72,66 @@ public class DireccionEnvioDAO extends DataAccessObject {
         }
         return direccionesEnvios;
     }
+
+    protected int insertDireccionEnvio(DireccionEnvio direccionEnvio) throws SQLException {
+        int filasAfectadas = 0;
+
+        String sentenciaSQL = "INSERT INTO DireccionEnvio ("
+                + DireccionEnvioTableColumns.COLUMN_IDDIRECCION + ", "
+                + DireccionEnvioTableColumns.COLUMN_NUMERO + ", "
+                + DireccionEnvioTableColumns.COLUMN_CALLE + ", "
+                + DireccionEnvioTableColumns.COLUMN_COMUNA + ", "
+                + DireccionEnvioTableColumns.COLUMN_CIUDAD + ", "
+                + DireccionEnvioTableColumns.COLUMN_IDCLIENTE + ") "
+                + "VALUES (?, ?, ?, ?, ?, ?)";
+
+        try (PreparedStatement stmt = cnt.prepareStatement(sentenciaSQL)) {
+
+            int idDireccion = obtenerMaxId() + 1;
+            stmt.setInt(1, idDireccion);
+            stmt.setInt(2, direccionEnvio.getNumero());
+            stmt.setString(3, direccionEnvio.getCalle());
+            stmt.setString(4, direccionEnvio.getComuna());
+            stmt.setString(5, direccionEnvio.getCiudad());
+            stmt.setInt(6, direccionEnvio.getIdCliente());
+
+            filasAfectadas = stmt.executeUpdate();
+
+            direccionEnvio.setIdDireccion(idDireccion);
+
+        } catch (SQLException e) {
+            throw new SQLException("Error al insertar la dirección de envío: " + e.getMessage());
+        }
+
+        return filasAfectadas;
+
+    }
+
+    protected boolean clienteExiste(int idCliente) throws SQLException {
+        String sql = "SELECT COUNT(*) FROM Cliente WHERE idCliente = ?";
+        try (PreparedStatement stmt = cnt.prepareStatement(sql)) {
+            stmt.setInt(1, idCliente);
+            ResultSet rs = stmt.executeQuery();
+            if (rs.next()) {
+                return rs.getInt(1) > 0;
+            }
+        } catch (SQLException e) {
+            throw new SQLException("Error al verificar existencia del cliente: " + e.getMessage());
+        }
+        return false;
+    }
+        
+        private Integer obtenerMaxId() throws SQLException {
+
+        PreparedStatement stmt = cnt.prepareStatement("SELECT max(idCliente) FROM Cliente");
+        ResultSet result = stmt.executeQuery();
+
+        if (result.next()) {
+            return result.getInt(1);
+        } else {
+            return 0; 
+        }
+    }
+
 
 }
