@@ -89,7 +89,7 @@ public class ArticuloDAO extends DataAccessObject {
         return filasAfectadas;
     }
       
-       private Integer obtenerMaxId() throws SQLException {
+    private Integer obtenerMaxId() throws SQLException {
 
         PreparedStatement stmt = cnt.prepareStatement("SELECT max(idArticulo) FROM Articulo");
         ResultSet result = stmt.executeQuery();
@@ -99,6 +99,20 @@ public class ArticuloDAO extends DataAccessObject {
         } else {
             return 0; //no hay datos en la tabla
         }
+    }
+
+    protected int deleteArticulo(String idArticulo) {
+
+        int filasAfectadas = 0;
+
+        try (PreparedStatement stmt = cnt.prepareStatement("DELETE FROM Articulo WHERE idArticulo = ?")) {
+            stmt.setString(1, idArticulo);
+            filasAfectadas = stmt.executeUpdate();
+        } catch (SQLException e) {
+            e.getMessage();
+        }
+
+        return filasAfectadas;
     }
 
 }

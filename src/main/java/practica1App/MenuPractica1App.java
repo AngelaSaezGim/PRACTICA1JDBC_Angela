@@ -207,6 +207,7 @@ public class MenuPractica1App {
                             opcionElegidaDelete = readChoice4();
                             switch (opcionElegidaDelete) {
                                 case QUERY_ARTICULOS:
+                                    borrarArticulo(dam);
                                     esperarIntro();
                                     break;
                                 case QUERY_ARTICULOSFABRICA:
@@ -931,5 +932,17 @@ public class MenuPractica1App {
             throw e;
         }
 
+    }
+    
+    //*DELETE*//
+    
+    private static void borrarArticulo(DataAccessManager dam) throws SQLException {
+        String idArticulo = requestContentLike();
+        int columnasAfectadas = dam.borrarArticulo(idArticulo);
+        if (columnasAfectadas > 0) {
+            System.out.println("Articulo borrado exitosamente");
+        } else {
+            System.out.println("No se encontraron articulos con el código especificado para borrar.");
+        }
     }
 }

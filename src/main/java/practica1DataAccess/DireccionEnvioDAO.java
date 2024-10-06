@@ -123,7 +123,7 @@ public class DireccionEnvioDAO extends DataAccessObject {
         
         private Integer obtenerMaxId() throws SQLException {
 
-        PreparedStatement stmt = cnt.prepareStatement("SELECT max(idCliente) FROM Cliente");
+        PreparedStatement stmt = cnt.prepareStatement("SELECT max(idDireccion) FROM DireccionEnvio");
         ResultSet result = stmt.executeQuery();
 
         if (result.next()) {

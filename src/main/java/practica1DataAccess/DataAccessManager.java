@@ -365,4 +365,12 @@ public class DataAccessManager implements AutoCloseable {
     }
     
     //DELETE
+    
+       public int borrarArticulo(String content) throws SQLException {
+        if (content == null || content.length() == 0) {
+            throw new IllegalArgumentException("Debe indicar el filtro de búsqueda");
+        }
+
+        return this.articuloDAO.deleteArticulo(content);
+    }
 }
