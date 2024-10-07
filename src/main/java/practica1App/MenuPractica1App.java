@@ -943,6 +943,7 @@ public class MenuPractica1App {
             System.out.println("Articulo borrado exitosamente");
         } else {
             System.out.println("No se encontraron articulos con el código especificado para borrar.");
+             esperarIntro();
         }
     }
 }
