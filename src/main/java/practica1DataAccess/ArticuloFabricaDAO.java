@@ -120,4 +120,18 @@ public class ArticuloFabricaDAO extends DataAccessObject {
         }
     }
 
+    protected int deleteArticuloFabrica(String idArticulo, String idFabrica) {
+
+        int filasAfectadas = 0;
+
+        try ( PreparedStatement stmt = cnt.prepareStatement("DELETE FROM Articulo WHERE idArticulo = ?")) {
+            stmt.setString(1, idArticulo);
+            filasAfectadas = stmt.executeUpdate();
+        } catch (SQLException e) {
+            e.getMessage();
+        }
+
+        return filasAfectadas;
+    }
+
 }

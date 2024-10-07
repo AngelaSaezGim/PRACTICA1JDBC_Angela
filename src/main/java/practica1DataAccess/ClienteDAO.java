@@ -109,4 +109,18 @@ public class ClienteDAO extends DataAccessObject {
         }
     }
 
+    protected int deleteCliente(String idCliente) {
+
+        int filasAfectadas = 0;
+
+        try ( PreparedStatement stmt = cnt.prepareStatement("DELETE FROM Articulo WHERE idArticulo = ?")) {
+            stmt.setString(1, idCliente);
+            filasAfectadas = stmt.executeUpdate();
+        } catch (SQLException e) {
+            e.getMessage();
+        }
+
+        return filasAfectadas;
+    }
+
 }

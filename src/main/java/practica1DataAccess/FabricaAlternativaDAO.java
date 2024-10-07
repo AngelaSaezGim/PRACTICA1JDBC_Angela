@@ -75,7 +75,7 @@ public class FabricaAlternativaDAO extends DataAccessObject {
                 + FabricaAlternativaTableColumns.COLUMN_IDFABRICAALTERNATIVA + ") "
                 + "VALUES (?, ?)";
 
-        try (PreparedStatement stmt = cnt.prepareStatement(sentenciaSQL)) {
+        try ( PreparedStatement stmt = cnt.prepareStatement(sentenciaSQL)) {
             stmt.setInt(1, fabricaAlternativa.getIdFabricaPrincipal());
             stmt.setInt(2, fabricaAlternativa.getIdFabricaAlternativa());
 
@@ -83,6 +83,20 @@ public class FabricaAlternativaDAO extends DataAccessObject {
         } catch (SQLException e) {
             System.err.println("Error en la ejecución de la sentencia SQL: " + e.getMessage());
             throw e;
+        }
+
+        return filasAfectadas;
+    }
+
+    protected int deleteFabricaAlternativa(String idFabricaPrincipal, String idFabricaAlternativa) {
+
+        int filasAfectadas = 0;
+
+        try ( PreparedStatement stmt = cnt.prepareStatement("DELETE FROM Articulo WHERE idArticulo = ?")) {
+            stmt.setString(1, idFabricaPrincipal);
+            filasAfectadas = stmt.executeUpdate();
+        } catch (SQLException e) {
+            e.getMessage();
         }
 
         return filasAfectadas;

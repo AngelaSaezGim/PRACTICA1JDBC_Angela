@@ -131,5 +131,19 @@ public class LineaPedidoDAO extends DataAccessObject {
             return rs.next() && rs.getInt(1) > 0;
         }
     }
+    
+    protected int deleteLineaPedido(String idLineaPedido) {
+
+        int filasAfectadas = 0;
+
+        try ( PreparedStatement stmt = cnt.prepareStatement("DELETE FROM Articulo WHERE idArticulo = ?")) {
+            stmt.setString(1, idLineaPedido);
+            filasAfectadas = stmt.executeUpdate();
+        } catch (SQLException e) {
+            e.getMessage();
+        }
+
+        return filasAfectadas;
+    }
 
 }

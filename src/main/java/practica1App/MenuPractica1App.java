@@ -591,11 +591,6 @@ public class MenuPractica1App {
         return readNotEmptyString();
     }
 
-    private static String requestContentArticuloFabricaLike() {
-        System.out.print("Escriba el id del articulo; ");
-        return readNotEmptyString();
-    }
-
     private static String readNotEmptyString() {
         String input = null;
         //prevenir texto vacío
@@ -622,7 +617,7 @@ public class MenuPractica1App {
         System.out.println("ID del articulo");
         String idArticulo = requestContentLike();
         System.out.println("ID de la Fabrica asociada al articulo");
-        String idFabrica = requestContentArticuloFabricaLike();
+        String idFabrica = requestContentLike();
         System.out.println("Valores leídos -> idArticulo: " + idArticulo + ", Asociado a la fabrica: " + idFabrica);
 
         List<ArticuloFabrica> articulosFabricaFilteredByCode = dam.loadArticulosFabricaContaining(idArticulo, idFabrica);
@@ -657,7 +652,7 @@ public class MenuPractica1App {
         System.out.println("ID de la fabrica principal");
         String idFabricaPrincipal = requestContentLike();
         System.out.println("ID de la fabrica alternativa asociada a esa fabrica princiapl");
-        String idFabricaAlternativa = requestContentArticuloFabricaLike();
+        String idFabricaAlternativa = requestContentLike();
         System.out.println("Valores leídos -> Fabrica Principal: " + idFabricaPrincipal + ", - Su fabrica alternativa: " + idFabricaAlternativa);
 
         List<FabricaAlternativa> fabricaAlternativaFilteredByCode = dam.loadFabricaAlternativaContaining(idFabricaPrincipal, idFabricaAlternativa);
@@ -937,9 +932,17 @@ public class MenuPractica1App {
 
     }
 
+
     //*DELETE*//
+    
+    
+    private static String requestContentDelete() {
+        System.out.print("Escriba el id a borrar; ");
+        return readNotEmptyString();
+    }
+    
     private static void borrarArticulo(DataAccessManager dam) throws SQLException {
-        String idArticulo = requestContentLike();
+        String idArticulo = requestContentDelete();
         int columnasAfectadas = dam.borrarArticulo(idArticulo);
         if (columnasAfectadas > 0) {
             System.out.println("Articulo borrado exitosamente");
@@ -950,9 +953,11 @@ public class MenuPractica1App {
     }
 
     private static void borrarArticuloFabrica(DataAccessManager dam) throws SQLException {
-        String idArticulo = requestContentLike();
-        String idFabrica = requestContentLike();
-        int columnasAfectadas = dam.borrarArticulo(idFabrica);
+        System.out.println("Id articulo");
+        String idArticulo = requestContentDelete();
+        System.out.println("Id fabrica");
+        String idFabrica = requestContentDelete();
+        int columnasAfectadas = dam.borrarArticuloFabrica(idArticulo,idFabrica);
         if (columnasAfectadas > 0) {
             System.out.println("Articulo" + idArticulo + " asociado a la fabrica" + idFabrica + " borrado exitosamente");
         } else {
@@ -962,68 +967,71 @@ public class MenuPractica1App {
     }
 
     private static void borrarCliente(DataAccessManager dam) throws SQLException {
-        String idCliente = requestContentLike();
-        int columnasAfectadas = dam.borrarArticulo(idCliente);
+        String idCliente = requestContentDelete();
+        int columnasAfectadas = dam.borrarCliente(idCliente);
         if (columnasAfectadas > 0) {
-            System.out.println("Articulo borrado exitosamente");
+            System.out.println("Cliente borrado exitosamente");
         } else {
-            System.out.println("No se encontraron articulos con el código especificado para borrar.");
+            System.out.println("No se encontraron clientes con el código especificado para borrar.");
             esperarIntro();
         }
     }
 
     private static void borrarDireccionEnvio(DataAccessManager dam) throws SQLException {
-        String idDireccion = requestContentLike();
-        int columnasAfectadas = dam.borrarArticulo(idDireccion);
+        String idDireccion = requestContentDelete();
+        int columnasAfectadas = dam.borrarDireccionEnvio(idDireccion);
         if (columnasAfectadas > 0) {
-            System.out.println("Articulo borrado exitosamente");
+            System.out.println("Direccion borrada exitosamente");
         } else {
-            System.out.println("No se encontraron articulos con el código especificado para borrar.");
+            System.out.println("No se encontraron direcciones con el código especificado para borrar.");
             esperarIntro();
         }
     }
 
     private static void borrarFabricaAlternativa(DataAccessManager dam) throws SQLException {
-        String idFabricaPrincipal = requestContentLike();
-        String idFabricaAlternativa = requestContentLike();
-        int columnasAfectadas = dam.borrarArticulo(idFabricaPrincipal);
+        
+        System.out.println("Id fabrica principal asociada a esa fabrica alternativa");
+        String idFabricaPrincipal = requestContentDelete();
+        System.out.println("Id fabrica alternativa");
+        String idFabricaAlternativa = requestContentDelete();
+        int columnasAfectadas = dam.borrarFabricaAlternativa(idFabricaPrincipal, idFabricaAlternativa);
         if (columnasAfectadas > 0) {
-            System.out.println("Articulo borrado exitosamente");
+            System.out.println("Fabrica alternativa " + idFabricaAlternativa + " asociada a " + idFabricaPrincipal + " borrada exitosamente");
         } else {
-            System.out.println("No se encontraron articulos con el código especificado para borrar.");
+            System.out.println("No se encontraron fabricas alternativas con los codigos especificados para borrar.");
             esperarIntro();
         }
     }
 
     private static void borrarFabrica(DataAccessManager dam) throws SQLException {
         String idFabrica = requestContentLike();
-        int columnasAfectadas = dam.borrarArticulo(idFabrica);
+        int columnasAfectadas = dam.borrarFabrica(idFabrica);
         if (columnasAfectadas > 0) {
-            System.out.println("Articulo borrado exitosamente");
+            System.out.println("Fabrica borrada exitosamente");
         } else {
-            System.out.println("No se encontraron articulos con el código especificado para borrar.");
+            System.out.println("No se encontraron fabricas con el código especificado para borrar.");
             esperarIntro();
         }
     }
 
     private static void borrarLineaPedido(DataAccessManager dam) throws SQLException {
         String idLineaPedido = requestContentLike();
-        int columnasAfectadas = dam.borrarArticulo(idLineaPedido);
+        int columnasAfectadas = dam.borrarLineaPedido(idLineaPedido);
         if (columnasAfectadas > 0) {
-            System.out.println("Articulo borrado exitosamente");
+            System.out.println("Linea de pedido borrada exitosamente");
         } else {
-            System.out.println("No se encontraron articulos con el código especificado para borrar.");
+            System.out.println("No se encontraron lineas de pedido con el código especificado para borrar.");
             esperarIntro();
         }
     }
 
     private static void borrarPedido(DataAccessManager dam) throws SQLException {
         String idPedido = requestContentLike();
-        int columnasAfectadas = dam.borrarArticulo(idPedido);
+        int columnasAfectadas = dam.borrarPedido(idPedido);
         if (columnasAfectadas > 0) {
-            System.out.println("Articulo borrado exitosamente");
+            System.out.println("Pedido borrado exitosamente");
         } else {
-            System.out.println("No se encontraron articulos con el código especificado para borrar.");
+            System.out.println("No se encontraron pedidos con el código especificado para borrar.");
             esperarIntro();
         }
     }

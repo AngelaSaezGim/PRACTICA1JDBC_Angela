@@ -129,9 +129,22 @@ public class DireccionEnvioDAO extends DataAccessObject {
         if (result.next()) {
             return result.getInt(1);
         } else {
-            return 0; 
+            return 0;
         }
     }
 
+    protected int deleteDireccion(String idDireccion) {
+
+        int filasAfectadas = 0;
+
+        try ( PreparedStatement stmt = cnt.prepareStatement("DELETE FROM Articulo WHERE idArticulo = ?")) {
+            stmt.setString(1, idDireccion);
+            filasAfectadas = stmt.executeUpdate();
+        } catch (SQLException e) {
+            e.getMessage();
+        }
+
+        return filasAfectadas;
+    }
 
 }
