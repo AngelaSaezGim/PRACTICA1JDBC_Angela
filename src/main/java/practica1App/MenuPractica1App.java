@@ -31,7 +31,7 @@ public class MenuPractica1App {
 
     //Opciones del menú principal
     private enum MenuOption {
-        QUERY_ALL, QUERY_BY_CODE, QUERY_INSERT,QUERY_DELETE,QUERY_UPDATE, EXIT
+        QUERY_ALL, QUERY_BY_CODE, QUERY_INSERT, QUERY_DELETE, QUERY_UPDATE, EXIT
     };
 
     private enum MenuOption1 {
@@ -48,7 +48,7 @@ public class MenuPractica1App {
         QUERY_ARTICULOS, QUERY_ARTICULOSFABRICA, QUERY_CLIENTES, QUERY_DIRECCIONESENVIO,
         QUERY_FABRICASALTERNATIVAS, QUERY_FABRICAS, QUERY_LINEASPEDIDO, QUERY_PEDIDOS, ATRAS
     };
-    
+
     private enum MenuOption4 {
         QUERY_ARTICULOS, QUERY_ARTICULOSFABRICA, QUERY_CLIENTES, QUERY_DIRECCIONESENVIO,
         QUERY_FABRICASALTERNATIVAS, QUERY_FABRICAS, QUERY_LINEASPEDIDO, QUERY_PEDIDOS, ATRAS
@@ -59,7 +59,6 @@ public class MenuPractica1App {
         QUERY_FABRICASALTERNATIVAS, QUERY_FABRICAS, QUERY_LINEASPEDIDO, QUERY_PEDIDOS, ATRAS
     };
 
-
     public static void main(String[] args) {
 
         MenuOption opcionElegida = null;
@@ -69,7 +68,7 @@ public class MenuPractica1App {
         MenuOption4 opcionElegidaDelete = null;
         MenuOption5 opcionElegidaUpdate = null;
 
-        try (DataAccessManager dam = DataAccessManager.getInstance()) {
+        try ( DataAccessManager dam = DataAccessManager.getInstance()) {
             do {
                 printOptions();
                 opcionElegida = readChoice();
@@ -200,8 +199,8 @@ public class MenuPractica1App {
                             }
                         } while (opcionElegidaInsert != MenuOption3.ATRAS);
                         break;
-                        
-                        case QUERY_DELETE:
+
+                    case QUERY_DELETE:
                         do {
                             printOptionsDelete();
                             opcionElegidaDelete = readChoice4();
@@ -211,24 +210,31 @@ public class MenuPractica1App {
                                     esperarIntro();
                                     break;
                                 case QUERY_ARTICULOSFABRICA:
+                                    borrarArticuloFabrica(dam);
                                     esperarIntro();
                                     break;
                                 case QUERY_CLIENTES:
+                                    borrarCliente(dam);
                                     esperarIntro();
                                     break;
                                 case QUERY_DIRECCIONESENVIO:
+                                    borrarDireccionEnvio(dam);
                                     esperarIntro();
                                     break;
                                 case QUERY_FABRICASALTERNATIVAS:
+                                    borrarFabricaAlternativa(dam);
                                     esperarIntro();
                                     break;
                                 case QUERY_FABRICAS:
+                                    borrarFabrica(dam);
                                     esperarIntro();
                                     break;
                                 case QUERY_LINEASPEDIDO:
+                                    borrarLineaPedido(dam);
                                     esperarIntro();
                                     break;
                                 case QUERY_PEDIDOS:
+                                    borrarPedido(dam);
                                     esperarIntro();
                                     break;
                                 case ATRAS:
@@ -236,7 +242,7 @@ public class MenuPractica1App {
                             }
                         } while (opcionElegidaDelete != MenuOption4.ATRAS);
                         break;
-                        case QUERY_UPDATE:
+                    case QUERY_UPDATE:
                         do {
                             printOptionsUpdate();
                             opcionElegidaUpdate = readChoice5();
@@ -328,7 +334,7 @@ public class MenuPractica1App {
                 .append("Opción: ");
         System.out.print(sb.toString());
     }
-    
+
     private static void printOptionsInsert() {
         StringBuilder sb = new StringBuilder()
                 .append("\n\n\nElija donde quieres INSERTAR datos:\n")
@@ -344,8 +350,8 @@ public class MenuPractica1App {
                 .append("Opción: ");
         System.out.print(sb.toString());
     }
-    
-     private static void printOptionsDelete() {
+
+    private static void printOptionsDelete() {
         StringBuilder sb = new StringBuilder()
                 .append("\n\n\nElija donde quieres BORRAR datos:\n")
                 .append("\t1)Borrar articulo por id\n")
@@ -360,9 +366,9 @@ public class MenuPractica1App {
                 .append("Opción: ");
         System.out.print(sb.toString());
     }
-     
-      private static void printOptionsUpdate() {
-         StringBuilder sb = new StringBuilder()
+
+    private static void printOptionsUpdate() {
+        StringBuilder sb = new StringBuilder()
                 .append("\n\n\nElija donde quieres ACTUALIZAR datos:\n")
                 .append("\t1)Actualizar articulo por id\n")
                 .append("\t2)Actualizar articulo de fabrica por ids\n")
@@ -406,8 +412,8 @@ public class MenuPractica1App {
             return readChoice2();
         }
     }
-    
-     private static MenuOption3 readChoice3() {
+
+    private static MenuOption3 readChoice3() {
         try {
             int choiceInt = Integer.valueOf(tcl.nextLine());
             return MenuOption3.values()[choiceInt - 1];
@@ -416,8 +422,8 @@ public class MenuPractica1App {
             return readChoice3();
         }
     }
-     
-     private static MenuOption4 readChoice4() {
+
+    private static MenuOption4 readChoice4() {
         try {
             int choiceInt = Integer.valueOf(tcl.nextLine());
             return MenuOption4.values()[choiceInt - 1];
@@ -426,8 +432,8 @@ public class MenuPractica1App {
             return readChoice4();
         }
     }
-     
-     private static MenuOption5 readChoice5() {
+
+    private static MenuOption5 readChoice5() {
         try {
             int choiceInt = Integer.valueOf(tcl.nextLine());
             return MenuOption5.values()[choiceInt - 1];
@@ -443,7 +449,6 @@ public class MenuPractica1App {
     }
 
     //***************************** FUNCIONES LANZADAS - DATA ACCESS MANAGER *****************************/
-    
     private static void verArticulos(DataAccessManager dam) throws SQLException {
         List<Articulo> allArticulos = dam.loadAllArticulos();
         printArticulos(allArticulos);
@@ -579,19 +584,18 @@ public class MenuPractica1App {
         }
         System.out.println();
     }
-    
+
     // BY CONTENT 
-    
     private static String requestContentLike() {
         System.out.print("Escriba el id a buscar; ");
         return readNotEmptyString();
     }
-    
+
     private static String requestContentArticuloFabricaLike() {
         System.out.print("Escriba el id del articulo; ");
         return readNotEmptyString();
     }
-    
+
     private static String readNotEmptyString() {
         String input = null;
         //prevenir texto vacío
@@ -603,8 +607,8 @@ public class MenuPractica1App {
         }
         return input;
     }
-    
-     private static void searchArticuloByCode(DataAccessManager dam) throws SQLException {
+
+    private static void searchArticuloByCode(DataAccessManager dam) throws SQLException {
         String idArticulo = requestContentLike();
         List<Articulo> articulosFilteredByCode = dam.loadArticulosContaining(idArticulo);
         if (articulosFilteredByCode != null) {
@@ -613,23 +617,23 @@ public class MenuPractica1App {
             System.out.println("No se encontraron articulos con el código especificado.");
         }
     }
-     
-     private static void searchArticuloFabricaByCode(DataAccessManager dam) throws SQLException {
+
+    private static void searchArticuloFabricaByCode(DataAccessManager dam) throws SQLException {
         System.out.println("ID del articulo");
         String idArticulo = requestContentLike();
         System.out.println("ID de la Fabrica asociada al articulo");
         String idFabrica = requestContentArticuloFabricaLike();
         System.out.println("Valores leídos -> idArticulo: " + idArticulo + ", Asociado a la fabrica: " + idFabrica);
-        
-        List<ArticuloFabrica> articulosFabricaFilteredByCode = dam.loadArticulosFabricaContaining(idArticulo,idFabrica);
+
+        List<ArticuloFabrica> articulosFabricaFilteredByCode = dam.loadArticulosFabricaContaining(idArticulo, idFabrica);
         if (articulosFabricaFilteredByCode != null) {
             printArticulosFabrica(articulosFabricaFilteredByCode);
         } else {
             System.out.println("No se encontraron articulos de esa fabrica");
         }
     }
-     
-     private static void searchClienteByCode(DataAccessManager dam) throws SQLException {
+
+    private static void searchClienteByCode(DataAccessManager dam) throws SQLException {
         String idCliente = requestContentLike();
         List<Cliente> clientesFilteredByCode = dam.loadClientesContaining(idCliente);
         if (clientesFilteredByCode != null) {
@@ -711,24 +715,24 @@ public class MenuPractica1App {
             throw e;
         }
     }
-    
-     private static void insertarArticuloFabrica(DataAccessManager dam) throws SQLException {
+
+    private static void insertarArticuloFabrica(DataAccessManager dam) throws SQLException {
 
         System.out.print("A que fabrica pertenece este nuevo articulo: ");
         int idFabrica = tcl.nextInt();
-        
-         if (!dam.fabricaExiste(idFabrica)) {
-             System.out.println("Error: La fábrica con ID " + idFabrica + " no existe.");
-             esperarIntro();
-             return; 
-         }
-         System.out.print("Existencias : ");
-         int existencias = tcl.nextInt();
-        
+
+        if (!dam.fabricaExiste(idFabrica)) {
+            System.out.println("Error: La fábrica con ID " + idFabrica + " no existe.");
+            esperarIntro();
+            return;
+        }
+        System.out.print("Existencias : ");
+        int existencias = tcl.nextInt();
+
         System.out.print("Precio : ");
         double precio = tcl.nextDouble();
 
-        ArticuloFabrica nuevoArticuloFabrica = new ArticuloFabrica(idFabrica,existencias,precio);
+        ArticuloFabrica nuevoArticuloFabrica = new ArticuloFabrica(idFabrica, existencias, precio);
 
         try {
             dam.insertarArticuloFabrica(nuevoArticuloFabrica);
@@ -738,18 +742,18 @@ public class MenuPractica1App {
             throw e;
         }
     }
-     
-     private static void insertarCliente(DataAccessManager dam) throws SQLException {
+
+    private static void insertarCliente(DataAccessManager dam) throws SQLException {
 
         System.out.print("Escriba el saldo del cliente ");
         double saldo = tcl.nextDouble();
 
         System.out.print("Escriba el limite de credito del cliente ");
         double limiteCredito = tcl.nextDouble();
-       
-         if (limiteCredito > 18000) {
-             System.out.println("Error: El límite de crédito no puede superar 18,000 euros.");
-             esperarIntro();
+
+        if (limiteCredito > 18000) {
+            System.out.println("Error: El límite de crédito no puede superar 18,000 euros.");
+            esperarIntro();
             return;
         }
 
@@ -788,26 +792,26 @@ public class MenuPractica1App {
         if (!dam.clienteExiste(idCliente)) {
             System.out.println("Error: El cliente con ID " + idCliente + " no existe.");
             esperarIntro();
-            return; 
+            return;
         }
 
         DireccionEnvio nuevaDireccionEnvio = new DireccionEnvio(numero, calle, comuna, ciudad, idCliente);
 
-       try {
+        try {
             dam.insertarDireccionEnvio(nuevaDireccionEnvio);
-            System.out.println("La direccion de envio asociada al cliente "+ idCliente +" ha sido insertada correctamente.");
+            System.out.println("La direccion de envio asociada al cliente " + idCliente + " ha sido insertada correctamente.");
         } catch (SQLException e) {
             System.out.println("Error al insertar la direccion: " + e.getMessage());
             throw e;
         }
 
     }
-    
+
     private static void insertarFabricaAlternativa(DataAccessManager dam) throws SQLException {
 
         System.out.print("Escriba el id de la fabrica principal asociada a esa fabrica alternativa ");
         int idFabricaPrincipal = tcl.nextInt();
-        
+
         System.out.print("Escriba el id de la fabrica alternativa ");
         int idFabricaAlternativa = tcl.nextInt();
 
@@ -817,7 +821,7 @@ public class MenuPractica1App {
         if (idFabricaPrincipal == idFabricaAlternativa) {
             System.out.println("Error: El ID de la fábrica principal no puede ser el mismo que el ID de la fábrica alternativa.");
             esperarIntro();
-            return; 
+            return;
         }
 
         // Verificar que la fábrica principal existe
@@ -833,7 +837,7 @@ public class MenuPractica1App {
             esperarIntro();
             return;
         }
-        
+
         try {
             dam.insertarFabricaAlternativa(nuevaFabricaAlternativa);
             System.out.println("La fábrica alternativa ha sido insertada correctamente.");
@@ -849,7 +853,7 @@ public class MenuPractica1App {
         System.out.print("Escriba el teléfono de contacto de la fábrica: ");
         String telefonoContacto = tcl.next();
 
-        Fabrica nuevaFabrica = new Fabrica(telefonoContacto); 
+        Fabrica nuevaFabrica = new Fabrica(telefonoContacto);
 
         // Intentar insertar la nueva fábrica
         try {
@@ -861,15 +865,14 @@ public class MenuPractica1App {
         }
 
     }
-     
-     
+
     private static void insertarLineaPedido(DataAccessManager dam) throws SQLException {
 
         // Solicitar los datos al usuario
         System.out.print("Escriba el ID del pedido: ");
         int idPedido = tcl.nextInt();
-        
-         if (!dam.pedidoExiste(idPedido)) {
+
+        if (!dam.pedidoExiste(idPedido)) {
             System.out.println("Error: El pedido con ID " + idPedido + " no existe.");
             esperarIntro();
             return;
@@ -933,9 +936,8 @@ public class MenuPractica1App {
         }
 
     }
-    
+
     //*DELETE*//
-    
     private static void borrarArticulo(DataAccessManager dam) throws SQLException {
         String idArticulo = requestContentLike();
         int columnasAfectadas = dam.borrarArticulo(idArticulo);
@@ -943,7 +945,87 @@ public class MenuPractica1App {
             System.out.println("Articulo borrado exitosamente");
         } else {
             System.out.println("No se encontraron articulos con el código especificado para borrar.");
-             esperarIntro();
+            esperarIntro();
         }
     }
+
+    private static void borrarArticuloFabrica(DataAccessManager dam) throws SQLException {
+        String idArticulo = requestContentLike();
+        String idFabrica = requestContentLike();
+        int columnasAfectadas = dam.borrarArticulo(idFabrica);
+        if (columnasAfectadas > 0) {
+            System.out.println("Articulo" + idArticulo + " asociado a la fabrica" + idFabrica + " borrado exitosamente");
+        } else {
+            System.out.println("No se encontraron articulos de esa fabrica con el código especificado para borrar.");
+            esperarIntro();
+        }
+    }
+
+    private static void borrarCliente(DataAccessManager dam) throws SQLException {
+        String idCliente = requestContentLike();
+        int columnasAfectadas = dam.borrarArticulo(idCliente);
+        if (columnasAfectadas > 0) {
+            System.out.println("Articulo borrado exitosamente");
+        } else {
+            System.out.println("No se encontraron articulos con el código especificado para borrar.");
+            esperarIntro();
+        }
+    }
+
+    private static void borrarDireccionEnvio(DataAccessManager dam) throws SQLException {
+        String idDireccion = requestContentLike();
+        int columnasAfectadas = dam.borrarArticulo(idDireccion);
+        if (columnasAfectadas > 0) {
+            System.out.println("Articulo borrado exitosamente");
+        } else {
+            System.out.println("No se encontraron articulos con el código especificado para borrar.");
+            esperarIntro();
+        }
+    }
+
+    private static void borrarFabricaAlternativa(DataAccessManager dam) throws SQLException {
+        String idFabricaPrincipal = requestContentLike();
+        String idFabricaAlternativa = requestContentLike();
+        int columnasAfectadas = dam.borrarArticulo(idFabricaPrincipal);
+        if (columnasAfectadas > 0) {
+            System.out.println("Articulo borrado exitosamente");
+        } else {
+            System.out.println("No se encontraron articulos con el código especificado para borrar.");
+            esperarIntro();
+        }
+    }
+
+    private static void borrarFabrica(DataAccessManager dam) throws SQLException {
+        String idFabrica = requestContentLike();
+        int columnasAfectadas = dam.borrarArticulo(idFabrica);
+        if (columnasAfectadas > 0) {
+            System.out.println("Articulo borrado exitosamente");
+        } else {
+            System.out.println("No se encontraron articulos con el código especificado para borrar.");
+            esperarIntro();
+        }
+    }
+
+    private static void borrarLineaPedido(DataAccessManager dam) throws SQLException {
+        String idLineaPedido = requestContentLike();
+        int columnasAfectadas = dam.borrarArticulo(idLineaPedido);
+        if (columnasAfectadas > 0) {
+            System.out.println("Articulo borrado exitosamente");
+        } else {
+            System.out.println("No se encontraron articulos con el código especificado para borrar.");
+            esperarIntro();
+        }
+    }
+
+    private static void borrarPedido(DataAccessManager dam) throws SQLException {
+        String idPedido = requestContentLike();
+        int columnasAfectadas = dam.borrarArticulo(idPedido);
+        if (columnasAfectadas > 0) {
+            System.out.println("Articulo borrado exitosamente");
+        } else {
+            System.out.println("No se encontraron articulos con el código especificado para borrar.");
+            esperarIntro();
+        }
+    }
+
 }
