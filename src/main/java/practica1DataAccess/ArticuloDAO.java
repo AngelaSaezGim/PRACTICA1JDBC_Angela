@@ -115,14 +115,31 @@ public class ArticuloDAO extends DataAccessObject {
         return filasAfectadas;
     }
     
+    
+    protected Articulo loadArticuloByCode(String idArticulo) throws SQLException {
+
+        List<Articulo> articulo = new ArrayList<>();
+
+        PreparedStatement stmt = cnt.prepareStatement("SELECT * FROM Articulo WHERE idArticulo = ?");
+        stmt.setString(1, idArticulo);
+        ResultSet result = stmt.executeQuery();
+
+        if (result.next()) {
+            return readArticuloFromResultSet(result);
+        }
+        return null;
+    }
+    
         protected int updateArticulo(String idArticulo, Articulo articuloActualizar) {
 
         int filasAfectadas = 0;
 
-        String sql = "UPDATE Articulo SET Descripcion = ? WHERE idArticulo = ?";
+        String sql = "UPDATE Articulo SET descripcion = ? WHERE idArticulo = ?";
+       
 
         try ( PreparedStatement stmt = cnt.prepareStatement(sql)) {
             stmt.setString(1, articuloActualizar.getDescripcion());
+            stmt.setString(2, idArticulo);
 
             filasAfectadas = stmt.executeUpdate();
         }catch (SQLException e) {

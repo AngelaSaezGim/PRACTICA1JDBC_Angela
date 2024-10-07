@@ -424,6 +424,14 @@ public class DataAccessManager implements AutoCloseable {
     
     /**UPDATE**/
     
+     public Articulo loadArticuloByCode(String idArticulo) throws SQLException {
+        if (idArticulo == null || idArticulo.length() == 0) {
+            throw new IllegalArgumentException("Debe indicar el filtro de búsqueda");
+        }
+        return this.articuloDAO.loadArticuloByCode(idArticulo);
+    }
+    
+    
     public int updateArticulo(String idArticulo, Articulo articuloActualizar) throws SQLException {
         if (idArticulo == null || articuloActualizar == null) {
             throw new IllegalArgumentException("El id del articulo y el articulo a actualizar no deben ser nulos.");

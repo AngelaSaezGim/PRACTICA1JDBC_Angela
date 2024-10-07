@@ -248,6 +248,7 @@ public class MenuPractica1App {
                             opcionElegidaUpdate = readChoice5();
                             switch (opcionElegidaUpdate) {
                                 case QUERY_ARTICULOS:
+                                    actualizarArticulo(dam);
                                     esperarIntro();
                                     break;
                                 case QUERY_ARTICULOSFABRICA:
@@ -1035,7 +1036,46 @@ public class MenuPractica1App {
     
     /* UPDATE */
     
+    private static String filtrarArticuloByCode(DataAccessManager dam) throws SQLException {
+        System.out.print(" [Articulo que se actualizará] - ");
+        String idArticulo = requestContentLike();
+        Articulo articulosFilteredByCode = dam.loadArticuloByCode(idArticulo);
+        if (articulosFilteredByCode != null) {
+            articulosFilteredByCode.toString();
+        } else {
+            System.out.println("No se encontraron articulos con el código especificado.");
+        }
+        return idArticulo;
+    }
+    
     private static void actualizarArticulo(DataAccessManager dam) throws SQLException {
+        
+         String idArticuloAActualizarStr = filtrarArticuloByCode(dam);
+
+        // Carga el articulo actual desde la base de datos
+        Articulo articuloAActualizar = dam.loadArticuloByCode(idArticuloAActualizarStr);
+
+        if (articuloAActualizar == null) {
+            System.out.println(idArticuloAActualizarStr + " no existe");
+        } else {
+
+            System.out.println("Ingrese la nueva descripcion del articulo (dejar vacío para no cambiar):");
+            String nuevaDescripcion = tcl.nextLine();
+            if (!nuevaDescripcion.isEmpty()) {
+                articuloAActualizar.setDescripcion(nuevaDescripcion);
+            }
+            
+            System.out.println("Actualizamos el articulo " + idArticuloAActualizarStr);
+            int columnasAfectadas = dam.updateArticulo(idArticuloAActualizarStr, articuloAActualizar);
+            
+            if (columnasAfectadas > 0) {
+                System.out.println("Articulo actualizado exitosamente");
+                Articulo articulosFilteredByCode = dam.loadArticuloByCode(idArticuloAActualizarStr);
+                articulosFilteredByCode.toString();
+            } else {
+                System.out.println("No se actualizó nada");
+            }
+        }
 
     }
     
