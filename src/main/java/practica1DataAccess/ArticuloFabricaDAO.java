@@ -81,16 +81,14 @@ public class ArticuloFabricaDAO extends DataAccessObject {
                 + "VALUES (?, ?, ?, ?)";
 
         try (PreparedStatement stmt = cnt.prepareStatement(sentenciaSQL)) {
-            int idArticulo = obtenerMaxId() + 1;
-            stmt.setInt(1, idArticulo);
+            stmt.setInt(1, articuloFabrica.getIdArticulo());
             stmt.setInt(2, articuloFabrica.getIdFabrica());
             stmt.setInt(3, articuloFabrica.getExistencias());
             stmt.setDouble(4, articuloFabrica.getPrecio());
 
             filasAfectadas = stmt.executeUpdate();
-            articuloFabrica.setIdArticulo(idArticulo);
         } catch (SQLException e) {
-            throw new IllegalArgumentException("Error al insertar");
+             throw new SQLException("Error al insertar en ArticuloFabrica: " + e.getMessage(), e);
         }
 
         return filasAfectadas;
@@ -124,8 +122,9 @@ public class ArticuloFabricaDAO extends DataAccessObject {
 
         int filasAfectadas = 0;
 
-        try ( PreparedStatement stmt = cnt.prepareStatement("DELETE FROM Articulo WHERE idArticulo = ?")) {
+        try ( PreparedStatement stmt = cnt.prepareStatement("DELETE FROM ArticuloFabrica WHERE idArticulo=? AND idFabrica=?")) {
             stmt.setString(1, idArticulo);
+            stmt.setString(2, idFabrica);
             filasAfectadas = stmt.executeUpdate();
         } catch (SQLException e) {
             e.getMessage();

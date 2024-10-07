@@ -99,14 +99,14 @@ public class FabricaDAO extends DataAccessObject {
             return result.getInt(1);
         } else {
             return 0; 
-        }
+            }
     }
      
      protected int deleteFabrica(String idFabrica) {
 
         int filasAfectadas = 0;
 
-        try ( PreparedStatement stmt = cnt.prepareStatement("DELETE FROM Articulo WHERE idArticulo = ?")) {
+        try ( PreparedStatement stmt = cnt.prepareStatement("DELETE FROM Fabrica WHERE idFabrica = ?")) {
             stmt.setString(1, idFabrica);
             filasAfectadas = stmt.executeUpdate();
         } catch (SQLException e) {

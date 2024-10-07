@@ -92,8 +92,9 @@ public class FabricaAlternativaDAO extends DataAccessObject {
 
         int filasAfectadas = 0;
 
-        try ( PreparedStatement stmt = cnt.prepareStatement("DELETE FROM Articulo WHERE idArticulo = ?")) {
+        try ( PreparedStatement stmt = cnt.prepareStatement("DELETE FROM FabricaAlternativa WHERE idFabricaPrincipal = ? AND idFabricaAlternativa=?")) {
             stmt.setString(1, idFabricaPrincipal);
+            stmt.setString(2, idFabricaAlternativa);
             filasAfectadas = stmt.executeUpdate();
         } catch (SQLException e) {
             e.getMessage();

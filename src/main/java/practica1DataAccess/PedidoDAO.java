@@ -128,7 +128,7 @@ public class PedidoDAO extends DataAccessObject {
 
         int filasAfectadas = 0;
 
-        try ( PreparedStatement stmt = cnt.prepareStatement("DELETE FROM Articulo WHERE idArticulo = ?")) {
+        try ( PreparedStatement stmt = cnt.prepareStatement("DELETE FROM Pedido WHERE idPedido = ?")) {
             stmt.setString(1, idPedido);
             filasAfectadas = stmt.executeUpdate();
         } catch (SQLException e) {

@@ -68,7 +68,7 @@ public class ArticuloFabrica {
     
      @Override
     public String toString() {
-        return "-> ArticuloFabrica [" + idArticulo + "] " + " idFabrica = " + idFabrica + " | Existencias = " + existencias + " | Precio = " + precio;
+        return "-> ArticuloFabrica = Id del articulo " + idArticulo + " | " + " idFabrica = " + idFabrica + " | Existencias = " + existencias + " | Precio = " + precio;
     }
     
 }

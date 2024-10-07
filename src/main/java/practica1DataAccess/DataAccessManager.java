@@ -423,4 +423,11 @@ public class DataAccessManager implements AutoCloseable {
     }
     
     /**UPDATE**/
+    
+    public int updateArticulo(String idArticulo, Articulo articuloActualizar) throws SQLException {
+        if (idArticulo == null || articuloActualizar == null) {
+            throw new IllegalArgumentException("El id del articulo y el articulo a actualizar no deben ser nulos.");
+        }
+        return this.articuloDAO.updateArticulo(idArticulo, articuloActualizar);
+    }
 }

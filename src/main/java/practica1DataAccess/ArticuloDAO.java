@@ -114,5 +114,22 @@ public class ArticuloDAO extends DataAccessObject {
 
         return filasAfectadas;
     }
+    
+        protected int updateArticulo(String idArticulo, Articulo articuloActualizar) {
+
+        int filasAfectadas = 0;
+
+        String sql = "UPDATE Articulo SET Descripcion = ? WHERE idArticulo = ?";
+
+        try ( PreparedStatement stmt = cnt.prepareStatement(sql)) {
+            stmt.setString(1, articuloActualizar.getDescripcion());
+
+            filasAfectadas = stmt.executeUpdate();
+        }catch (SQLException e) {
+             e.getMessage();
+        }
+        // DEVUELVE LAS FILAS AFECTADAS por la actualización
+        return filasAfectadas;
+    }
 
 }

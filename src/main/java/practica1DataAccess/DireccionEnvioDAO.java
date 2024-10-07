@@ -137,7 +137,7 @@ public class DireccionEnvioDAO extends DataAccessObject {
 
         int filasAfectadas = 0;
 
-        try ( PreparedStatement stmt = cnt.prepareStatement("DELETE FROM Articulo WHERE idArticulo = ?")) {
+        try ( PreparedStatement stmt = cnt.prepareStatement("DELETE FROM DireccionEnvio WHERE idDireccion = ?")) {
             stmt.setString(1, idDireccion);
             filasAfectadas = stmt.executeUpdate();
         } catch (SQLException e) {

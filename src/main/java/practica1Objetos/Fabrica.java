@@ -18,7 +18,7 @@ public class Fabrica {
         this.setTelefonoContacto(telefonoContacto);
     }
     
-     public Fabrica(String telefonoContecto){
+     public Fabrica(String telefonoContacto){
         this.setTelefonoContacto(telefonoContacto);
     }
         
