@@ -1079,6 +1079,20 @@ public class MenuPractica1App {
 
     }
     
+     private static String filtrarArticuloFabricaByCode(DataAccessManager dam) throws SQLException {
+        System.out.print(" [id Articulo] ");
+        String idArticulo = requestContentLike();
+        System.out.print(" [id Fabrica] ");
+        String iFabrica = requestContentLike();
+        Articulo articulosFilteredByCode = dam.loadArticuloByCode(idArticulo);
+        if (articulosFilteredByCode != null) {
+            articulosFilteredByCode.toString();
+        } else {
+            System.out.println("No se encontraron articulos con el código especificado.");
+        }
+        return idArticulo;
+    }
+    
     private static void actualizarArticuloFabrica(DataAccessManager dam) throws SQLException {
 
     }
