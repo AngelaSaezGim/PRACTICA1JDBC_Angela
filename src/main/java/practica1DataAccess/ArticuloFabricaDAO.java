@@ -132,5 +132,21 @@ public class ArticuloFabricaDAO extends DataAccessObject {
 
         return filasAfectadas;
     }
+    
+    
+    protected ArticuloFabrica loadArticuloFabricaByCode(String idArticulo, String idFabrica) throws SQLException {
+
+        return null;
+    }
+    
+        protected int updateArticuloFabrica(String idArticulo,String idFabrica, ArticuloFabrica articuloFabricaActualizar) {
+
+        int filasAfectadas = 0;
+
+        String sql = "UPDATE Articulo SET descripcion = ? WHERE idArticulo = ?";
+       
+
+        return filasAfectadas;
+    }
 
 }

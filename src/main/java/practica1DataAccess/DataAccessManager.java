@@ -438,4 +438,20 @@ public class DataAccessManager implements AutoCloseable {
         }
         return this.articuloDAO.updateArticulo(idArticulo, articuloActualizar);
     }
+    
+    
+     public ArticuloFabrica loadArticuloFabricaByCode(String idArticulo, String idFabrica) throws SQLException {
+        if ((idArticulo == null || idArticulo.length() == 0)&&(idFabrica == null || idFabrica.length() == 0)) {
+            throw new IllegalArgumentException("Debe indicar el filtro de búsqueda");
+        }
+        return this.articuloFabricaDAO.loadArticuloFabricaByCode(idArticulo,idFabrica);
+    }
+    
+    
+    public int updateArticuloFabrica(String idArticulo, String idFabrica, ArticuloFabrica articuloFabricaActualizar) throws SQLException {
+        if (idArticulo == null || idFabrica == null ||articuloFabricaActualizar == null) {
+            throw new IllegalArgumentException("El id del articulo, el id de la fabrica y el articulo fabrica a actualizar no deben ser nulos.");
+        }
+        return this.articuloFabricaDAO.updateArticuloFabrica(idArticulo,idFabrica,articuloFabricaActualizar);
+    }
 }
