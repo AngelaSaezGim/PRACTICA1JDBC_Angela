@@ -68,7 +68,7 @@ public class MenuPractica1App {
         MenuOption4 opcionElegidaDelete = null;
         MenuOption5 opcionElegidaUpdate = null;
 
-        try ( DataAccessManager dam = DataAccessManager.getInstance()) {
+        try (DataAccessManager dam = DataAccessManager.getInstance()) {
             do {
                 printOptions();
                 opcionElegida = readChoice();
@@ -252,24 +252,31 @@ public class MenuPractica1App {
                                     esperarIntro();
                                     break;
                                 case QUERY_ARTICULOSFABRICA:
+                                    actualizarArticuloFabrica(dam);
                                     esperarIntro();
                                     break;
                                 case QUERY_CLIENTES:
+                                    actualizarCliente(dam);
                                     esperarIntro();
                                     break;
                                 case QUERY_DIRECCIONESENVIO:
+                                    actualizarDireccionEnvio(dam);
                                     esperarIntro();
                                     break;
                                 case QUERY_FABRICASALTERNATIVAS:
+                                    actualizarFabricaAlternativa(dam);
                                     esperarIntro();
                                     break;
                                 case QUERY_FABRICAS:
+                                    actualizarFabrica(dam);
                                     esperarIntro();
                                     break;
                                 case QUERY_LINEASPEDIDO:
+                                    actualizarLineaPedido(dam);
                                     esperarIntro();
                                     break;
                                 case QUERY_PEDIDOS:
+                                    actualizarPedido(dam);
                                     esperarIntro();
                                     break;
                                 case ATRAS:
@@ -586,7 +593,7 @@ public class MenuPractica1App {
         System.out.println();
     }
 
-    // BY CONTENT 
+    // BY CONTENT
     private static String requestContentLike() {
         System.out.print("Escriba el id a buscar; ");
         return readNotEmptyString();
@@ -604,6 +611,7 @@ public class MenuPractica1App {
         return input;
     }
 
+    //DEVUELVEN LISTAS (MOSTRAR POR...)
     private static void searchArticuloByCode(DataAccessManager dam) throws SQLException {
         String idArticulo = requestContentLike();
         List<Articulo> articulosFilteredByCode = dam.loadArticulosContaining(idArticulo);
@@ -713,11 +721,11 @@ public class MenuPractica1App {
     }
 
     private static void insertarArticuloFabrica(DataAccessManager dam) throws SQLException {
-        
+
         System.out.println("Cual es la id del articulo de esta fabrica");
-         int idArticulo = tcl.nextInt();
-         
-         if (!dam.articuloExiste(idArticulo)) {
+        int idArticulo = tcl.nextInt();
+
+        if (!dam.articuloExiste(idArticulo)) {
             System.out.println("Error: El articulo con id " + idArticulo + " no existe.");
             esperarIntro();
             return;
@@ -737,7 +745,7 @@ public class MenuPractica1App {
         System.out.print("Precio : ");
         double precio = tcl.nextDouble();
 
-        ArticuloFabrica nuevoArticuloFabrica = new ArticuloFabrica(idArticulo,idFabrica, existencias, precio);
+        ArticuloFabrica nuevoArticuloFabrica = new ArticuloFabrica(idArticulo, idFabrica, existencias, precio);
 
         try {
             dam.insertarArticuloFabrica(nuevoArticuloFabrica);
@@ -937,15 +945,12 @@ public class MenuPractica1App {
 
     }
 
-
     //*DELETE*//
-    
-    
     private static String requestContentDelete() {
         System.out.print("Escriba el id a borrar; ");
         return readNotEmptyString();
     }
-    
+
     private static void borrarArticulo(DataAccessManager dam) throws SQLException {
         String idArticulo = requestContentDelete();
         int columnasAfectadas = dam.borrarArticulo(idArticulo);
@@ -957,12 +962,12 @@ public class MenuPractica1App {
     }
 
     private static void borrarArticuloFabrica(DataAccessManager dam) throws SQLException {
-        
+
         System.out.println("Id articulo");
         String idArticulo = requestContentDelete();
         System.out.println("Id fabrica");
         String idFabrica = requestContentDelete();
-        int columnasAfectadas = dam.borrarArticuloFabrica(idArticulo,idFabrica);
+        int columnasAfectadas = dam.borrarArticuloFabrica(idArticulo, idFabrica);
         if (columnasAfectadas > 0) {
             System.out.println("Articulo" + idArticulo + " asociado a la fabrica" + idFabrica + " borrado exitosamente");
         } else {
@@ -991,7 +996,7 @@ public class MenuPractica1App {
     }
 
     private static void borrarFabricaAlternativa(DataAccessManager dam) throws SQLException {
-        
+
         System.out.println("Id fabrica principal asociada a esa fabrica alternativa");
         String idFabricaPrincipal = requestContentDelete();
         System.out.println("Id fabrica alternativa");
@@ -1033,93 +1038,416 @@ public class MenuPractica1App {
             System.out.println("No se encontraron pedidos con el código especificado para borrar.");
         }
     }
-    
-    /* UPDATE */
-    
-    private static String filtrarArticuloByCode(DataAccessManager dam) throws SQLException {
-        System.out.print(" [Articulo que se actualizará] - ");
-        String idArticulo = requestContentLike();
-        Articulo articulosFilteredByCode = dam.loadArticuloByCode(idArticulo);
-        if (articulosFilteredByCode != null) {
-            articulosFilteredByCode.toString();
-        } else {
-            System.out.println("No se encontraron articulos con el código especificado.");
-        }
-        return idArticulo;
-    }
-    
-    private static void actualizarArticulo(DataAccessManager dam) throws SQLException {
-        
-         String idArticuloAActualizarStr = filtrarArticuloByCode(dam);
 
-        // Carga el articulo actual desde la base de datos
+    /* UPDATE */
+    private static void actualizarArticulo(DataAccessManager dam) throws SQLException {
+
+        System.out.print("Ingrese el ID del artículo que desea actualizar: ");
+        String idArticuloAActualizarStr = tcl.nextLine();
+
+        // Carga el artículo actual desde la base de datos
         Articulo articuloAActualizar = dam.loadArticuloByCode(idArticuloAActualizarStr);
 
         if (articuloAActualizar == null) {
-            System.out.println(idArticuloAActualizarStr + " no existe");
+            System.out.println("El artículo con ID " + idArticuloAActualizarStr + " no existe.");
         } else {
-
-            System.out.println("Ingrese la nueva descripcion del articulo (dejar vacío para no cambiar):");
+            System.out.println("Ingrese la nueva descripción del artículo (dejar vacío para no cambiar):");
             String nuevaDescripcion = tcl.nextLine();
             if (!nuevaDescripcion.isEmpty()) {
                 articuloAActualizar.setDescripcion(nuevaDescripcion);
             }
-            
-            System.out.println("Actualizamos el articulo " + idArticuloAActualizarStr);
+
+            System.out.println("Actualizando el artículo " + idArticuloAActualizarStr);
             int columnasAfectadas = dam.updateArticulo(idArticuloAActualizarStr, articuloAActualizar);
-            
+
             if (columnasAfectadas > 0) {
-                System.out.println("Articulo actualizado exitosamente");
-                Articulo articulosFilteredByCode = dam.loadArticuloByCode(idArticuloAActualizarStr);
-                articulosFilteredByCode.toString();
+                System.out.println("Artículo actualizado exitosamente.");
+                Articulo articuloActualizado = dam.loadArticuloByCode(idArticuloAActualizarStr);
+                System.out.println(articuloActualizado.toString());
             } else {
-                System.out.println("No se actualizó nada");
+                System.out.println("No se actualizó nada.");
+            }
+        }
+    }
+
+    private static void actualizarArticuloFabrica(DataAccessManager dam) throws SQLException {
+
+        System.out.print("Ingrese el ID del artículo asociado a una fabrica que desea actualizar: ");
+        String idArticuloFabrica1AActualizarStr = tcl.nextLine();
+
+        System.out.print("Ingrese el ID de la fabrica asociada a ese articulo ");
+        String idArticuloFabrica2AActualizarStr = tcl.nextLine();
+
+        ArticuloFabrica articuloFabricaAActualizar = dam.loadArticuloFabricaByCode(idArticuloFabrica1AActualizarStr, idArticuloFabrica2AActualizarStr);
+
+        if (articuloFabricaAActualizar == null) {
+            System.out.println("El artículo con ID " + idArticuloFabrica1AActualizarStr + "y id Fabrica " + idArticuloFabrica2AActualizarStr + "no existe.");
+        } else {
+            System.out.println("Ingrese sus nuevas existencias (dejar vacio para no cambiar):");
+            String nuevaExistencia = tcl.nextLine();
+            if (!nuevaExistencia.isEmpty()) {
+                try {
+                    int existencias = Integer.parseInt(nuevaExistencia);  // Conversión de String a int
+                    articuloFabricaAActualizar.setExistencias(existencias);
+                } catch (NumberFormatException e) {
+                    System.out.println("Valor no válido para existencias.");
+                }
+            }
+
+            System.out.println("Ingrese su nuevo precio (dejar vacio para no cambiar):");
+            String nuevoPrecio = tcl.nextLine();
+            if (!nuevoPrecio.isEmpty()) {
+                try {
+                    double precio = Double.parseDouble(nuevoPrecio);  // Conversión de String a double
+                    articuloFabricaAActualizar.setPrecio(precio);
+                } catch (NumberFormatException e) {
+                    System.out.println("Valor no válido para el precio.");
+                }
+            }
+
+            System.out.println("Actualizando el artículo " + idArticuloFabrica1AActualizarStr + " de la fabrica " + idArticuloFabrica2AActualizarStr);
+            int columnasAfectadas = dam.updateArticuloFabrica(idArticuloFabrica1AActualizarStr, idArticuloFabrica2AActualizarStr, articuloFabricaAActualizar);
+
+            if (columnasAfectadas > 0) {
+                System.out.println("Artículo actualizado exitosamente.");
+                ArticuloFabrica articuloFabricaActualizado = dam.loadArticuloFabricaByCode(idArticuloFabrica1AActualizarStr, idArticuloFabrica2AActualizarStr);
+                System.out.println(articuloFabricaActualizado.toString());
+            } else {
+                System.out.println("No se actualizó nada.");
+            }
+        }
+    }
+
+    private static void actualizarCliente(DataAccessManager dam) throws SQLException {
+
+        System.out.print("Ingrese el ID del cliente que desea actualizar: ");
+        String idClienteAActualizarStr = tcl.nextLine();
+
+        Cliente clienteAActualizar = dam.loadClienteByCode(idClienteAActualizarStr);
+
+        if (clienteAActualizar == null) {
+            System.out.println("El cliente con ID " + idClienteAActualizarStr + " no existe.");
+        } else {
+            System.out.println("Ingrese el nuevo saldo (dejar vacío para no cambiar):");
+            String nuevoSaldoStr = tcl.nextLine();
+            if (!nuevoSaldoStr.isEmpty()) {
+                try {
+                    double nuevoSaldo = Double.parseDouble(nuevoSaldoStr);
+                    clienteAActualizar.setSaldo(nuevoSaldo);
+                } catch (NumberFormatException e) {
+                    System.out.println("Valor no válido para el saldo.");
+                }
+            }
+
+            System.out.println("Ingrese el nuevo límite de crédito (dejar vacío para no cambiar):");
+            String nuevoLimiteCreditoStr = tcl.nextLine();
+            if (!nuevoLimiteCreditoStr.isEmpty()) {
+                try {
+                    double nuevoLimiteCredito = Double.parseDouble(nuevoLimiteCreditoStr);
+                    clienteAActualizar.setLimiteCredito(nuevoLimiteCredito);
+                } catch (NumberFormatException e) {
+                    System.out.println("Valor no válido para el límite de crédito.");
+                }
+            }
+
+            System.out.println("Ingrese el nuevo descuento (dejar vacío para no cambiar):");
+            String nuevoDescuentoStr = tcl.nextLine();
+            if (!nuevoDescuentoStr.isEmpty()) {
+                try {
+                    double nuevoDescuento = Double.parseDouble(nuevoDescuentoStr);
+                    clienteAActualizar.setDescuento(nuevoDescuento);
+                } catch (NumberFormatException e) {
+                    System.out.println("Valor no válido para el descuento.");
+                }
+            }
+
+            System.out.println("Actualizando el cliente con ID " + idClienteAActualizarStr);
+            int columnasAfectadas = dam.updateCliente(idClienteAActualizarStr, clienteAActualizar);
+
+            if (columnasAfectadas > 0) {
+                System.out.println("Cliente actualizado exitosamente.");
+                Cliente clienteActualizado = dam.loadClienteByCode(idClienteAActualizarStr);
+                System.out.println(clienteActualizado.toString());
+            } else {
+                System.out.println("No se actualizó nada.");
             }
         }
 
     }
-    
-     private static String filtrarArticuloFabricaByCode(DataAccessManager dam) throws SQLException {
-        System.out.print(" [id Articulo] ");
-        String idArticulo = requestContentLike();
-        System.out.print(" [id Fabrica] ");
-        String iFabrica = requestContentLike();
-        Articulo articulosFilteredByCode = dam.loadArticuloByCode(idArticulo);
-        if (articulosFilteredByCode != null) {
-            articulosFilteredByCode.toString();
-        } else {
-            System.out.println("No se encontraron articulos con el código especificado.");
-        }
-        return idArticulo;
-    }
-    
-    private static void actualizarArticuloFabrica(DataAccessManager dam) throws SQLException {
 
-    }
-    
-    private static void actualizarCliente(DataAccessManager dam) throws SQLException {
-
-    }
-    
     private static void actualizarDireccionEnvio(DataAccessManager dam) throws SQLException {
 
+        System.out.print("Ingrese el ID de la dirección de envío que desea actualizar: ");
+        String idDireccionAActualizarStr = tcl.nextLine();
+
+        DireccionEnvio direccionEnvioAActualizar = dam.loadDireccionEnvioByCode(idDireccionAActualizarStr);
+
+        if (direccionEnvioAActualizar == null) {
+            System.out.println("La dirección de envío con ID " + idDireccionAActualizarStr + " no existe.");
+        } else {
+            System.out.println("Ingrese el nuevo número (dejar vacío para no cambiar):");
+            String nuevoNumeroStr = tcl.nextLine();
+            if (!nuevoNumeroStr.isEmpty()) {
+                try {
+                    int nuevoNumero = Integer.parseInt(nuevoNumeroStr);
+                    direccionEnvioAActualizar.setNumero(nuevoNumero);
+                } catch (NumberFormatException e) {
+                    System.out.println("Valor no válido para el número.");
+                }
+            }
+
+            System.out.println("Ingrese la nueva calle (dejar vacío para no cambiar):");
+            String nuevaCalleStr = tcl.nextLine();
+            if (!nuevaCalleStr.isEmpty()) {
+                direccionEnvioAActualizar.setCalle(nuevaCalleStr);
+            }
+
+            System.out.println("Ingrese la nueva comuna (dejar vacío para no cambiar):");
+            String nuevaComunaStr = tcl.nextLine();
+            if (!nuevaComunaStr.isEmpty()) {
+                direccionEnvioAActualizar.setComuna(nuevaComunaStr);
+            }
+
+            System.out.println("Ingrese la nueva ciudad (dejar vacío para no cambiar):");
+            String nuevaCiudadStr = tcl.nextLine();
+            if (!nuevaCiudadStr.isEmpty()) {
+                direccionEnvioAActualizar.setCiudad(nuevaCiudadStr);
+            }
+
+            System.out.println("Ingrese el ID del cliente asociado (dejar vacío para no cambiar):");
+            String nuevoIdClienteStr = tcl.nextLine();
+            if (!nuevoIdClienteStr.isEmpty()) {
+                int nuevoIdCliente = Integer.parseInt(nuevoIdClienteStr);
+                if (dam.clienteExiste(nuevoIdCliente)) {
+                    direccionEnvioAActualizar.setIdCliente(nuevoIdCliente);
+                } else {
+                    System.out.println("El cliente con ID " + nuevoIdCliente + " no existe.");
+                    return;
+                }
+            }
+
+            System.out.println("Actualizando la dirección de envío con ID " + idDireccionAActualizarStr);
+            int columnasAfectadas = dam.updateDireccionEnvio(idDireccionAActualizarStr, direccionEnvioAActualizar);
+
+            if (columnasAfectadas > 0) {
+                System.out.println("Dirección de envío actualizada exitosamente.");
+                DireccionEnvio direccionEnvioActualizada = dam.loadDireccionEnvioByCode(idDireccionAActualizarStr);
+                System.out.println(direccionEnvioActualizada.toString());
+            } else {
+                System.out.println("No se actualizó nada.");
+            }
+        }
+
     }
-    
+
     private static void actualizarFabricaAlternativa(DataAccessManager dam) throws SQLException {
 
+        System.out.print("Ingrese el ID de la fábrica principal que desea actualizar: ");
+        String idFabricaPrincipalStr = tcl.nextLine();
+        System.out.print("Ingrese el ID de la fábrica alternativa que desea actualizar: ");
+        String idFabricaAlternativaStr = tcl.nextLine();
+
+        FabricaAlternativa fabricaAlternativaAActualizar = dam.loadFabricaAlternativaByCode(idFabricaPrincipalStr, idFabricaAlternativaStr);
+
+        if (fabricaAlternativaAActualizar == null) {
+            System.out.println("La fábrica alternativa con ID principal " + idFabricaPrincipalStr + " y alternativa " + idFabricaAlternativaStr + " no existe.");
+            return;
+        } else {
+            System.out.println("Ingrese el nuevo ID de la fábrica principal (dejar vacío para no cambiar):");
+            String nuevoIdFabricaPrincipalStr = tcl.nextLine();
+            if (!nuevoIdFabricaPrincipalStr.isEmpty()) {
+                int nuevoIdFabricaPrincipal = Integer.parseInt(nuevoIdFabricaPrincipalStr);
+                if (!dam.fabricaExiste(nuevoIdFabricaPrincipal)) {
+                    System.out.println("Error: La fábrica principal con ID " + nuevoIdFabricaPrincipal + " no existe.");
+                    esperarIntro();
+                    return;
+                }
+                fabricaAlternativaAActualizar.setIdFabricaPrincipal(nuevoIdFabricaPrincipal);
+            }
+            System.out.println("Ingrese el nuevo ID de la fábrica alternativa asociada a esa fabrica principal (dejar vacío para no cambiar):");
+            String nuevoIdFabricaAlternativaStr = tcl.nextLine();
+            if (!nuevoIdFabricaAlternativaStr.isEmpty()) {
+                int nuevoIdFabricaAlternativa = Integer.parseInt(nuevoIdFabricaAlternativaStr);
+                if (!dam.fabricaExiste(nuevoIdFabricaAlternativa)) {
+                    System.out.println("Error: La fábrica alternativa con ID " + nuevoIdFabricaAlternativa + " no existe.");
+                    esperarIntro();
+                    return;
+                }
+                fabricaAlternativaAActualizar.setIdFabricaAlternativa(nuevoIdFabricaAlternativa);
+            }
+
+            if (nuevoIdFabricaPrincipalStr.equals(nuevoIdFabricaAlternativaStr)) {
+                System.out.println("Error: El ID de la fábrica principal no puede ser el mismo que el ID de la fábrica alternativa.");
+                esperarIntro();
+                return;
+            }
+
+            if (!dam.fabricaAlternativaExiste(nuevoIdFabricaPrincipalStr, nuevoIdFabricaAlternativaStr)) {
+                System.out.println("Error: La combinación de ID principal " + nuevoIdFabricaPrincipalStr + " y ID alternativa " + nuevoIdFabricaAlternativaStr + " ya existe.");
+                return;
+            }
+
+            System.out.println("Actualizando la fábrica alternativa con ID principal " + idFabricaPrincipalStr + " y alternativa " + idFabricaAlternativaStr);
+
+            int columnasAfectadas = dam.updateFabricaAlternativa(idFabricaPrincipalStr, idFabricaAlternativaStr, fabricaAlternativaAActualizar);
+            if (columnasAfectadas > 0) {
+                System.out.println("Fábrica alternativa actualizada exitosamente.");
+                FabricaAlternativa fabricaAlternativaActualizada = dam.loadFabricaAlternativaByCode(idFabricaPrincipalStr, idFabricaAlternativaStr);
+                System.out.println(fabricaAlternativaActualizada.toString());
+            } else {
+                System.out.println("No se actualizó nada.");
+            }
+        }
     }
-    
+
     private static void actualizarFabrica(DataAccessManager dam) throws SQLException {
 
+        System.out.print("Ingrese el ID de la fábrica que desea actualizar: ");
+        String idFabricaAActualizarStr = tcl.nextLine();
+
+        Fabrica fabricaAActualizar = dam.loadFabricaByCode(idFabricaAActualizarStr);
+
+        if (fabricaAActualizar == null) {
+            System.out.println("La fábrica con ID " + idFabricaAActualizarStr + " no existe.");
+        } else {
+            System.out.println("Ingrese el nuevo teléfono de contacto (dejar vacío para no cambiar):");
+            String nuevoTelefonoStr = tcl.nextLine();
+            if (!nuevoTelefonoStr.isEmpty()) {
+                fabricaAActualizar.setTelefonoContacto(nuevoTelefonoStr);
+            }
+
+            System.out.println("Actualizando la fábrica con ID " + idFabricaAActualizarStr);
+            int columnasAfectadas = dam.updateFabrica(idFabricaAActualizarStr, fabricaAActualizar);
+
+            if (columnasAfectadas > 0) {
+                System.out.println("Fábrica actualizada exitosamente.");
+                Fabrica fabricaActualizada = dam.loadFabricaByCode(idFabricaAActualizarStr);
+                System.out.println(fabricaActualizada.toString());
+            } else {
+                System.out.println("No se actualizó nada.");
+            }
+        }
+
     }
-    
+
     private static void actualizarLineaPedido(DataAccessManager dam) throws SQLException {
 
+        System.out.print("Ingrese el ID de la línea de pedido que desea actualizar: ");
+        String idLineaPedidoAActualizar = tcl.nextLine();
+
+        LineaPedido lineaPedidoAActualizar = dam.loadLineaPedidoByCode(idLineaPedidoAActualizar);
+
+        if (lineaPedidoAActualizar == null) {
+            System.out.println("La línea de pedido con ID " + idLineaPedidoAActualizar + " no existe.");
+        } else {
+            System.out.println("Ingrese el nuevo ID de pedido (dejar vacío para no cambiar):");
+            String nuevoIdPedidoStr = tcl.nextLine();
+            if (!nuevoIdPedidoStr.isEmpty()) {
+                int nuevoIdPedido = Integer.parseInt(nuevoIdPedidoStr);
+                if (dam.pedidoExiste(nuevoIdPedido)) {
+                    lineaPedidoAActualizar.setIdPedido(nuevoIdPedido);
+                } else {
+                    System.out.println("El nuevo ID de pedido " + nuevoIdPedido + " no existe.");
+                    return;
+                }
+            }
+
+            System.out.println("Ingrese el nuevo ID de artículo (dejar vacío para no cambiar):");
+            String nuevoIdArticuloStr = tcl.nextLine();
+            if (!nuevoIdArticuloStr.isEmpty()) {
+                int nuevoIdArticulo = Integer.parseInt(nuevoIdArticuloStr);
+                if (dam.articuloExiste(nuevoIdArticulo)) {
+                    lineaPedidoAActualizar.setIdArticulo(nuevoIdArticulo);
+                } else {
+                    System.out.println("El nuevo ID de articulo " + nuevoIdArticulo + " no existe.");
+                    return;
+                }
+            }
+
+            System.out.println("Ingrese la nueva cantidad (dejar vacío para no cambiar):");
+            String nuevaCantidadStr = tcl.nextLine();
+            if (!nuevaCantidadStr.isEmpty()) {
+                lineaPedidoAActualizar.setCantidad(Integer.parseInt(nuevaCantidadStr));
+            }
+
+            System.out.println("Actualizando la línea de pedido con ID " + idLineaPedidoAActualizar);
+            int columnasAfectadas = dam.updateLineaPedido(idLineaPedidoAActualizar, lineaPedidoAActualizar);
+
+            if (columnasAfectadas > 0) {
+                System.out.println("Línea de pedido actualizada exitosamente.");
+                LineaPedido lineaPedidoActualizada = dam.loadLineaPedidoByCode(idLineaPedidoAActualizar);
+                System.out.println(lineaPedidoActualizada.toString());
+            } else {
+                System.out.println("No se actualizó nada.");
+            }
+        }
+
     }
-    
+
     private static void actualizarPedido(DataAccessManager dam) throws SQLException {
 
-    }
+        System.out.print("Ingrese el ID del pedido que desea actualizar: ");
+        String idPedidoAActualizar = tcl.nextLine();
 
+        Pedido pedidoAActualizar = dam.loadPedidoByCode(idPedidoAActualizar);
+
+        if (pedidoAActualizar == null) {
+            System.out.println("El pedido con ID " + idPedidoAActualizar + " no existe.");
+        } else {
+            System.out.println("Ingrese la nueva fecha (formato: YYYY-MM-DD HH:MM:SS) (dejar vacío para no cambiar):");
+            String nuevaFechaStr = tcl.nextLine();
+            if (!nuevaFechaStr.isEmpty()) {
+                try {
+                    Timestamp nuevaFecha = Timestamp.valueOf(nuevaFechaStr);
+                    pedidoAActualizar.setFecha(nuevaFecha);
+                } catch (IllegalArgumentException e) {
+                    System.out.println("Fecha no válida. Asegúrese de usar el formato correcto: YYYY-MM-DD HH:MM:SS");
+                    return;
+                }
+            }
+
+            System.out.println("Ingrese el nuevo número de comanda (dejar vacío para no cambiar):");
+            String nuevoNumeroComandaStr = tcl.nextLine();
+            if (!nuevoNumeroComandaStr.isEmpty()) {
+                int nuevoNumeroComanda = Integer.parseInt(nuevoNumeroComandaStr);
+                pedidoAActualizar.setNumeroComanda(nuevoNumeroComanda);
+            }
+
+            System.out.println("Ingrese el nuevo ID de cliente (dejar vacío para no cambiar):");
+            String nuevoIdClienteStr = tcl.nextLine();
+            if (!nuevoIdClienteStr.isEmpty()) {
+                int nuevoIdCliente = Integer.parseInt(nuevoIdClienteStr);
+                if (dam.clienteExiste(nuevoIdCliente)) {
+                    pedidoAActualizar.setIdCliente(nuevoIdCliente);
+                } else {
+                    System.out.println("El nuevo ID de cliente " + nuevoIdCliente + " no existe.");
+                    return;
+                }
+            }
+
+            System.out.println("Ingrese el nuevo ID de dirección (dejar vacío para no cambiar):");
+            String nuevoIdDireccionStr = tcl.nextLine();
+            if (!nuevoIdDireccionStr.isEmpty()) {
+                int nuevoIdDireccion = Integer.parseInt(nuevoIdDireccionStr);
+                if (dam.direccionExiste(nuevoIdDireccion)) { // Asegúrate de tener este método en DataAccessManager
+                    pedidoAActualizar.setIdDireccion(nuevoIdDireccion);
+                } else {
+                    System.out.println("El nuevo ID de dirección " + nuevoIdDireccion + " no existe.");
+                    return;
+                }
+            }
+
+            System.out.println("Actualizando el pedido con ID " + idPedidoAActualizar);
+            int columnasAfectadas = dam.updatePedido(idPedidoAActualizar, pedidoAActualizar);
+
+            if (columnasAfectadas > 0) {
+                System.out.println("Pedido actualizado exitosamente.");
+                Pedido pedidoActualizado = dam.loadPedidoByCode(idPedidoAActualizar);
+                System.out.println(pedidoActualizado.toString());
+            } else {
+                System.out.println("No se actualizó nada.");
+            }
+        }
+    }
 
 }

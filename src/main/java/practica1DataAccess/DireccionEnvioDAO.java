@@ -120,8 +120,8 @@ public class DireccionEnvioDAO extends DataAccessObject {
         }
         return false;
     }
-        
-        private Integer obtenerMaxId() throws SQLException {
+
+    private Integer obtenerMaxId() throws SQLException {
 
         PreparedStatement stmt = cnt.prepareStatement("SELECT max(idDireccion) FROM DireccionEnvio");
         ResultSet result = stmt.executeQuery();
@@ -137,13 +137,49 @@ public class DireccionEnvioDAO extends DataAccessObject {
 
         int filasAfectadas = 0;
 
-        try ( PreparedStatement stmt = cnt.prepareStatement("DELETE FROM DireccionEnvio WHERE idDireccion = ?")) {
+        try (PreparedStatement stmt = cnt.prepareStatement("DELETE FROM DireccionEnvio WHERE idDireccion = ?")) {
             stmt.setString(1, idDireccion);
             filasAfectadas = stmt.executeUpdate();
         } catch (SQLException e) {
             e.getMessage();
         }
 
+        return filasAfectadas;
+    }
+
+    protected DireccionEnvio loadDireccionEnvioByCode(String idDireccion) throws SQLException {
+        DireccionEnvio direccionEnvio = null;
+
+        String sql = "SELECT * FROM DireccionEnvio WHERE idDireccion = ?";
+        try (PreparedStatement stmt = cnt.prepareStatement(sql)) {
+            stmt.setString(1, idDireccion);
+            ResultSet result = stmt.executeQuery();
+
+            if (result.next()) {
+                direccionEnvio = readDireccionEnvioFromResultSet(result);
+            }
+        } catch (SQLException e) {
+            throw new SQLException("Error al cargar la dirección de envío con ID " + idDireccion + ": " + e.getMessage());
+        }
+        return direccionEnvio;
+    }
+
+    protected int updateDireccionEnvio(String idDireccion, DireccionEnvio direccionEnvioActualizar) throws SQLException {
+        int filasAfectadas = 0;
+
+        String sql = "UPDATE DireccionEnvio SET numero = ?, calle = ?, comuna = ?, ciudad = ?, idCliente = ? WHERE idDireccion = ?";
+        try (PreparedStatement stmt = cnt.prepareStatement(sql)) {
+            stmt.setInt(1, direccionEnvioActualizar.getNumero());
+            stmt.setString(2, direccionEnvioActualizar.getCalle());
+            stmt.setString(3, direccionEnvioActualizar.getComuna());
+            stmt.setString(4, direccionEnvioActualizar.getCiudad());
+            stmt.setInt(5, direccionEnvioActualizar.getIdCliente());
+            stmt.setString(6, idDireccion);
+
+            filasAfectadas = stmt.executeUpdate();
+        } catch (SQLException e) {
+            throw new SQLException("Error al actualizar la dirección de envío con ID " + idDireccion + ": " + e.getMessage());
+        }
         return filasAfectadas;
     }
 

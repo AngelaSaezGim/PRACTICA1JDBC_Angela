@@ -102,5 +102,54 @@ public class FabricaAlternativaDAO extends DataAccessObject {
 
         return filasAfectadas;
     }
+    
+     protected FabricaAlternativa loadFabricaAlternativaByCode(String idFabricaPrincipal, String idFabricaAlternativa) throws SQLException {
+        FabricaAlternativa fabricaAlternativa = null;
+
+        String sql = "SELECT * FROM FabricaAlternativa WHERE idFabricaPrincipal = ? AND idFabricaAlternativa = ?";
+        try (PreparedStatement stmt = cnt.prepareStatement(sql)) {
+            stmt.setString(1, idFabricaPrincipal);
+            stmt.setString(2, idFabricaAlternativa);
+            ResultSet result = stmt.executeQuery();
+
+            if (result.next()) {
+                fabricaAlternativa = readFabricasAlternativaFromResultSet(result);
+            }
+        } catch (SQLException e) {
+            throw new SQLException("Error al cargar la fábrica alternativa con ID principal " + idFabricaPrincipal + " y alternativa " + idFabricaAlternativa + ": " + e.getMessage());
+        }
+        return fabricaAlternativa;
+    }
+     
+      protected int updateFabricaAlternativa(String idFabricaPrincipal, String idFabricaAlternativa, FabricaAlternativa fabricaAlternativaActualizar) throws SQLException {
+        int filasAfectadas = 0;
+
+        String sql = "UPDATE FabricaAlternativa SET idFabricaPrincipal = ?, idFabricaAlternativa=? WHERE idFabricaPrincipal = ? AND idFabricaAlternativa = ?";
+        try (PreparedStatement stmt = cnt.prepareStatement(sql)) {
+            stmt.setInt(1, fabricaAlternativaActualizar.getIdFabricaPrincipal());
+            stmt.setInt(2, fabricaAlternativaActualizar.getIdFabricaAlternativa());
+            stmt.setString(3, idFabricaPrincipal);
+            stmt.setString(4, idFabricaAlternativa);
+
+            filasAfectadas = stmt.executeUpdate();
+        } catch (SQLException e) {
+            throw new SQLException("Error al actualizar la fábrica alternativa con ID principal " + idFabricaPrincipal + " y alternativa " + idFabricaAlternativa + ": " + e.getMessage());
+        }
+        return filasAfectadas;
+    }
+      
+    public boolean fabricaAlternativaExiste(String idFabricaPrincipal, String idFabricaAlternativa) throws SQLException {
+        String query = "SELECT COUNT(*) FROM fabricaAlternativa WHERE idFabricaPrincipal = ? AND idFabricaAlternativa = ?";
+        try (PreparedStatement stmt = cnt.prepareStatement(query)) {
+            stmt.setString(1, idFabricaPrincipal);
+            stmt.setString(2, idFabricaAlternativa);
+            ResultSet rs = stmt.executeQuery();
+            if (rs.next()) {
+                return rs.getInt(1) > 0; // Retorna true si existe
+            }
+        }
+        return false;
+    }
+
 
 }

@@ -135,7 +135,17 @@ public class ArticuloFabricaDAO extends DataAccessObject {
     
     
     protected ArticuloFabrica loadArticuloFabricaByCode(String idArticulo, String idFabrica) throws SQLException {
+        
+         List<ArticuloFabrica> articuloFabrica = new ArrayList<>();
 
+        PreparedStatement stmt = cnt.prepareStatement("SELECT * FROM ArticuloFabrica WHERE idArticulo = ? AND idFabrica = ?");
+        stmt.setString(1, idArticulo);
+        stmt.setString(2, idFabrica);
+        ResultSet result = stmt.executeQuery();
+
+        if (result.next()) {
+            return readArticuloFabricaFromResultSet(result);
+        }
         return null;
     }
     
@@ -143,9 +153,18 @@ public class ArticuloFabricaDAO extends DataAccessObject {
 
         int filasAfectadas = 0;
 
-        String sql = "UPDATE Articulo SET descripcion = ? WHERE idArticulo = ?";
-       
+            String sql = "UPDATE ArticuloFabrica SET existencias = ?, precio = ? WHERE idArticulo = ? AND idFabrica = ?";
 
+            try (PreparedStatement stmt = cnt.prepareStatement(sql)) {
+                stmt.setInt(1, articuloFabricaActualizar.getExistencias());
+                stmt.setDouble(2, articuloFabricaActualizar.getPrecio());
+                stmt.setString(3, idArticulo);
+                stmt.setString(4, idFabrica);
+
+                filasAfectadas = stmt.executeUpdate();
+            } catch (SQLException e) {
+                e.getMessage();
+            }
         return filasAfectadas;
     }
 

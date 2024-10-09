@@ -33,12 +33,12 @@ public class DataAccessManager implements AutoCloseable {
     private static String dataBaseUser = DEFAULT_DATA_BASE__USER;
     private static String dataBasePwd = DEFAULT_DATA_BASE__PWD;
     private static String dataBaseURL = DEFAULT_DATA_BASE__URL;
-    
+
     private static DataAccessManager singleton;
 
     // Instanciamos un único objeto DataAccessManager - SINGLETON
     private DataAccessManager() {
-        
+
     }
 
     /**
@@ -61,12 +61,12 @@ public class DataAccessManager implements AutoCloseable {
                 singleton.fabricaAlternativaDAO = new FabricaAlternativaDAO(singleton.cnx);
                 singleton.lineaPedidoDAO = new LineaPedidoDAO(singleton.cnx);
                 singleton.pedidoDAO = new PedidoDAO(singleton.cnx);
-                
+
             } catch (Exception e) {
                 singleton = null;
                 throw new RuntimeException(e);
             }
-            
+
         }
         return singleton;
     }
@@ -87,7 +87,7 @@ public class DataAccessManager implements AutoCloseable {
      * de IOException, se usan las credenciales por defecto
      */
     private static void loadDataBaseParams() {
-        
+
         Properties pDataBaseConfiguration = null;
         FileReader dbReaderStream = null;
         try {
@@ -96,7 +96,7 @@ public class DataAccessManager implements AutoCloseable {
             pDataBaseConfiguration.load(dbReaderStream);
         } catch (IOException e) {
             System.out.println("Error en la carga de la configuración de la base de datos. Se sigue adelante con la ejecución por defecto. " + e.getMessage());
-            
+
         } finally {
             try {
                 if (dbReaderStream != null) {
@@ -125,7 +125,7 @@ public class DataAccessManager implements AutoCloseable {
      */
     //para conectar y ejecutar las SQL en la bbdd
     private Connection cnx;
-    
+
     private ArticuloDAO articuloDAO;
     private ClienteDAO clienteDAO;
     private FabricaDAO fabricaDAO;
@@ -134,9 +134,9 @@ public class DataAccessManager implements AutoCloseable {
     private FabricaAlternativaDAO fabricaAlternativaDAO;
     private LineaPedidoDAO lineaPedidoDAO;
     private PedidoDAO pedidoDAO;
-    
+
     private static Connection createConnection() {
-        
+
         try {
             Class.forName(MYSQL_DB_DRIVER__CLASS_NAME);
             Connection cnt = DriverManager.getConnection(dataBaseURL, dataBaseUser, dataBasePwd);
@@ -157,9 +157,9 @@ public class DataAccessManager implements AutoCloseable {
             System.out.println(sb.toString());
             return null;
         }
-        
+
     }
-    
+
     @Override
     public void close() {
         try {
@@ -181,53 +181,53 @@ public class DataAccessManager implements AutoCloseable {
     /* FUNCIONES CON DATOS */
  /*--------------SELECT - TODO*------------------------*/
     public List<Articulo> loadAllArticulos() throws SQLException {
-        
+
         return this.articuloDAO.loadAllArticulos();
     }
-    
+
     public List<Cliente> loadAllClientes() throws SQLException {
-        
+
         return this.clienteDAO.loadAllClientes();
     }
-    
+
     public List<ArticuloFabrica> loadAllArticulosFabrica() throws SQLException {
-        
+
         return this.articuloFabricaDAO.loadAllArticulosFabricas();
     }
-    
+
     public List<Cliente> loadAllClientesFabrica() throws SQLException {
-        
+
         return this.clienteDAO.loadAllClientes();
     }
-    
+
     public List<DireccionEnvio> loadAllDireccionesEnvio() throws SQLException {
-        
+
         return this.direccionEnvioDAO.loadAllDireccionesEnvio();
-        
+
     }
-    
+
     public List<FabricaAlternativa> loadAllFabricasAlternativas() throws SQLException {
-        
+
         return this.fabricaAlternativaDAO.loadAllFabricasAlternativas();
-        
+
     }
-    
+
     public List<Fabrica> loadAllFabricas() throws SQLException {
-        
+
         return this.fabricaDAO.loadAllFabricas();
-        
+
     }
-    
+
     public List<LineaPedido> loadAllLineasPedido() throws SQLException {
-        
+
         return this.lineaPedidoDAO.loadAllLineasPedido();
-        
+
     }
-    
+
     public List<Pedido> loadAllPedidos() throws SQLException {
-        
+
         return this.pedidoDAO.loadAllPedidos();
-        
+
     }
 
     /*----------------------------------------------------------*/
@@ -237,35 +237,35 @@ public class DataAccessManager implements AutoCloseable {
         if (content == null || content.length() == 0) {
             throw new IllegalArgumentException("Debe indicar el filtro de búsqueda");
         }
-        
+
         return this.articuloDAO.loadArticulosContaining(content);
     }
-    
+
     public List<ArticuloFabrica> loadArticulosFabricaContaining(String content, String content2) throws SQLException {
         // Verificación de los parámetros antes de la consulta
         if (content == null || content.isEmpty() || content2 == null || content2.isEmpty()) {
             throw new IllegalArgumentException("Los valores de idArticulo o idFabrica son vacíos o nulos.");
         }
-        
+
         return this.articuloFabricaDAO.loadAllArticulosFabricaContaining(content, content2);
     }
-    
+
     public List<Cliente> loadClientesContaining(String content) throws SQLException {
         if (content == null || content.length() == 0) {
             throw new IllegalArgumentException("Debe indicar el filtro de búsqueda");
         }
-        
+
         return this.clienteDAO.loadClienteContaining(content);
     }
-    
+
     public List<DireccionEnvio> loadDireccionEnvioContaining(String content) throws SQLException {
         if (content == null || content.length() == 0) {
             throw new IllegalArgumentException("Debe indicar el filtro de búsqueda");
         }
-        
+
         return this.direccionEnvioDAO.loadDireccionEnvioContaining(content);
     }
-    
+
     public List<FabricaAlternativa> loadFabricaAlternativaContaining(String content, String content2) throws SQLException {
         if (content == null || content.length() == 0) {
             throw new IllegalArgumentException("Debe indicar el filtro de búsqueda");
@@ -273,31 +273,31 @@ public class DataAccessManager implements AutoCloseable {
         if (content2 == null || content2.length() == 0) {
             throw new IllegalArgumentException("Debe indicar el filtro de búsqueda");
         }
-        
+
         return this.fabricaAlternativaDAO.loadFabricaAlternativaContaining(content, content2);
     }
-    
+
     public List<Fabrica> loadFabricasContaining(String content) throws SQLException {
         if (content == null || content.length() == 0) {
             throw new IllegalArgumentException("Debe indicar el filtro de búsqueda");
         }
-        
+
         return this.fabricaDAO.loadFabricasContaining(content);
     }
-    
+
     public List<LineaPedido> loadLineasPedidoContaining(String content) throws SQLException {
         if (content == null || content.length() == 0) {
             throw new IllegalArgumentException("Debe indicar el filtro de búsqueda");
         }
-        
+
         return this.lineaPedidoDAO.loadLineasPedidoContaining(content);
     }
-    
+
     public List<Pedido> loadPedidosContaining(String content) throws SQLException {
         if (content == null || content.length() == 0) {
             throw new IllegalArgumentException("Debe indicar el filtro de búsqueda");
         }
-        
+
         return this.pedidoDAO.loadPedidosContaining(content);
     }
 
@@ -306,7 +306,7 @@ public class DataAccessManager implements AutoCloseable {
     public int insertarArticulo(Articulo articulo) throws SQLException {
         return this.articuloDAO.insertArticulo(articulo);
     }
-    
+
     public int insertarArticuloFabrica(ArticuloFabrica articuloFabrica) throws SQLException {
         return this.articuloFabricaDAO.insertArticuloFabrica(articuloFabrica);
     }
@@ -315,11 +315,11 @@ public class DataAccessManager implements AutoCloseable {
     public boolean fabricaExiste(int idFabrica) throws SQLException {
         return this.articuloFabricaDAO.fabricaExiste(idFabrica);
     }
-    
+
     public int insertarCliente(Cliente cliente) throws SQLException {
         return this.clienteDAO.insertCliente(cliente);
     }
-    
+
     public int insertarDireccionEnvio(DireccionEnvio direccion) throws SQLException {
         return this.direccionEnvioDAO.insertDireccionEnvio(direccion);
     }
@@ -328,31 +328,31 @@ public class DataAccessManager implements AutoCloseable {
     public boolean clienteExiste(int idCliente) throws SQLException {
         return this.direccionEnvioDAO.clienteExiste(idCliente);
     }
-    
+
     public int insertarFabricaAlternativa(FabricaAlternativa fabricaAlternativa) throws SQLException {
         return this.fabricaAlternativaDAO.insertFabricaAlternativa(fabricaAlternativa);
-    }    
-    
+    }
+
     public int insertarFabrica(Fabrica fabrica) throws SQLException {
         return this.fabricaDAO.insertFabrica(fabrica);
     }
-    
+
     public int insertarLineaPedido(LineaPedido lineaPedido) throws SQLException {
         return this.lineaPedidoDAO.insertLineaPedido(lineaPedido);
     }
-    
+
     public boolean pedidoExiste(int idPedido) throws SQLException {
         return this.lineaPedidoDAO.pedidoExiste(idPedido);
     }
-    
+
     public boolean articuloExiste(int idArticulo) throws SQLException {
         return this.lineaPedidoDAO.articuloExiste(idArticulo);
     }
-    
+
     public int insertarPedido(Pedido pedido) throws SQLException {
         return this.pedidoDAO.insertPedido(pedido);
     }
-    
+
     public boolean direccionExiste(int idDireccion) throws SQLException {
         return this.pedidoDAO.direccionExiste(idDireccion);
     }
@@ -362,96 +362,183 @@ public class DataAccessManager implements AutoCloseable {
         if (content == null || content.length() == 0) {
             throw new IllegalArgumentException("Debe indicar el filtro de búsqueda");
         }
-        
+
         return this.articuloDAO.deleteArticulo(content);
     }
-    
+
     public int borrarArticuloFabrica(String content, String content2) throws SQLException {
         if ((content == null || content.length() == 0) && (content2 == null || content2.length() == 0)) {
             throw new IllegalArgumentException("Debe indicar el filtro de búsqueda");
         }
-        
+
         return this.articuloFabricaDAO.deleteArticuloFabrica(content, content2);
     }
-    
+
     public int borrarCliente(String content) throws SQLException {
         if (content == null || content.length() == 0) {
             throw new IllegalArgumentException("Debe indicar el filtro de búsqueda");
         }
-        
+
         return this.clienteDAO.deleteCliente(content);
     }
-    
+
     public int borrarDireccionEnvio(String content) throws SQLException {
         if (content == null || content.length() == 0) {
             throw new IllegalArgumentException("Debe indicar el filtro de búsqueda");
         }
-        
+
         return this.direccionEnvioDAO.deleteDireccion(content);
     }
-    
+
     public int borrarFabricaAlternativa(String content, String content2) throws SQLException {
         if ((content == null || content.length() == 0) && (content2 == null || content2.length() == 0)) {
             throw new IllegalArgumentException("Debe indicar el filtro de búsqueda");
         }
-        
+
         return this.fabricaAlternativaDAO.deleteFabricaAlternativa(content, content2);
     }
-    
+
     public int borrarFabrica(String content) throws SQLException {
         if (content == null || content.length() == 0) {
             throw new IllegalArgumentException("Debe indicar el filtro de búsqueda");
         }
-        
+
         return this.fabricaDAO.deleteFabrica(content);
     }
-    
+
     public int borrarLineaPedido(String content) throws SQLException {
         if (content == null || content.length() == 0) {
             throw new IllegalArgumentException("Debe indicar el filtro de búsqueda");
         }
-        
+
         return this.lineaPedidoDAO.deleteLineaPedido(content);
     }
-    
+
     public int borrarPedido(String content) throws SQLException {
         if (content == null || content.length() == 0) {
             throw new IllegalArgumentException("Debe indicar el filtro de búsqueda");
         }
-        
+
         return this.pedidoDAO.deletePedido(content);
     }
-    
-    /**UPDATE**/
-    
-     public Articulo loadArticuloByCode(String idArticulo) throws SQLException {
+
+    /**
+     * UPDATE*
+     */
+    public Articulo loadArticuloByCode(String idArticulo) throws SQLException {
         if (idArticulo == null || idArticulo.length() == 0) {
             throw new IllegalArgumentException("Debe indicar el filtro de búsqueda");
         }
         return this.articuloDAO.loadArticuloByCode(idArticulo);
     }
-    
-    
+
     public int updateArticulo(String idArticulo, Articulo articuloActualizar) throws SQLException {
         if (idArticulo == null || articuloActualizar == null) {
             throw new IllegalArgumentException("El id del articulo y el articulo a actualizar no deben ser nulos.");
         }
         return this.articuloDAO.updateArticulo(idArticulo, articuloActualizar);
     }
-    
-    
-     public ArticuloFabrica loadArticuloFabricaByCode(String idArticulo, String idFabrica) throws SQLException {
-        if ((idArticulo == null || idArticulo.length() == 0)&&(idFabrica == null || idFabrica.length() == 0)) {
+
+    public ArticuloFabrica loadArticuloFabricaByCode(String idArticulo, String idFabrica) throws SQLException {
+        if ((idArticulo == null || idArticulo.length() == 0) || (idFabrica == null || idFabrica.length() == 0)) {
             throw new IllegalArgumentException("Debe indicar el filtro de búsqueda");
         }
-        return this.articuloFabricaDAO.loadArticuloFabricaByCode(idArticulo,idFabrica);
+        return this.articuloFabricaDAO.loadArticuloFabricaByCode(idArticulo, idFabrica);
     }
-    
-    
+
     public int updateArticuloFabrica(String idArticulo, String idFabrica, ArticuloFabrica articuloFabricaActualizar) throws SQLException {
-        if (idArticulo == null || idFabrica == null ||articuloFabricaActualizar == null) {
+        if (idArticulo == null || idFabrica == null || articuloFabricaActualizar == null) {
             throw new IllegalArgumentException("El id del articulo, el id de la fabrica y el articulo fabrica a actualizar no deben ser nulos.");
         }
-        return this.articuloFabricaDAO.updateArticuloFabrica(idArticulo,idFabrica,articuloFabricaActualizar);
+        return this.articuloFabricaDAO.updateArticuloFabrica(idArticulo, idFabrica, articuloFabricaActualizar);
+    }
+
+    public Cliente loadClienteByCode(String idCliente) throws SQLException {
+        if ((idCliente == null || idCliente.length() == 0)) {
+            throw new IllegalArgumentException("Debe indicar el filtro de búsqueda");
+        }
+        return this.clienteDAO.loadClienteByCode(idCliente);
+    }
+
+    public int updateCliente(String idCliente, Cliente clienteActualizar) throws SQLException {
+        if (idCliente == null || clienteActualizar == null) {
+            throw new IllegalArgumentException("El id del cliente y el cliente a actualizar no deben ser nulos.");
+        }
+        return this.clienteDAO.updateCliente(idCliente, clienteActualizar);
+    }
+
+    public DireccionEnvio loadDireccionEnvioByCode(String idDireccionEnvio) throws SQLException {
+        if ((idDireccionEnvio == null || idDireccionEnvio.length() == 0)) {
+            throw new IllegalArgumentException("Debe indicar el filtro de búsqueda");
+        }
+        return this.direccionEnvioDAO.loadDireccionEnvioByCode(idDireccionEnvio);
+    }
+
+    public int updateDireccionEnvio(String idDireccionEnvio, DireccionEnvio direccionEnvioActualizar) throws SQLException {
+        if (idDireccionEnvio == null || direccionEnvioActualizar == null) {
+            throw new IllegalArgumentException("El id de la direccion y la direccion a actualizar no deben ser nulos.");
+        }
+        return this.direccionEnvioDAO.updateDireccionEnvio(idDireccionEnvio, direccionEnvioActualizar);
+    }
+
+    public FabricaAlternativa loadFabricaAlternativaByCode(String idFabricaPrincipal, String idFabricaAlternativa) throws SQLException {
+        if (idFabricaPrincipal == null || idFabricaPrincipal.isEmpty()
+                || idFabricaAlternativa == null || idFabricaAlternativa.isEmpty()) {
+            throw new IllegalArgumentException("Debe indicar el filtro de búsqueda");
+        }
+        return this.fabricaAlternativaDAO.loadFabricaAlternativaByCode(idFabricaPrincipal, idFabricaAlternativa);
+    }
+
+    public int updateFabricaAlternativa(String idFabricaPrincipal, String idFabricaAlternativa, FabricaAlternativa fabricaAlternativaActualizar) throws SQLException {
+        if (idFabricaPrincipal == null || idFabricaAlternativa == null || fabricaAlternativaActualizar == null) {
+            throw new IllegalArgumentException("El ID de la fábrica principal, el ID de la fábrica alternativa y el objeto a actualizar no deben ser nulos.");
+        }
+        return this.fabricaAlternativaDAO.updateFabricaAlternativa(idFabricaPrincipal, idFabricaAlternativa, fabricaAlternativaActualizar);
+    }
+
+    public boolean fabricaAlternativaExiste(String idFabricaPrincipal, String idFabricaAlternativa) throws SQLException {
+        return this.fabricaAlternativaDAO.fabricaAlternativaExiste(idFabricaPrincipal, idFabricaPrincipal);
+    }
+
+    public Fabrica loadFabricaByCode(String idFabrica) throws SQLException {
+        if (idFabrica == null || idFabrica.isEmpty()) {
+            throw new IllegalArgumentException("Debe indicar el filtro de búsqueda");
+        }
+        return this.fabricaDAO.loadFabricaByCode(idFabrica);
+    }
+
+    public int updateFabrica(String idFabrica, Fabrica fabricaActualizar) throws SQLException {
+        if (idFabrica == null || fabricaActualizar == null) {
+            throw new IllegalArgumentException("El ID de la fábrica y el objeto a actualizar no deben ser nulos.");
+        }
+        return this.fabricaDAO.updateFabrica(idFabrica, fabricaActualizar);
+    }
+
+    public LineaPedido loadLineaPedidoByCode(String idLineaPedido) throws SQLException {
+        if (idLineaPedido == null || idLineaPedido.isEmpty()) {
+            throw new IllegalArgumentException("Debe indicar el filtro de búsqueda");
+        }
+        return this.lineaPedidoDAO.loadLineaPedidoByCode(idLineaPedido);
+    }
+
+    public int updateLineaPedido(String idLineaPedido, LineaPedido lineaPedidoActualizar) throws SQLException {
+        if (idLineaPedido == null || lineaPedidoActualizar == null) {
+            throw new IllegalArgumentException("El ID de la linea de pedido y el objeto Linea Pedido no deben ser nulos.");
+        }
+        return this.lineaPedidoDAO.updateLineaPedido(idLineaPedido, lineaPedidoActualizar);
+    }
+
+    public Pedido loadPedidoByCode(String idPedido) throws SQLException {
+        if (idPedido == null || idPedido.isEmpty()) {
+            throw new IllegalArgumentException("Debe indicar el filtro de búsqueda");
+        }
+        return this.pedidoDAO.loadPedidoByCode(idPedido);
+    }
+
+    public int updatePedido(String idPedido, Pedido pedidoActualizar) throws SQLException {
+        if (idPedido == null || idPedido.isEmpty() || pedidoActualizar == null) {
+            throw new IllegalArgumentException("El ID del pedido no debe ser nulo ni vacío y el objeto Pedido no debe ser nulo.");
+        }
+        return this.pedidoDAO.updatePedido(idPedido, pedidoActualizar);
     }
 }

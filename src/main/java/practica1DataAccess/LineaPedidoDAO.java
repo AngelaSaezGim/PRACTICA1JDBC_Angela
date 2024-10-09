@@ -131,16 +131,52 @@ public class LineaPedidoDAO extends DataAccessObject {
             return rs.next() && rs.getInt(1) > 0;
         }
     }
-    
+
     protected int deleteLineaPedido(String idLineaPedido) {
 
         int filasAfectadas = 0;
 
-        try ( PreparedStatement stmt = cnt.prepareStatement("DELETE FROM LineaPedido WHERE idLineaPedido = ?")) {
+        try (PreparedStatement stmt = cnt.prepareStatement("DELETE FROM LineaPedido WHERE idLineaPedido = ?")) {
             stmt.setString(1, idLineaPedido);
             filasAfectadas = stmt.executeUpdate();
         } catch (SQLException e) {
             e.getMessage();
+        }
+
+        return filasAfectadas;
+    }
+
+    protected LineaPedido loadLineaPedidoByCode(String idLineaPedido) throws SQLException {
+        LineaPedido lineaPedido = null;
+        String sql = "SELECT * FROM LineaPedido WHERE idLineaPedido = ?";
+
+        try (PreparedStatement stmt = cnt.prepareStatement(sql)) {
+            stmt.setString(1, idLineaPedido);
+            ResultSet result = stmt.executeQuery();
+
+            if (result.next()) {
+                lineaPedido = readLineaPedidoFromResultSet(result);
+            }
+        } catch (SQLException e) {
+            throw new SQLException("Error al cargar la línea de pedido con ID " + idLineaPedido + ": " + e.getMessage());
+        }
+
+        return lineaPedido;
+    }
+
+    protected int updateLineaPedido(String idLineaPedido, LineaPedido lineaPedidoActualizar) throws SQLException {
+        int filasAfectadas = 0;
+
+        String sql = "UPDATE LineaPedido SET idPedido = ?, idArticulo = ?, cantidad = ? WHERE idLineaPedido = ?";
+        try (PreparedStatement stmt = cnt.prepareStatement(sql)) {
+            stmt.setInt(1, lineaPedidoActualizar.getIdPedido());
+            stmt.setInt(2, lineaPedidoActualizar.getIdArticulo());
+            stmt.setInt(3, lineaPedidoActualizar.getCantidad());
+            stmt.setString(4, idLineaPedido);
+
+            filasAfectadas = stmt.executeUpdate();
+        } catch (SQLException e) {
+            throw new SQLException("Error al actualizar la línea de pedido con ID " + idLineaPedido + ": " + e.getMessage());
         }
 
         return filasAfectadas;

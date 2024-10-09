@@ -122,5 +122,39 @@ public class ClienteDAO extends DataAccessObject {
 
         return filasAfectadas;
     }
+    
+     protected Cliente loadClienteByCode(String idCliente) throws SQLException {
+        Cliente cliente = null;
+
+        String sql = "SELECT * FROM Cliente WHERE idCliente = ?";
+        try (PreparedStatement stmt = cnt.prepareStatement(sql)) {
+            stmt.setString(1, idCliente);
+            ResultSet result = stmt.executeQuery();
+
+            if (result.next()) {
+                cliente = readClienteFromResultSet(result);
+            }
+        } catch (SQLException e) {
+            throw new SQLException("Error al cargar el cliente con ID " + idCliente + ": " + e.getMessage());
+        }
+        return cliente;
+    }
+
+    protected int updateCliente(String idCliente, Cliente clienteActualizar) throws SQLException {
+        int filasAfectadas = 0;
+
+        String sql = "UPDATE Cliente SET saldo = ?, limiteCredito = ?, descuento = ? WHERE idCliente = ?";
+        try (PreparedStatement stmt = cnt.prepareStatement(sql)) {
+            stmt.setDouble(1, clienteActualizar.getSaldo());
+            stmt.setDouble(2, clienteActualizar.getLimiteCredito());
+            stmt.setDouble(3, clienteActualizar.getDescuento());
+            stmt.setString(4, idCliente);
+
+            filasAfectadas = stmt.executeUpdate();
+        } catch (SQLException e) {
+            throw new SQLException("Error al actualizar el cliente con ID " + idCliente + ": " + e.getMessage());
+        }
+        return filasAfectadas;
+    }
 
 }

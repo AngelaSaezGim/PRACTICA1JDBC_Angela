@@ -123,16 +123,53 @@ public class PedidoDAO extends DataAccessObject {
             return rs.next() && rs.getInt(1) > 0;
         }
     }
-    
+
     protected int deletePedido(String idPedido) {
 
         int filasAfectadas = 0;
 
-        try ( PreparedStatement stmt = cnt.prepareStatement("DELETE FROM Pedido WHERE idPedido = ?")) {
+        try (PreparedStatement stmt = cnt.prepareStatement("DELETE FROM Pedido WHERE idPedido = ?")) {
             stmt.setString(1, idPedido);
             filasAfectadas = stmt.executeUpdate();
         } catch (SQLException e) {
             e.getMessage();
+        }
+
+        return filasAfectadas;
+    }
+
+    protected Pedido loadPedidoByCode(String idPedido) throws SQLException {
+        Pedido pedido = null;
+        String sql = "SELECT * FROM Pedido WHERE idPedido = ?";
+
+        try (PreparedStatement stmt = cnt.prepareStatement(sql)) {
+            stmt.setString(1, idPedido);
+            ResultSet result = stmt.executeQuery();
+
+            if (result.next()) {
+                pedido = readPedidoFromResultSet(result);
+            }
+        } catch (SQLException e) {
+            throw new SQLException("Error al cargar el pedido con ID " + idPedido + ": " + e.getMessage());
+        }
+
+        return pedido;
+    }
+
+    protected int updatePedido(String idPedido, Pedido pedidoActualizar) throws SQLException {
+        int filasAfectadas = 0;
+
+        String sql = "UPDATE Pedido SET fecha = ?, numeroComanda = ?, idCliente = ?, idDireccion = ? WHERE idPedido = ?";
+        try (PreparedStatement stmt = cnt.prepareStatement(sql)) {
+            stmt.setTimestamp(1, Timestamp.valueOf(pedidoActualizar.getFecha().toLocalDateTime()));
+            stmt.setInt(2, pedidoActualizar.getNumeroComanda());
+            stmt.setInt(3, pedidoActualizar.getIdCliente());
+            stmt.setInt(4, pedidoActualizar.getIdDireccion());
+            stmt.setString(5, idPedido);
+
+            filasAfectadas = stmt.executeUpdate();
+        } catch (SQLException e) {
+            throw new SQLException("Error al actualizar el pedido con ID " + idPedido + ": " + e.getMessage());
         }
 
         return filasAfectadas;
