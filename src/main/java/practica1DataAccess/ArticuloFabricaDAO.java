@@ -167,5 +167,22 @@ public class ArticuloFabricaDAO extends DataAccessObject {
             }
         return filasAfectadas;
     }
+        
+            
+    protected double sacarPrecioArticulo(String idArticulo) throws SQLException{
+        
+        double precioArticulo = 0;
+        
+        PreparedStatement stmt = cnt.prepareStatement("SELECT * FROM ArticuloFabrica WHERE idArticulo = ?");
+        stmt.setString(1, idArticulo);
+        ResultSet result = stmt.executeQuery();
+
+        // Si se encuentra un artículo, extraemos el precio
+        while (result.next()) {
+             precioArticulo = result.getDouble("precio");
+        }
+        
+        return precioArticulo;
+    }
 
 }

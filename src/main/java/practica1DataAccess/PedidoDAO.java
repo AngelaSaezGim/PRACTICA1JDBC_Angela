@@ -174,5 +174,20 @@ public class PedidoDAO extends DataAccessObject {
 
         return filasAfectadas;
     }
+    
+    protected List<Pedido> listarPedidosCliente(String idCliente) throws SQLException {
+        
+        List<Pedido> pedidosCliente = new ArrayList<>();
+
+        PreparedStatement stmt = cnt.prepareStatement("SELECT * FROM Pedido WHERE idCliente=?");
+        stmt.setString(1, idCliente);
+        ResultSet result = stmt.executeQuery();
+
+        while (result.next()) {
+            pedidosCliente.add(readPedidoFromResultSet(result));
+        }
+        
+        return pedidosCliente;
+    }
 
 }

@@ -156,5 +156,22 @@ public class ClienteDAO extends DataAccessObject {
         }
         return filasAfectadas;
     }
+    
+     protected double sacarDescuento(String idCliente) throws SQLException{
+ 
+        double descuentoCliente = 0; //Por defecto 0 si no hay
+
+        String query = "SELECT descuento FROM Cliente WHERE idCliente = ?";
+        PreparedStatement stmt = cnt.prepareStatement(query);
+        stmt.setString(1, idCliente);
+
+        ResultSet result = stmt.executeQuery();
+
+        if (result.next()) {
+            descuentoCliente = result.getDouble("descuento");
+        }
+        
+        return descuentoCliente;
+    }
 
 }

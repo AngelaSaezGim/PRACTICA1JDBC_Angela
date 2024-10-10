@@ -20,6 +20,7 @@ import practica1Objetos.Pedido;
 
 import java.sql.SQLException;
 import java.sql.Timestamp;
+import java.util.ArrayList;
 
 /**
  *
@@ -31,7 +32,8 @@ public class MenuPractica1App {
 
     //Opciones del menú principal
     private enum MenuOption {
-        QUERY_ALL, QUERY_BY_CODE, QUERY_INSERT, QUERY_DELETE, QUERY_UPDATE, EXIT
+        QUERY_ALL, QUERY_BY_CODE, QUERY_INSERT, QUERY_DELETE, QUERY_UPDATE,QUERY_LISTARCOMANDES, QUERY_BORRARFABRICASNOCOMANDA,
+        QUERY_ARTICULOSAÑO,EXIT
     };
 
     private enum MenuOption1 {
@@ -284,6 +286,17 @@ public class MenuPractica1App {
                             }
                         } while (opcionElegidaUpdate != MenuOption5.ATRAS);
                         break;
+                    case QUERY_LISTARCOMANDES:
+                        System.out.println("Listado de comandas con importe y descuento");
+                        esperarIntro();
+                        break;
+                    case QUERY_BORRARFABRICASNOCOMANDA:
+                        System.out.println("Borramos fabricas que no se haya mandando ningún articulo");
+                        esperarIntro();
+                        break;
+                    case QUERY_ARTICULOSAÑO:
+                        System.out.println("Cantidad articulos de las comandas en x año");
+                        esperarIntro();
                     case EXIT:
                         break;
                 }
@@ -306,7 +319,10 @@ public class MenuPractica1App {
                 .append("\t3)Insertar...\n")
                 .append("\t4)Borrar...\n")
                 .append("\t5)Actualizar...\n")
-                .append("\t6)Salir\n")
+                .append("\t6)Listar pedidos cliente (importe + descuento) \n")
+                .append("\t7)Borrar fabricas sin pedidos\n")
+                .append("\t8)Total de artículos incluidos en todos los pedidos de un año\n")
+                .append("\t9)Salir\n")
                 .append("Opción: ");
         System.out.print(sb.toString());
     }
@@ -472,6 +488,10 @@ public class MenuPractica1App {
             System.out.println("\t" + articulo);
         }
         System.out.println();
+    }
+
+    public static void printArticulo(Articulo articulo) {
+        System.out.println("Descripción: " + articulo.getDescripcion());
     }
 
     private static void verArticulosFabrica(DataAccessManager dam) throws SQLException {
@@ -1449,5 +1469,82 @@ public class MenuPractica1App {
             }
         }
     }
+    
+    //METODO 1//
+    
+     public static List<Pedido> consultarPedidosCliente(DataAccessManager dam) throws SQLException {
+         
+        System.out.println("Escribeme el id del cliente al que queremos ver los pedidos");
+        String idCliente = tcl.nextLine();
+        List<Pedido> pedidosFilteredByClient = dam.listarPedidosCliente(idCliente);
+        if (pedidosFilteredByClient != null) {
+            System.out.println("Pedidos hechos por el cliente " + idCliente);
+            printPedidos(pedidosFilteredByClient);
+        } else {
+            System.out.println("No se encontraron pedidos con el id de ese cliente.");
+        }
+        return pedidosFilteredByClient; 
+     }
+
+    public static double sacarPrecioTotalClientePedidos(DataAccessManager dam) throws SQLException {
+
+        List<Pedido> pedidosCliente = consultarPedidosCliente(dam);
+        List<LineaPedido> lineasPedidoCliente = dam.filtrarPedidos(pedidosCliente);
+        double importeTotalCliente = 0;
+
+        if (lineasPedidoCliente != null && !lineasPedidoCliente.isEmpty()) {
+            System.out.println("Líneas de pedido asociadas a estos pedidos:");
+            printLineasPedido(lineasPedidoCliente);
+
+            for (LineaPedido linea : lineasPedidoCliente) {
+                int idArticulo = linea.getIdArticulo();
+                String idArticuloStr = String.valueOf(idArticulo);
+                Articulo articulo = dam.loadArticuloByCode(idArticuloStr);
+
+                if (articulo != null) {
+                    System.out.println("----------------------------");
+                    System.out.println("Información del artículo asociado (ID: " + idArticulo + "):");
+                    printArticulo(articulo);
+                    System.out.println(" - cantidad pedida = " + linea.getCantidad());
+
+                    double precioPorArticulo = dam.sacarPrecioArticulo(idArticuloStr);
+                    double totalLinea = precioPorArticulo * linea.getCantidad();
+                    importeTotalCliente += totalLinea;
+
+                    System.out.println(" - Precio por artículo: " + precioPorArticulo);
+                    System.out.println(" - Total por esta línea: " + totalLinea);
+                    System.out.println("----------------------------");
+                } else {
+                    System.out.println("No se encontró artículo con ID: " + idArticulo);
+                }
+            }
+            System.out.println(importeTotalCliente);
+            for (Pedido pedido : pedidosCliente) {
+                int idCliente = pedido.getIdCliente();
+                
+                //precioTotalClienteDescontado(dam,idCliente);
+            }
+             
+        } else {
+            System.out.println("No se encontraron líneas de pedido con los IDs de pedido asociados a ese cliente.");
+        }
+
+        return importeTotalCliente;
+    }
+    
+    public static void precioTotalClienteDescontado(DataAccessManager dam, String idCliente) throws SQLException {
+
+        double precioTotalSinDescuento = sacarPrecioTotalClientePedidos(dam);
+        double descuento = dam.sacarDescuento(idCliente);
+
+        double precioTotalConDescuento = precioTotalSinDescuento * (1 - descuento);
+
+        System.out.println("El precio total sin descuento es: " + precioTotalSinDescuento);
+        System.out.println("El descuento aplicado es: " + (descuento * 100) + "%");
+        System.out.println("El precio total con descuento es: " + precioTotalConDescuento);
+
+    }
+
+    //METODO 2
 
 }

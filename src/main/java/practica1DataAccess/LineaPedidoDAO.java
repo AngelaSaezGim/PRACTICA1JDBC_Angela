@@ -11,6 +11,7 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 import practica1Objetos.LineaPedido;
+import practica1Objetos.Pedido;
 
 /**
  *
@@ -180,6 +181,40 @@ public class LineaPedidoDAO extends DataAccessObject {
         }
 
         return filasAfectadas;
+    }
+    
+    protected List<LineaPedido> filtrarPedidos(List<Pedido> pedidosFilteredByClient) throws SQLException {
+        List<LineaPedido> listaLineasPedidoCliente = new ArrayList<>();
+
+        if (pedidosFilteredByClient == null || pedidosFilteredByClient.isEmpty()) {
+            return listaLineasPedidoCliente;
+        }
+        
+        StringBuilder query = new StringBuilder("SELECT * FROM LineaPedido WHERE idPedido IN (");
+
+        // PLACEHOLDER ? PARA CADA PEDIDO - CONSTRUIMOS LA QUERY
+        for (int i = 0; i < pedidosFilteredByClient.size(); i++) {
+            query.append("?");
+            if (i < pedidosFilteredByClient.size() - 1) {
+                query.append(", "); //coma entre los placeholders
+            }
+        }
+        query.append(")");
+
+        PreparedStatement stmt = cnt.prepareStatement(query.toString()); //Segun los pedidos que tengas
+
+        // valores de idPedido a los placeholders (+1 pq es un bucle)
+        for (int i = 0; i < pedidosFilteredByClient.size(); i++) {
+            stmt.setInt(i + 1, pedidosFilteredByClient.get(i).getIdPedido());
+        }
+
+        ResultSet result = stmt.executeQuery();
+
+        while (result.next()) {
+            listaLineasPedidoCliente.add(readLineaPedidoFromResultSet(result));
+        }
+
+        return listaLineasPedidoCliente;
     }
 
 }
