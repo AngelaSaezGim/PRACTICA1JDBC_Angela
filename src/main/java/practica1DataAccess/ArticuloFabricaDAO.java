@@ -93,7 +93,7 @@ public class ArticuloFabricaDAO extends DataAccessObject {
 
         return filasAfectadas;
     }
-    // Método para verificar si la fábrica a la que vamos a insertar existe
+
     protected boolean fabricaExiste(int idFabrica) throws SQLException {
         String sql = "SELECT COUNT(*) FROM Fabrica WHERE idFabrica = ?";
         try (PreparedStatement stmt = cnt.prepareStatement(sql)) {
@@ -114,7 +114,7 @@ public class ArticuloFabricaDAO extends DataAccessObject {
         if (result.next()) {
             return result.getInt(1);
         } else {
-            return 0; //no hay datos en la tabla
+            return 0;
         }
     }
 

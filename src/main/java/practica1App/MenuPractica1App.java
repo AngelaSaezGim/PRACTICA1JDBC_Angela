@@ -1087,7 +1087,7 @@ public class MenuPractica1App {
             String nuevaExistencia = tcl.nextLine();
             if (!nuevaExistencia.isEmpty()) {
                 try {
-                    int existencias = Integer.parseInt(nuevaExistencia);  // Conversión de String a int
+                    int existencias = Integer.parseInt(nuevaExistencia); 
                     articuloFabricaAActualizar.setExistencias(existencias);
                 } catch (NumberFormatException e) {
                     System.out.println("Valor no válido para existencias.");
@@ -1098,7 +1098,7 @@ public class MenuPractica1App {
             String nuevoPrecio = tcl.nextLine();
             if (!nuevoPrecio.isEmpty()) {
                 try {
-                    double precio = Double.parseDouble(nuevoPrecio);  // Conversión de String a double
+                    double precio = Double.parseDouble(nuevoPrecio); 
                     articuloFabricaAActualizar.setPrecio(precio);
                 } catch (NumberFormatException e) {
                     System.out.println("Valor no válido para el precio.");
@@ -1429,7 +1429,7 @@ public class MenuPractica1App {
             String nuevoIdDireccionStr = tcl.nextLine();
             if (!nuevoIdDireccionStr.isEmpty()) {
                 int nuevoIdDireccion = Integer.parseInt(nuevoIdDireccionStr);
-                if (dam.direccionExiste(nuevoIdDireccion)) { // Asegúrate de tener este método en DataAccessManager
+                if (dam.direccionExiste(nuevoIdDireccion)) { 
                     pedidoAActualizar.setIdDireccion(nuevoIdDireccion);
                 } else {
                     System.out.println("El nuevo ID de dirección " + nuevoIdDireccion + " no existe.");

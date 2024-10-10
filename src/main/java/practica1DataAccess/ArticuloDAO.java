@@ -116,8 +116,6 @@ public class ArticuloDAO extends DataAccessObject {
 
     protected Articulo loadArticuloByCode(String idArticulo) throws SQLException {
 
-        List<Articulo> articulo = new ArrayList<>();
-
         PreparedStatement stmt = cnt.prepareStatement("SELECT * FROM Articulo WHERE idArticulo = ?");
         stmt.setString(1, idArticulo);
         ResultSet result = stmt.executeQuery();
@@ -142,7 +140,6 @@ public class ArticuloDAO extends DataAccessObject {
         } catch (SQLException e) {
             e.getMessage();
         }
-        // DEVUELVE LAS FILAS AFECTADAS por la actualización
         return filasAfectadas;
     }
 

@@ -145,7 +145,7 @@ public class FabricaAlternativaDAO extends DataAccessObject {
             stmt.setString(2, idFabricaAlternativa);
             ResultSet rs = stmt.executeQuery();
             if (rs.next()) {
-                return rs.getInt(1) > 0; // Retorna true si existe
+                return rs.getInt(1) > 0; 
             }
         }
         return false;
