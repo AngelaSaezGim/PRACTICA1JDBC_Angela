@@ -147,5 +147,7 @@ public class FabricaDAO extends DataAccessObject {
 
         return filasAfectadas;
     }
+    
+    //SACAR FABRICAS SIN ARTICULOS
 
 }

@@ -184,5 +184,10 @@ public class ArticuloFabricaDAO extends DataAccessObject {
         
         return precioArticulo;
     }
+    
+    //borre todas las fábricas a las que no se haya pedido ningún artículo que se haya incluido en ningún pedido en el momento de consulta de la BD.
+    //
+    
+    
 
 }
