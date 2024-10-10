@@ -32,8 +32,8 @@ public class MenuPractica1App {
 
     //Opciones del menú principal
     private enum MenuOption {
-        QUERY_ALL, QUERY_BY_CODE, QUERY_INSERT, QUERY_DELETE, QUERY_UPDATE,QUERY_LISTARCOMANDES, QUERY_BORRARFABRICASNOCOMANDA,
-        QUERY_ARTICULOSAÑO,EXIT
+        QUERY_ALL, QUERY_BY_CODE, QUERY_INSERT, QUERY_DELETE, QUERY_UPDATE, QUERY_LISTARCOMANDES, QUERY_BORRARFABRICASNOCOMANDA,
+        QUERY_ARTICULOSAÑO, EXIT
     };
 
     private enum MenuOption1 {
@@ -70,7 +70,7 @@ public class MenuPractica1App {
         MenuOption4 opcionElegidaDelete = null;
         MenuOption5 opcionElegidaUpdate = null;
 
-        try (DataAccessManager dam = DataAccessManager.getInstance()) {
+        try ( DataAccessManager dam = DataAccessManager.getInstance()) {
             do {
                 printOptions();
                 opcionElegida = readChoice();
@@ -287,7 +287,7 @@ public class MenuPractica1App {
                         } while (opcionElegidaUpdate != MenuOption5.ATRAS);
                         break;
                     case QUERY_LISTARCOMANDES:
-                        System.out.println("Listado de comandas con importe y descuento");
+                        printImporteTotalCliente(dam);
                         esperarIntro();
                         break;
                     case QUERY_BORRARFABRICASNOCOMANDA:
@@ -1107,7 +1107,7 @@ public class MenuPractica1App {
             String nuevaExistencia = tcl.nextLine();
             if (!nuevaExistencia.isEmpty()) {
                 try {
-                    int existencias = Integer.parseInt(nuevaExistencia); 
+                    int existencias = Integer.parseInt(nuevaExistencia);
                     articuloFabricaAActualizar.setExistencias(existencias);
                 } catch (NumberFormatException e) {
                     System.out.println("Valor no válido para existencias.");
@@ -1118,7 +1118,7 @@ public class MenuPractica1App {
             String nuevoPrecio = tcl.nextLine();
             if (!nuevoPrecio.isEmpty()) {
                 try {
-                    double precio = Double.parseDouble(nuevoPrecio); 
+                    double precio = Double.parseDouble(nuevoPrecio);
                     articuloFabricaAActualizar.setPrecio(precio);
                 } catch (NumberFormatException e) {
                     System.out.println("Valor no válido para el precio.");
@@ -1447,9 +1447,9 @@ public class MenuPractica1App {
 
             System.out.println("Ingrese el nuevo ID de dirección (dejar vacío para no cambiar):");
             String nuevoIdDireccionStr = tcl.nextLine();
-            if (!nuevoIdDireccionStr.isEmpty()) {
+            if (!nuevoIdDireccionStr.isEmpty()) { 
                 int nuevoIdDireccion = Integer.parseInt(nuevoIdDireccionStr);
-                if (dam.direccionExiste(nuevoIdDireccion)) { 
+                if (dam.direccionExiste(nuevoIdDireccion)) {
                     pedidoAActualizar.setIdDireccion(nuevoIdDireccion);
                 } else {
                     System.out.println("El nuevo ID de dirección " + nuevoIdDireccion + " no existe.");
@@ -1463,19 +1463,24 @@ public class MenuPractica1App {
             if (columnasAfectadas > 0) {
                 System.out.println("Pedido actualizado exitosamente.");
                 Pedido pedidoActualizado = dam.loadPedidoByCode(idPedidoAActualizar);
-                System.out.println(pedidoActualizado.toString());
+                System.out.println(pedidoActualizado.toString()); 
             } else {
                 System.out.println("No se actualizó nada.");
             }
         }
     }
-    
+
     //METODO 1//
-    
-     public static List<Pedido> consultarPedidosCliente(DataAccessManager dam) throws SQLException {
-         
+        public static void printImporteTotalCliente(DataAccessManager dam) throws SQLException {
+
+        System.out.println("Listado de comandas con importe y descuento");
         System.out.println("Escribeme el id del cliente al que queremos ver los pedidos");
         String idCliente = tcl.nextLine();
+        precioTotalClienteDescontado(dam, idCliente);
+    }
+
+    public static List<Pedido> consultarPedidosCliente(DataAccessManager dam, String idCliente) throws SQLException {
+
         List<Pedido> pedidosFilteredByClient = dam.listarPedidosCliente(idCliente);
         if (pedidosFilteredByClient != null) {
             System.out.println("Pedidos hechos por el cliente " + idCliente);
@@ -1483,12 +1488,12 @@ public class MenuPractica1App {
         } else {
             System.out.println("No se encontraron pedidos con el id de ese cliente.");
         }
-        return pedidosFilteredByClient; 
-     }
+        return pedidosFilteredByClient;
+    }
 
-    public static double sacarPrecioTotalClientePedidos(DataAccessManager dam) throws SQLException {
+    public static double sacarPrecioTotalClientePedidos(DataAccessManager dam, String idCliente) throws SQLException {
 
-        List<Pedido> pedidosCliente = consultarPedidosCliente(dam);
+        List<Pedido> pedidosCliente = consultarPedidosCliente(dam, idCliente);
         List<LineaPedido> lineasPedidoCliente = dam.filtrarPedidos(pedidosCliente);
         double importeTotalCliente = 0;
 
@@ -1512,39 +1517,42 @@ public class MenuPractica1App {
                     importeTotalCliente += totalLinea;
 
                     System.out.println(" - Precio por artículo: " + precioPorArticulo);
-                    System.out.println(" - Total por esta línea: " + totalLinea);
+                    System.out.println(" - Total por esta línea: " + String.format("%.2f",totalLinea));
                     System.out.println("----------------------------");
                 } else {
                     System.out.println("No se encontró artículo con ID: " + idArticulo);
                 }
             }
-            System.out.println(importeTotalCliente);
-            for (Pedido pedido : pedidosCliente) {
-                int idCliente = pedido.getIdCliente();
-                
-                //precioTotalClienteDescontado(dam,idCliente);
-            }
-             
+            System.out.println("");
         } else {
             System.out.println("No se encontraron líneas de pedido con los IDs de pedido asociados a ese cliente.");
         }
 
         return importeTotalCliente;
     }
-    
-    public static void precioTotalClienteDescontado(DataAccessManager dam, String idCliente) throws SQLException {
 
-        double precioTotalSinDescuento = sacarPrecioTotalClientePedidos(dam);
-        double descuento = dam.sacarDescuento(idCliente);
+    public static double precioTotalClienteDescontado(DataAccessManager dam, String idCliente) throws SQLException {
+
+        double precioTotalSinDescuento = sacarPrecioTotalClientePedidos(dam, idCliente);
+        double descuento = dam.sacarDescuento(idCliente) / 100;
 
         double precioTotalConDescuento = precioTotalSinDescuento * (1 - descuento);
 
-        System.out.println("El precio total sin descuento es: " + precioTotalSinDescuento);
+        System.out.println("El precio total sin descuento es: " + String.format("%.2f",precioTotalSinDescuento));
         System.out.println("El descuento aplicado es: " + (descuento * 100) + "%");
-        System.out.println("El precio total con descuento es: " + precioTotalConDescuento);
+        System.out.println("El precio total con descuento es: " + String.format("%.2f",precioTotalConDescuento));
+        System.out.println("Has pagado " + String.format("%.2f",(precioTotalSinDescuento - precioTotalConDescuento)) + " euros menos ");
 
+        return precioTotalConDescuento;
     }
 
     //METODO 2
-
+    /*
+    ii. Método que borre todas las fábricas a las que no se haya pedido ningún artículo que se haya incluido en ningún pedido en el momento de consulta de la BD. (2 puntos)
+    */
+    
+     //METODO 3
+    /*
+    iii. Método que calcule la cantidad total de artículos incluidos en todos los pedidos de un año dado. (1 punto)
+    */
 }
