@@ -1471,14 +1471,8 @@ public class MenuPractica1App {
     }
 
     //METODO 1//
-        public static void printImporteTotalCliente(DataAccessManager dam) throws SQLException {
 
-        System.out.println("Listado de comandas con importe y descuento");
-        System.out.println("Escribeme el id del cliente al que queremos ver los pedidos");
-        String idCliente = tcl.nextLine();
-        precioTotalClienteDescontado(dam, idCliente);
-    }
-
+    //SACAMOS LA LISTA DE PEDIDOS DE ESE CLIENTE
     public static List<Pedido> consultarPedidosCliente(DataAccessManager dam, String idCliente) throws SQLException {
 
         List<Pedido> pedidosFilteredByClient = dam.listarPedidosCliente(idCliente);
@@ -1487,10 +1481,12 @@ public class MenuPractica1App {
             printPedidos(pedidosFilteredByClient);
         } else {
             System.out.println("No se encontraron pedidos con el id de ese cliente.");
+            
         }
         return pedidosFilteredByClient;
     }
 
+    //CON LOS PEDIDOS DE ESE CLIENTE - SACAMOS LAS LINEAS Y LAS CALCULAMOS
     public static double sacarPrecioTotalClientePedidos(DataAccessManager dam, String idCliente) throws SQLException {
 
         List<Pedido> pedidosCliente = consultarPedidosCliente(dam, idCliente);
@@ -1504,7 +1500,7 @@ public class MenuPractica1App {
             for (LineaPedido linea : lineasPedidoCliente) {
                 int idArticulo = linea.getIdArticulo();
                 String idArticuloStr = String.valueOf(idArticulo);
-                Articulo articulo = dam.loadArticuloByCode(idArticuloStr);
+                Articulo articulo = dam.loadArticuloByCode(idArticuloStr); //PARA PODER PONER LA DESCRIPCION (printearArticulo)
 
                 if (articulo != null) {
                     System.out.println("----------------------------");
@@ -1512,7 +1508,7 @@ public class MenuPractica1App {
                     printArticulo(articulo);
                     System.out.println(" - cantidad pedida = " + linea.getCantidad());
 
-                    double precioPorArticulo = dam.sacarPrecioArticulo(idArticuloStr);
+                    double precioPorArticulo = dam.sacarPrecioArticulo(idArticuloStr); //SACAMOS PRECIO (con IDArticulo)
                     double totalLinea = precioPorArticulo * linea.getCantidad();
                     importeTotalCliente += totalLinea;
 
@@ -1533,17 +1529,29 @@ public class MenuPractica1App {
 
     public static double precioTotalClienteDescontado(DataAccessManager dam, String idCliente) throws SQLException {
 
+        //SACAR EL PRECIO ASOCIADO AL CLIENTE
         double precioTotalSinDescuento = sacarPrecioTotalClientePedidos(dam, idCliente);
+        //SACAR DESCUENTO
         double descuento = dam.sacarDescuento(idCliente) / 100;
 
+        //CALCULAR PRECIO CLIENTE + DESCUENTO
         double precioTotalConDescuento = precioTotalSinDescuento * (1 - descuento);
 
         System.out.println("El precio total sin descuento es: " + String.format("%.2f",precioTotalSinDescuento));
         System.out.println("El descuento aplicado es: " + (descuento * 100) + "%");
-        System.out.println("El precio total con descuento es: " + String.format("%.2f",precioTotalConDescuento));
-        System.out.println("Has pagado " + String.format("%.2f",(precioTotalSinDescuento - precioTotalConDescuento)) + " euros menos ");
+        System.out.println("El precio total con descuento es: " + String.format("%.2f", precioTotalConDescuento));
+        System.out.println("Has pagado " + String.format("%.2f", (precioTotalSinDescuento - precioTotalConDescuento)) + " euros menos ");
 
         return precioTotalConDescuento;
+    }
+
+    //PRINTEAR LOS 3 METODOS A LA VEZ - dar cliente
+    public static void printImporteTotalCliente(DataAccessManager dam) throws SQLException {
+
+        System.out.println("Listado de comandas con importe y descuento");
+        System.out.println("Escribeme el id del cliente al que queremos ver los pedidos");
+        String idCliente = tcl.nextLine();
+        precioTotalClienteDescontado(dam, idCliente);
     }
 
     //METODO 2

@@ -175,6 +175,8 @@ public class PedidoDAO extends DataAccessObject {
         return filasAfectadas;
     }
     
+    //METODO 1 (1)
+    
     protected List<Pedido> listarPedidosCliente(String idCliente) throws SQLException {
         
         List<Pedido> pedidosCliente = new ArrayList<>();

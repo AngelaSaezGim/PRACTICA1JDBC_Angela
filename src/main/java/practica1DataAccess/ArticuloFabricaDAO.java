@@ -168,6 +168,7 @@ public class ArticuloFabricaDAO extends DataAccessObject {
         return filasAfectadas;
     }
         
+     //METODO 1 (3)
             
     protected double sacarPrecioArticulo(String idArticulo) throws SQLException{
         

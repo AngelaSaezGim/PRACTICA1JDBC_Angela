@@ -546,6 +546,8 @@ public class DataAccessManager implements AutoCloseable {
     
     
     //METODO 1 - ACCESO
+    
+    // PEDIDODAO
     public List<Pedido> listarPedidosCliente(String idCliente) throws SQLException {
         if (idCliente == null || idCliente.length() == 0) {
             throw new IllegalArgumentException("Debe indicar el filtro de búsqueda");
@@ -553,6 +555,7 @@ public class DataAccessManager implements AutoCloseable {
         return this.pedidoDAO.listarPedidosCliente(idCliente);
     }
     
+    //LINEAPEDIDODAO
     public List<LineaPedido>  filtrarPedidos(List<Pedido> pedidosCliente) throws SQLException {
         if (pedidosCliente == null) {
             throw new IllegalArgumentException("Debe indicar el filtro de búsqueda");
@@ -560,6 +563,7 @@ public class DataAccessManager implements AutoCloseable {
         return this.lineaPedidoDAO.filtrarPedidos(pedidosCliente);
     }
     
+    //ARTICULOFABRICADAO
     public double sacarPrecioArticulo(String idArticulo) throws SQLException{
         if (idArticulo == null || idArticulo.length() == 0) {
             throw new IllegalArgumentException("Debe indicar el filtro de búsqueda");
@@ -567,6 +571,7 @@ public class DataAccessManager implements AutoCloseable {
         return articuloFabricaDAO.sacarPrecioArticulo(idArticulo);
     }
     
+    // CLIENTEDAO
     public double sacarDescuento(String idCliente) throws SQLException{
         if (idCliente== null || idCliente.length() == 0) {
             throw new IllegalArgumentException("Debe indicar el filtro de búsqueda");

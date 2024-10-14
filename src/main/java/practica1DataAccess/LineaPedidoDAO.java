@@ -183,7 +183,10 @@ public class LineaPedidoDAO extends DataAccessObject {
         return filasAfectadas;
     }
     
+    //METODO 1 (2)
+    
     protected List<LineaPedido> filtrarPedidos(List<Pedido> pedidosFilteredByClient) throws SQLException {
+
         List<LineaPedido> listaLineasPedidoCliente = new ArrayList<>();
 
         if (pedidosFilteredByClient == null || pedidosFilteredByClient.isEmpty()) {

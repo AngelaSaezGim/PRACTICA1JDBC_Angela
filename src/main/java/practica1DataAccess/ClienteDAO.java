@@ -157,6 +157,8 @@ public class ClienteDAO extends DataAccessObject {
         return filasAfectadas;
     }
     
+    //METODO 1 (4)
+    
      protected double sacarDescuento(String idCliente) throws SQLException{
  
         double descuentoCliente = 0; //Por defecto 0 si no hay
