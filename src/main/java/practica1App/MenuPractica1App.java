@@ -1559,6 +1559,14 @@ public class MenuPractica1App {
     ii. Método que borre todas las fábricas a las que no se haya pedido ningún artículo que se haya incluido en ningún pedido en el momento de consulta de la BD. (2 puntos)
     */
     
+    public static int borrarFabricasSinPedido(DataAccessManager dam){
+        
+        int numFabricasBorradas = 0;
+        
+        
+        return numFabricasBorradas;
+    }
+    
      //METODO 3
     /*
     iii. Método que calcule la cantidad total de artículos incluidos en todos los pedidos de un año dado. (1 punto)
