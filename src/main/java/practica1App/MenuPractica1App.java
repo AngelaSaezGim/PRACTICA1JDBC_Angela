@@ -1554,21 +1554,39 @@ public class MenuPractica1App {
         precioTotalClienteDescontado(dam, idCliente);
     }
 
+    
     //METODO 2
     /*
     ii. Método que borre todas las fábricas a las que no se haya pedido ningún artículo que se haya incluido en ningún pedido en el momento de consulta de la BD. (2 puntos)
+    Fabricas(idFabrica) - borramos por aqui
+    ArticuloFabrica(idFabrica,idArticulo)  - Las fabricas tienen articulos (lista idArticulos)
+    -articulos vinculados a pedidos (lineaPedido-idPedido-idArticulo)  (de esos idArticulos revisar los que NO se encuentran en LineaPedido)
     */
     
-    public static int borrarFabricasSinPedido(DataAccessManager dam){
+    public static void borrarFabricasSinArticuloPedido(DataAccessManager dam) throws SQLException{
         
-        int numFabricasBorradas = 0;
+        //listaFabricasSinPedido = dam.filtrarFabricasSinPedido
+        int numFabricasBorradas = 0; //dam.borrarFabricasSinArticulosAsociadosAPedido(listaFabricasSinPedido);
         
-        
-        return numFabricasBorradas;
+        if (numFabricasBorradas > 0) {
+            System.out.println("Fabricas con articulos asociados a pedidos borradas exitosamente. Se borraron = " + numFabricasBorradas);
+        } else {
+            System.out.println("No se encontraron fabricas sin articulos asociados a pedidos.");
+        }
     }
     
      //METODO 3
     /*
     iii. Método que calcule la cantidad total de artículos incluidos en todos los pedidos de un año dado. (1 punto)
+    ¿Cantidad de numero de articulos? (lapiz + boli) o (39 lapices + 40 bolis..)
+    -PedidoDAO - atributo fecha - idPedido - (lista de pedidos de un año en concreto) 
+    -LineaPedidoDAO - idPedido - idArticulo - CANTIDAD (lista de idsPedido - lista idArticulos + cantidad) = sumar esas cantidades
     */
+    
+    public static void calcularCantidadTotalArticulosPedidos(DataAccessManager dam) throws SQLException{
+        
+        int añoInput = 0;
+        //listaPedidosAño = dam.listarPedidosAño(añoInput)
+        //double cantidadTotalArticulos = dam.calcularCantidadTotalArticulosPedidos(listaPedidosAño);
+    }
 }
