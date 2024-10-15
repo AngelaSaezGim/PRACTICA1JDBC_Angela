@@ -573,11 +573,24 @@ public class DataAccessManager implements AutoCloseable {
     
     // CLIENTEDAO
     public double sacarDescuento(String idCliente) throws SQLException{
-        if (idCliente== null || idCliente.length() == 0) {
+        if (idCliente == null || idCliente.length() == 0) {
             throw new IllegalArgumentException("Debe indicar el filtro de búsqueda");
         }
         return clienteDAO.sacarDescuento(idCliente);
     }
 
+    //METODO 2
+    public List<String> filtrarFabricasSinPedido() throws SQLException {
+        return this.articuloFabricaDAO.filtrarFabricasSinPedido();
+    }
+    
+     public int borrarFabricasSinArticulosAsociadosAPedido( List<String> fabricasSinPedido) throws SQLException {
+        if (fabricasSinPedido == null || fabricasSinPedido.isEmpty()) {
+            throw new IllegalArgumentException("No se encontraron fábricas sin artículos asociados a pedidos.");
+        }
+        return this.fabricaDAO.borrarFabricasSinArticulosAsociadosAPedido(fabricasSinPedido);
+    }
+     
+     //SOLUCION DEPENDENFCIA IDFABRICA A IDALTERNATIVA AL BORRAR
 
 }

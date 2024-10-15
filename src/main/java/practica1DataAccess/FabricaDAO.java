@@ -11,6 +11,7 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 import practica1Objetos.Fabrica;
+import practica1Objetos.FabricaAlternativa;
 
 /**
  *
@@ -100,9 +101,21 @@ public class FabricaDAO extends DataAccessObject {
         }
     }
 
-    protected int deleteFabrica(String idFabrica) {
+    protected int deleteFabrica(String idFabrica) throws SQLException {
 
         int filasAfectadas = 0;
+
+        // Primero eliminar las fábricas alternativas relacionadas
+        //SOLUCIONAR DEPENDENCIA FABRICA ALTERNATIVA
+        FabricaAlternativaDAO fabricaAlternativaDAO = new FabricaAlternativaDAO(cnt);
+        List<FabricaAlternativa> fabricasAlternativas = fabricaAlternativaDAO.loadFabricaAlternativaContaining(idFabrica, "%");
+
+        for (FabricaAlternativa alternativa : fabricasAlternativas) {
+            fabricaAlternativaDAO.deleteFabricaAlternativa(
+                    String.valueOf(alternativa.getIdFabricaPrincipal()),
+                    String.valueOf(alternativa.getIdFabricaAlternativa())
+            );
+        }
 
         try (PreparedStatement stmt = cnt.prepareStatement("DELETE FROM Fabrica WHERE idFabrica = ?")) {
             stmt.setString(1, idFabrica);
@@ -147,7 +160,34 @@ public class FabricaDAO extends DataAccessObject {
 
         return filasAfectadas;
     }
-    
-    //SACAR FABRICAS SIN ARTICULOS
+
+    //METODO 2
+    protected int borrarFabricasSinArticulosAsociadosAPedido(List<String> fabricasSinPedidos) throws SQLException {
+
+        int numFabricasBorradas = 0;
+
+        // Primero eliminar las fábricas alternativas relacionadas
+        //SOLUCIONAR DEPENDENCIA FABRICA ALTERNATIVA
+        FabricaAlternativaDAO fabricaAlternativaDAO = new FabricaAlternativaDAO(cnt);
+
+        try (PreparedStatement stmt = cnt.prepareStatement("DELETE FROM Fabrica WHERE idFabrica = ?")) {
+            for (String idFabrica : fabricasSinPedidos) {
+                //BORRAR FABRICAS ALTERNATIVAS DEPENDIENTES
+                List<FabricaAlternativa> fabricasAlternativas = fabricaAlternativaDAO.loadFabricaAlternativaContaining(idFabrica, "%");
+                for (FabricaAlternativa alternativa : fabricasAlternativas) {
+                    fabricaAlternativaDAO.deleteFabricaAlternativa(
+                            String.valueOf(alternativa.getIdFabricaPrincipal()),
+                            String.valueOf(alternativa.getIdFabricaAlternativa())
+                    );
+                }
+                stmt.setString(1, idFabrica);
+                numFabricasBorradas += stmt.executeUpdate();
+            }
+        } catch (SQLException e) {
+            throw new SQLException("Error al borrar fábricas sin artículos asociados a pedidos: " + e.getMessage());
+        }
+
+        return numFabricasBorradas;
+    }
 
 }

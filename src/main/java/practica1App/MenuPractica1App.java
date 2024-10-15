@@ -291,7 +291,7 @@ public class MenuPractica1App {
                         esperarIntro();
                         break;
                     case QUERY_BORRARFABRICASNOCOMANDA:
-                        System.out.println("Borramos fabricas que no se haya mandando ningún articulo");
+                        borrarFabricasSinArticuloPedido(dam);
                         esperarIntro();
                         break;
                     case QUERY_ARTICULOSAÑO:
@@ -320,7 +320,7 @@ public class MenuPractica1App {
                 .append("\t4)Borrar...\n")
                 .append("\t5)Actualizar...\n")
                 .append("\t6)Listar pedidos cliente (importe + descuento) \n")
-                .append("\t7)Borrar fabricas sin pedidos\n")
+                .append("\t7)Borrar fabricas sin artículos asociados a pedidos\n")
                 .append("\t8)Total de artículos incluidos en todos los pedidos de un año\n")
                 .append("\t9)Salir\n")
                 .append("Opción: ");
@@ -1563,18 +1563,40 @@ public class MenuPractica1App {
     -articulos vinculados a pedidos (lineaPedido-idPedido-idArticulo)  (de esos idArticulos revisar los que NO se encuentran en LineaPedido)
     */
     
-    public static void borrarFabricasSinArticuloPedido(DataAccessManager dam) throws SQLException{
+    public static List<String> FiltrarFabricasSinPedido(DataAccessManager dam) throws SQLException{
         
-        //listaFabricasSinPedido = dam.filtrarFabricasSinPedido
-        int numFabricasBorradas = 0; //dam.borrarFabricasSinArticulosAsociadosAPedido(listaFabricasSinPedido);
+        System.out.println("Mostramos las fabricas sin artículos asociados a pedidos.");
+         List<String> fabricasSinPedidos = dam.filtrarFabricasSinPedido();
+
+            // Imprimir los resultados
+            if (fabricasSinPedidos.isEmpty()) {
+                System.out.println("No se encontraron fábricas sin artículos asociados a pedidos.");
+            } else {
+                System.out.println("Id de las fábricas sin artículos asociados a pedidos:");
+                for (String idFabrica : fabricasSinPedidos) {
+                    System.out.println("Id fabrica = " +  idFabrica + " sin artículos asociados a pedidos");
+                }
+            }
+            
+        return fabricasSinPedidos;
+    }
+
+    public static void borrarFabricasSinArticuloPedido(DataAccessManager dam) throws SQLException {
+
+        List<String> fabricasSinPedidos = FiltrarFabricasSinPedido(dam);
         
+        System.out.println("Procedemos a borrar las fabricas sin artículos asociados a pedidos");
+        //Solucionar dependencia fabrica alternativa
+        int numFabricasBorradas = dam.borrarFabricasSinArticulosAsociadosAPedido(fabricasSinPedidos);
+        
+
         if (numFabricasBorradas > 0) {
             System.out.println("Fabricas con articulos asociados a pedidos borradas exitosamente. Se borraron = " + numFabricasBorradas);
         } else {
-            System.out.println("No se encontraron fabricas sin articulos asociados a pedidos.");
+            System.out.println("No se borró nada.");
         }
     }
-    
+
      //METODO 3
     /*
     iii. Método que calcule la cantidad total de artículos incluidos en todos los pedidos de un año dado. (1 punto)

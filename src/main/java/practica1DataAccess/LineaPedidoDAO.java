@@ -219,5 +219,21 @@ public class LineaPedidoDAO extends DataAccessObject {
 
         return listaLineasPedidoCliente;
     }
+    
+    //METODO 2 
+    
+      // Métodos getter para acceder a las columnas
+
+    public static String getColumnIdArticulo() {
+        return LineaPedidoTableColumns.COLUMN_IDARTICULO;
+    }
+
+    
+    //METODO 3
+    
+    public static String getColumnCantidad() {
+        return LineaPedidoTableColumns.COLUMN_CANTIDAD;
+    }
+
 
 }

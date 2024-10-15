@@ -11,6 +11,7 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 import practica1Objetos.ArticuloFabrica;
+import practica1DataAccess.LineaPedidoDAO;
 
 /**
  *
@@ -148,47 +149,72 @@ public class ArticuloFabricaDAO extends DataAccessObject {
         }
         return null;
     }
-    
-        protected int updateArticuloFabrica(String idArticulo,String idFabrica, ArticuloFabrica articuloFabricaActualizar) {
+
+    protected int updateArticuloFabrica(String idArticulo, String idFabrica, ArticuloFabrica articuloFabricaActualizar) {
 
         int filasAfectadas = 0;
 
-            String sql = "UPDATE ArticuloFabrica SET existencias = ?, precio = ? WHERE idArticulo = ? AND idFabrica = ?";
+        String sql = "UPDATE ArticuloFabrica SET existencias = ?, precio = ? WHERE idArticulo = ? AND idFabrica = ?";
 
-            try (PreparedStatement stmt = cnt.prepareStatement(sql)) {
-                stmt.setInt(1, articuloFabricaActualizar.getExistencias());
-                stmt.setDouble(2, articuloFabricaActualizar.getPrecio());
-                stmt.setString(3, idArticulo);
-                stmt.setString(4, idFabrica);
+        try (PreparedStatement stmt = cnt.prepareStatement(sql)) {
+            stmt.setInt(1, articuloFabricaActualizar.getExistencias());
+            stmt.setDouble(2, articuloFabricaActualizar.getPrecio());
+            stmt.setString(3, idArticulo);
+            stmt.setString(4, idFabrica);
 
-                filasAfectadas = stmt.executeUpdate();
-            } catch (SQLException e) {
-                e.getMessage();
-            }
+            filasAfectadas = stmt.executeUpdate();
+        } catch (SQLException e) {
+            e.getMessage();
+        }
         return filasAfectadas;
     }
-        
-     //METODO 1 (3)
-            
-    protected double sacarPrecioArticulo(String idArticulo) throws SQLException{
-        
+
+    //METODO 1 (3)
+    protected double sacarPrecioArticulo(String idArticulo) throws SQLException {
+
         double precioArticulo = 0;
-        
+
         PreparedStatement stmt = cnt.prepareStatement("SELECT * FROM ArticuloFabrica WHERE idArticulo = ?");
         stmt.setString(1, idArticulo);
         ResultSet result = stmt.executeQuery();
 
         // Si se encuentra un artículo, extraemos el precio
         while (result.next()) {
-             precioArticulo = result.getDouble("precio");
+            precioArticulo = result.getDouble("precio");
         }
-        
+
         return precioArticulo;
     }
-    
-    //borre todas las fábricas a las que no se haya pedido ningún artículo que se haya incluido en ningún pedido en el momento de consulta de la BD.
-    //
-    
-    
+
+    //METODO 2
+    //FILTRO LAS FABRICAS QUE NO TENGAN PEDIDOS
+    protected List<String> filtrarFabricasSinPedido() throws SQLException {
+        List<String> fabricasSinPedidos = new ArrayList<>();
+        //Subconsulta - uso alias (ArticuloFabrica_iF.idFabrica) y (LineaPedido_iA.IdArticulo)
+        String sql = "SELECT f.idFabrica " +
+                 "FROM Fabrica f " +
+                 "WHERE NOT EXISTS (" +
+                 "  SELECT 1 FROM ArticuloFabrica af " +
+                 "  WHERE af.idFabrica = f.idFabrica AND " +
+                 "  EXISTS (" +
+                 "    SELECT 1 FROM LineaPedido lp " +
+                 "    WHERE lp.idArticulo = af.idArticulo" +
+                 "  )" +
+                 ")";
+
+
+        try (PreparedStatement stmt = cnt.prepareStatement(sql); ResultSet rs = stmt.executeQuery()) {
+
+            // Itero - cada idFabrica que cumpla ese requisito la meto en la lista fabricasSinPedidos.
+            while (rs.next()) {
+                fabricasSinPedidos.add(rs.getString("idFabrica"));
+            }
+
+        } catch (SQLException e) {
+            throw new SQLException("Error al filtrar fábricas sin pedidos: " + e.getMessage());
+        }
+
+        return fabricasSinPedidos;
+    }
 
 }
