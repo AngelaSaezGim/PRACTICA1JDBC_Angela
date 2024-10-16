@@ -191,5 +191,25 @@ public class PedidoDAO extends DataAccessObject {
         
         return pedidosCliente;
     }
+  
+    //METODO 3
+    protected List<Pedido> listarPedidosPorAño(int inputAño) throws SQLException {
+
+        List<Pedido> listaPedidosPorAño = new ArrayList<>();
+        String sql = "SELECT * FROM Pedido WHERE YEAR(fecha) = ?";
+
+        try ( PreparedStatement stmt = cnt.prepareStatement(sql)) {
+            stmt.setInt(1, inputAño);
+            try ( ResultSet result = stmt.executeQuery()) {
+                while (result.next()) {
+                    listaPedidosPorAño.add(readPedidoFromResultSet(result));
+                }
+            }
+        } catch (SQLException e) {
+            throw new SQLException("Error al listar los pedidos por año: " + e.getMessage(), e);
+        }
+
+        return listaPedidosPorAño;
+    }
 
 }

@@ -586,11 +586,19 @@ public class DataAccessManager implements AutoCloseable {
     
      public int borrarFabricasSinArticulosAsociadosAPedido( List<String> fabricasSinPedido) throws SQLException {
         if (fabricasSinPedido == null || fabricasSinPedido.isEmpty()) {
-            throw new IllegalArgumentException("No se encontraron fábricas sin artículos asociados a pedidos.");
+            System.out.println("No se encontraron fábricas sin artículos asociados a pedidos.");
         }
         return this.fabricaDAO.borrarFabricasSinArticulosAsociadosAPedido(fabricasSinPedido);
     }
      
-     //SOLUCION DEPENDENFCIA IDFABRICA A IDALTERNATIVA AL BORRAR
+     //METODO 3
+     
+     public List<Pedido> listarPedidosPorAño(int inputAño) throws SQLException {
+         if (inputAño == 0) {
+            throw new IllegalArgumentException("Debe indicar el filtro de búsqueda");
+        }
+        return this.pedidoDAO.listarPedidosPorAño(inputAño);
+    }
+    
 
 }

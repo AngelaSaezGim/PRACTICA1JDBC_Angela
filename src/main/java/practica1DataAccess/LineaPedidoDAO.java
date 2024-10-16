@@ -219,21 +219,39 @@ public class LineaPedidoDAO extends DataAccessObject {
 
         return listaLineasPedidoCliente;
     }
-    
-    //METODO 2 
-    
-      // Métodos getter para acceder a las columnas
 
-    public static String getColumnIdArticulo() {
-        return LineaPedidoTableColumns.COLUMN_IDARTICULO;
+      //METODO 3
+    // Obtener todas las líneas de pedido asociadas a estos pedidos
+    protected List<LineaPedido> filtrarLineasPedidosIdPedido(String idPedidoStr) throws SQLException {
+        List<LineaPedido> listaLineasPedido = new ArrayList<>();
+
+        String sql = "SELECT * FROM LineaPedido WHERE idPedido = ?";
+
+        try (PreparedStatement stmt = cnt.prepareStatement(sql)) {
+        stmt.setString(1, idPedidoStr);
+        ResultSet result = stmt.executeQuery();
+        
+        // Procesar el ResultSet y agregar cada línea de pedido a la lista
+        while (result.next()) {
+            int idLineaPedido = result.getInt("idLineaPedido");
+            int idArticulo = result.getInt("idArticulo");
+            int cantidad = result.getInt("cantidad");
+            
+            int idPedido = Integer.parseInt(idPedidoStr);
+
+            LineaPedido linea = new LineaPedido(idLineaPedido, idPedido, idArticulo, cantidad);
+            listaLineasPedido.add(linea);
+        }
+    } catch (SQLException e) {
+        throw new SQLException("Error al listar las líneas del pedido con ID " + idPedidoStr + ": " + e.getMessage());
     }
+        
+        return listaLineasPedido;
+    }
+    
 
-    
-    //METODO 3
-    
     public static String getColumnCantidad() {
         return LineaPedidoTableColumns.COLUMN_CANTIDAD;
     }
-
 
 }

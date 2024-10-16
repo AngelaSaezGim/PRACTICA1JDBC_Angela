@@ -216,5 +216,7 @@ public class ArticuloFabricaDAO extends DataAccessObject {
 
         return fabricasSinPedidos;
     }
+    
+    
 
 }

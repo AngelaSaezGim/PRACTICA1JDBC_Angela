@@ -296,6 +296,7 @@ public class MenuPractica1App {
                         break;
                     case QUERY_ARTICULOSAÑO:
                         System.out.println("Cantidad articulos de las comandas en x año");
+                        filtrarPedidosAño(dam);
                         esperarIntro();
                     case EXIT:
                         break;
@@ -1586,9 +1587,7 @@ public class MenuPractica1App {
         List<String> fabricasSinPedidos = FiltrarFabricasSinPedido(dam);
         
         System.out.println("Procedemos a borrar las fabricas sin artículos asociados a pedidos");
-        //Solucionar dependencia fabrica alternativa
         int numFabricasBorradas = dam.borrarFabricasSinArticulosAsociadosAPedido(fabricasSinPedidos);
-        
 
         if (numFabricasBorradas > 0) {
             System.out.println("Fabricas con articulos asociados a pedidos borradas exitosamente. Se borraron = " + numFabricasBorradas);
@@ -1605,10 +1604,53 @@ public class MenuPractica1App {
     -LineaPedidoDAO - idPedido - idArticulo - CANTIDAD (lista de idsPedido - lista idArticulos + cantidad) = sumar esas cantidades
     */
     
-    public static void calcularCantidadTotalArticulosPedidos(DataAccessManager dam) throws SQLException{
+    public static List<Pedido> filtrarPedidosAño(DataAccessManager dam) throws SQLException{ //calcularCantidadTotalArticulosPedidos
         
-        int añoInput = 0;
-        //listaPedidosAño = dam.listarPedidosAño(añoInput)
-        //double cantidadTotalArticulos = dam.calcularCantidadTotalArticulosPedidos(listaPedidosAño);
+        int añoInput = 2024;
+        //Filtro todos los pedidos de un año
+        List<Pedido> listaPedidosAño = dam.listarPedidosPorAño(añoInput);
+        
+        // Imprimir los resultados
+            if (listaPedidosAño .isEmpty()) {
+                System.out.println("No se encontraron pedidos para ese año");
+            } else {
+                System.out.println("Pedidos realizados en el año " + añoInput);
+            // Imprimir cada pedido filtrado
+            for (Pedido pedido : listaPedidosAño) {
+                System.out.println(pedido.toString());
+            }
+        }
+
+        return listaPedidosAño;
+    }
+
+    public static double calcularCantidadTotalArticulosPedidosAño(DataAccessManager dam) throws SQLException {
+
+        //Saco todos los articulos asociados a esos pedidos (lineaPedidoDAO)
+        //Sumo las cantidades
+        List<Pedido> listaPedidosAño = filtrarPedidosAño(dam);
+        if (listaPedidosAño.isEmpty()) {
+            System.out.println("La lista está vacia");
+        } else {
+            
+            double totalArticulos = 0;
+
+            /*
+            // Recorremos los pedidos sacar todos los articulos diferentes
+            for (Pedido pedido : listaPedidosAño) {
+                // Obtener todas las líneas de pedido asociadas a este pedido
+                List<LineaPedido> lineasPedido = dam.filtrarLineasPedidosIdPedido(pedido.getIdPedido());
+
+                // Sumamos las cantidades de artículos en cada línea de pedido
+                for (LineaPedido linea : lineasPedido) {
+                    totalArticulos += linea.getCantidad();
+                }
+            }*/
+
+            return totalArticulos;
+        }
+
+        return 0;
+
     }
 }

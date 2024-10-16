@@ -74,7 +74,7 @@ public class FabricaDAO extends DataAccessObject {
                 + FabricaTableColumns.COLUMN_TELEFONOCONTACTO + ") "
                 + "VALUES (?, ?)";
 
-        try (PreparedStatement stmt = cnt.prepareStatement(sentenciaSQL)) {
+        try ( PreparedStatement stmt = cnt.prepareStatement(sentenciaSQL)) {
             int idFabrica = obtenerMaxId() + 1;
             stmt.setInt(1, idFabrica);
             stmt.setString(2, fabrica.getTelefonoContacto());
@@ -117,7 +117,7 @@ public class FabricaDAO extends DataAccessObject {
             );
         }
 
-        try (PreparedStatement stmt = cnt.prepareStatement("DELETE FROM Fabrica WHERE idFabrica = ?")) {
+        try ( PreparedStatement stmt = cnt.prepareStatement("DELETE FROM Fabrica WHERE idFabrica = ?")) {
             stmt.setString(1, idFabrica);
             filasAfectadas = stmt.executeUpdate();
         } catch (SQLException e) {
@@ -131,7 +131,7 @@ public class FabricaDAO extends DataAccessObject {
         Fabrica fabrica = null;
         String sql = "SELECT * FROM Fabrica WHERE idFabrica = ?";
 
-        try (PreparedStatement stmt = cnt.prepareStatement(sql)) {
+        try ( PreparedStatement stmt = cnt.prepareStatement(sql)) {
             stmt.setString(1, idFabrica);
             ResultSet result = stmt.executeQuery();
 
@@ -149,7 +149,7 @@ public class FabricaDAO extends DataAccessObject {
         int filasAfectadas = 0;
 
         String sql = "UPDATE Fabrica SET telefonoContacto = ? WHERE idFabrica = ?";
-        try (PreparedStatement stmt = cnt.prepareStatement(sql)) {
+        try ( PreparedStatement stmt = cnt.prepareStatement(sql)) {
             stmt.setString(1, fabricaActualizar.getTelefonoContacto());
             stmt.setString(2, idFabrica);
 
@@ -170,18 +170,28 @@ public class FabricaDAO extends DataAccessObject {
         //SOLUCIONAR DEPENDENCIA FABRICA ALTERNATIVA
         FabricaAlternativaDAO fabricaAlternativaDAO = new FabricaAlternativaDAO(cnt);
 
-        try (PreparedStatement stmt = cnt.prepareStatement("DELETE FROM Fabrica WHERE idFabrica = ?")) {
-            for (String idFabrica : fabricasSinPedidos) {
-                //BORRAR FABRICAS ALTERNATIVAS DEPENDIENTES
-                List<FabricaAlternativa> fabricasAlternativas = fabricaAlternativaDAO.loadFabricaAlternativaContaining(idFabrica, "%");
-                for (FabricaAlternativa alternativa : fabricasAlternativas) {
-                    fabricaAlternativaDAO.deleteFabricaAlternativa(
-                            String.valueOf(alternativa.getIdFabricaPrincipal()),
-                            String.valueOf(alternativa.getIdFabricaAlternativa())
-                    );
+        try {
+            try ( PreparedStatement stmtArticuloFabrica = cnt.prepareStatement("DELETE FROM ArticuloFabrica WHERE idFabrica = ?")) {
+                try ( PreparedStatement stmtFabrica = cnt.prepareStatement("DELETE FROM Fabrica WHERE idFabrica = ?")) {
+                    for (String idFabrica : fabricasSinPedidos) {
+                        
+                        stmtArticuloFabrica.setString(1, idFabrica);
+                        stmtArticuloFabrica.executeUpdate();
+
+                        // Borrar fábricas alternativas dependientes
+                        List<FabricaAlternativa> fabricasAlternativas = fabricaAlternativaDAO.loadFabricaAlternativaContaining(idFabrica, "%");
+                        for (FabricaAlternativa alternativa : fabricasAlternativas) {
+                            fabricaAlternativaDAO.deleteFabricaAlternativa(
+                                    String.valueOf(alternativa.getIdFabricaPrincipal()),
+                                    String.valueOf(alternativa.getIdFabricaAlternativa())
+                            );
+                        }
+                        
+                        // Borrar fábrica en la tabla Fabrica
+                        stmtFabrica.setString(1, idFabrica);
+                        numFabricasBorradas += stmtFabrica.executeUpdate();
+                    }
                 }
-                stmt.setString(1, idFabrica);
-                numFabricasBorradas += stmt.executeUpdate();
             }
         } catch (SQLException e) {
             throw new SQLException("Error al borrar fábricas sin artículos asociados a pedidos: " + e.getMessage());
