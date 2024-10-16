@@ -183,29 +183,32 @@ public class LineaPedidoDAO extends DataAccessObject {
         return filasAfectadas;
     }
 
-    //METODO 1 (2)
+    //METODO 1 - te saco las lineas de pedido de la lista de pedidos asociada a un cliente
     protected List<LineaPedido> filtrarPedidos(List<Pedido> pedidosFilteredByClient) throws SQLException {
 
         List<LineaPedido> listaLineasPedidoCliente = new ArrayList<>();
 
         if (pedidosFilteredByClient == null || pedidosFilteredByClient.isEmpty()) {
+            System.out.println("La lista de pedidos esta vacía");
             return listaLineasPedidoCliente;
         }
-
+        // IN - busca TODAS las líneas de pedido (varias) cuyo idPedido se encuentre en una lista de pedidos
         StringBuilder query = new StringBuilder("SELECT * FROM LineaPedido WHERE idPedido IN (");
-
-        // PLACEHOLDER ? PARA CADA PEDIDO - CONSTRUIMOS LA QUERY
+        
+        //CONSTRUCCION DE LA QUERY
+        // PLACEHOLDER ? por cada pedido en la lista pedidosFilteredByClient 
         for (int i = 0; i < pedidosFilteredByClient.size(); i++) {
-            query.append("?");
+            query.append("?");  //Cada interrogante será una idPedido
             if (i < pedidosFilteredByClient.size() - 1) {
-                query.append(", "); //coma entre los placeholders
+                query.append(", "); //coma entre los placeholders (separar idsPedido)
             }
         }
         query.append(")");
+        //FIN DE CONSTRUCCION DE LA QUERY
+        
+        PreparedStatement stmt = cnt.prepareStatement(query.toString()); //Aplicamos la query en los datos
 
-        PreparedStatement stmt = cnt.prepareStatement(query.toString()); //Segun los pedidos que tengas
-
-        // valores de idPedido a los placeholders (+1 pq es un bucle)
+        // unir valores de idPedido a los placeholders 
         for (int i = 0; i < pedidosFilteredByClient.size(); i++) {
             stmt.setInt(i + 1, pedidosFilteredByClient.get(i).getIdPedido());
         }
@@ -246,10 +249,6 @@ public class LineaPedidoDAO extends DataAccessObject {
         }
 
         return listaLineasPedido;
-    }
-
-    public static String getColumnCantidad() {
-        return LineaPedidoTableColumns.COLUMN_CANTIDAD;
     }
 
 }

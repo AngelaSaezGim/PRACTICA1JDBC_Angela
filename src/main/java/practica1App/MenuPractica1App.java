@@ -287,7 +287,7 @@ public class MenuPractica1App {
                         } while (opcionElegidaUpdate != MenuOption5.ATRAS);
                         break;
                     case QUERY_LISTARCOMANDES:
-                        printImporteTotalCliente(dam);
+                        sacarPrecioTotalClientePedidos(dam);
                         esperarIntro();
                         break;
                     case QUERY_BORRARFABRICASNOCOMANDA:
@@ -932,7 +932,24 @@ public class MenuPractica1App {
 
     private static void insertarPedido(DataAccessManager dam) throws SQLException {
 
-        System.out.println("Se creará un pedido con la fecha actual");
+        System.out.println("Se creará un pedido");
+
+        System.out.println("Ingrese fecha (formato: YYYY-MM-DD HH:MM:SS) (dejar vacío para poner la fecha actual):");
+        String fechaStr = tcl.nextLine();
+        Timestamp fechaPedido;
+
+        if (!fechaStr.isEmpty()) {
+            try {
+                fechaPedido = Timestamp.valueOf(fechaStr);
+            } catch (IllegalArgumentException e) {
+                System.out.println("Fecha no válida. Asegúrese de usar el formato correcto: YYYY-MM-DD HH:MM:SS");
+                return;
+            }
+        } else {
+            // Si no damos fecha - fecha actual
+            fechaPedido = new Timestamp(System.currentTimeMillis());
+        }
+
         System.out.print("Escriba el número de la comanda: ");
         int numeroComanda = tcl.nextInt();
 
@@ -954,7 +971,7 @@ public class MenuPractica1App {
             return;
         }
 
-        Pedido nuevoPedido = new Pedido(new Timestamp(System.currentTimeMillis()), numeroComanda, idCliente, idDireccion);
+        Pedido nuevoPedido = new Pedido(fechaPedido, numeroComanda, idCliente, idDireccion);
 
         try {
             dam.insertarPedido(nuevoPedido);
@@ -1471,11 +1488,10 @@ public class MenuPractica1App {
         }
     }
 
-    //METODO 1//
-    //SACAMOS LA LISTA DE PEDIDOS DE ESE CLIENTE
+    //-----------------------METODO 1-----------------------------------------//
     public static List<Pedido> consultarPedidosCliente(DataAccessManager dam, String idCliente) throws SQLException {
-
-        List<Pedido> pedidosFilteredByClient = dam.listarPedidosCliente(idCliente);
+        //SACAMOS LA LISTA DE PEDIDOS DE ESE CLIENTE
+        List<Pedido> pedidosFilteredByClient = dam.listarPedidosCliente(idCliente); //PedidoDAO
         if (pedidosFilteredByClient != null) {
             System.out.println("Pedidos hechos por el cliente " + idCliente);
             printPedidos(pedidosFilteredByClient);
@@ -1487,20 +1503,27 @@ public class MenuPractica1App {
     }
 
     //CON LOS PEDIDOS DE ESE CLIENTE - SACAMOS LAS LINEAS Y LAS CALCULAMOS
-    public static double sacarPrecioTotalClientePedidos(DataAccessManager dam, String idCliente) throws SQLException {
+    public static void sacarPrecioTotalClientePedidos(DataAccessManager dam) throws SQLException {
 
-        List<Pedido> pedidosCliente = consultarPedidosCliente(dam, idCliente);
-        List<LineaPedido> lineasPedidoCliente = dam.filtrarPedidos(pedidosCliente);
-        double importeTotalCliente = 0;
+        System.out.println("Listado de comandas con importe y descuento");
+        System.out.println("Escribeme el id del cliente al que queremos ver los pedidos");
+        String idCliente = tcl.nextLine();
+        List<Pedido> pedidosCliente = consultarPedidosCliente(dam, idCliente); //Llamo al metodo anterior y printeo
+
+        // saco las lineas de pedido de la lista de pedidos asociada a un cliente
+        List<LineaPedido> lineasPedidoCliente = dam.filtrarPedidos(pedidosCliente); //LineaPedidoDAO
+
+        double precioTotalSinDescuento = 0;
 
         if (lineasPedidoCliente != null && !lineasPedidoCliente.isEmpty()) {
-            System.out.println("Líneas de pedido asociadas a estos pedidos:");
+            System.out.println("Líneas de pedido asociadas a estos pedidos:"); //printeo esas lineas de pedido (de la lista de pedidos asociada a cliente)
             printLineasPedido(lineasPedidoCliente);
 
-            for (LineaPedido linea : lineasPedidoCliente) {
+            //SACAMOS EL IMPORTE DE LOS PEDIDOS DEL CLIENTE - USANDO LINEAPEDIDO (recorriendo cada linea)
+            for (LineaPedido linea : lineasPedidoCliente) {  //Por cada linea de pedido...
                 int idArticulo = linea.getIdArticulo();
                 String idArticuloStr = String.valueOf(idArticulo);
-                Articulo articulo = dam.loadArticuloByCode(idArticuloStr); //PARA PODER PONER LA DESCRIPCION (printearArticulo)
+                Articulo articulo = dam.loadArticuloByCode(idArticuloStr); //PARA PODER PONER LA DESCRIPCION (printearArticulo) - ArticuloDAO
 
                 if (articulo != null) {
                     System.out.println("----------------------------");
@@ -1508,9 +1531,10 @@ public class MenuPractica1App {
                     printArticulo(articulo);
                     System.out.println(" - cantidad pedida = " + linea.getCantidad());
 
-                    double precioPorArticulo = dam.sacarPrecioArticulo(idArticuloStr); //SACAMOS PRECIO (con IDArticulo)
-                    double totalLinea = precioPorArticulo * linea.getCantidad();
-                    importeTotalCliente += totalLinea;
+                    /*PRECIO ARTICULOS*/
+                    double precioPorArticulo = dam.sacarPrecioArticulo(idArticuloStr); //SACAMOS PRECIO (con IDArticulo) - de ArticuloFabricaDAO
+                    double totalLinea = precioPorArticulo * linea.getCantidad(); // Lo juntamos CON CANTIDAD de linea pedido (calcular total en cada linea)
+                    precioTotalSinDescuento += totalLinea; //Iremos sumando por cada linea al importe total del cliente
 
                     System.out.println(" - Precio por artículo: " + precioPorArticulo);
                     System.out.println(" - Total por esta línea: " + String.format("%.2f", totalLinea));
@@ -1524,47 +1548,25 @@ public class MenuPractica1App {
             System.out.println("No se encontraron líneas de pedido con los IDs de pedido asociados a ese cliente.");
         }
 
-        return importeTotalCliente;
-    }
-
-    public static double precioTotalClienteDescontado(DataAccessManager dam, String idCliente) throws SQLException {
-
-        //SACAR EL PRECIO ASOCIADO AL CLIENTE
-        double precioTotalSinDescuento = sacarPrecioTotalClientePedidos(dam, idCliente);
-        //SACAR DESCUENTO
+        /*Sacamos Descuento*/
         double descuento = dam.sacarDescuento(idCliente) / 100;
-
-        //CALCULAR PRECIO CLIENTE + DESCUENTO
         double precioTotalConDescuento = precioTotalSinDescuento * (1 - descuento);
 
         System.out.println("El precio total sin descuento es: " + String.format("%.2f", precioTotalSinDescuento));
         System.out.println("El descuento aplicado es: " + (descuento * 100) + "%");
         System.out.println("El precio total con descuento es: " + String.format("%.2f", precioTotalConDescuento));
         System.out.println("Has pagado " + String.format("%.2f", (precioTotalSinDescuento - precioTotalConDescuento)) + " euros menos ");
-
-        return precioTotalConDescuento;
     }
 
-    //PRINTEAR LOS 3 METODOS A LA VEZ - dar cliente
-    public static void printImporteTotalCliente(DataAccessManager dam) throws SQLException {
-
-        System.out.println("Listado de comandas con importe y descuento");
-        System.out.println("Escribeme el id del cliente al que queremos ver los pedidos");
-        String idCliente = tcl.nextLine();
-        precioTotalClienteDescontado(dam, idCliente);
-    }
-
-    //METODO 2
+    //-----------------------FIN METODO 1-----------------------------------------//
+    //----------------------- METODO 2-----------------------------------------//
     /*
-    ii. Método que borre todas las fábricas a las que no se haya pedido ningún artículo que se haya incluido en ningún pedido en el momento de consulta de la BD. (2 puntos)
-    Fabricas(idFabrica) - borramos por aqui
-    ArticuloFabrica(idFabrica,idArticulo)  - Las fabricas tienen articulos (lista idArticulos)
-    -articulos vinculados a pedidos (lineaPedido-idPedido-idArticulo)  (de esos idArticulos revisar los que NO se encuentran en LineaPedido)
+    ii. Método que borre todas las fábricas a las que no se haya pedido ningún artículo que se haya incluido en ningún pedido.
      */
     public static List<String> FiltrarFabricasSinPedido(DataAccessManager dam) throws SQLException {
 
         System.out.println("Mostramos las fabricas sin artículos asociados a pedidos.");
-        List<String> fabricasSinPedidos = dam.filtrarFabricasSinPedido();
+        List<String> fabricasSinPedidos = dam.filtrarFabricasSinPedido(); //ArticuloFabricaDAO
 
         // Imprimir los resultados
         if (fabricasSinPedidos.isEmpty()) {
@@ -1581,10 +1583,10 @@ public class MenuPractica1App {
 
     public static void borrarFabricasSinArticuloPedido(DataAccessManager dam) throws SQLException {
 
-        List<String> fabricasSinPedidos = FiltrarFabricasSinPedido(dam);
+        List<String> fabricasSinPedidos = FiltrarFabricasSinPedido(dam); //Llamo al metodo anterior
 
         System.out.println("Procedemos a borrar las fabricas sin artículos asociados a pedidos");
-        int numFabricasBorradas = dam.borrarFabricasSinArticulosAsociadosAPedido(fabricasSinPedidos);
+        int numFabricasBorradas = dam.borrarFabricasSinArticulosAsociadosAPedido(fabricasSinPedidos); //FabricaDAO
 
         if (numFabricasBorradas > 0) {
             System.out.println("Fabricas con articulos asociados a pedidos borradas exitosamente. Se borraron = " + numFabricasBorradas);
@@ -1593,19 +1595,17 @@ public class MenuPractica1App {
         }
     }
 
-    //METODO 3
+    //----------------------- FIN METODO 2 -----------------------------------------//
+    //----------------------- METODO 3 -----------------------------------------//
     /*
-    iii. Método que calcule la cantidad total de artículos incluidos en todos los pedidos de un año dado. (1 punto)
-    ¿Cantidad de numero de articulos? (lapiz + boli) o (39 lapices + 40 bolis..)
-    -PedidoDAO - atributo fecha - idPedido - (lista de pedidos de un año en concreto) 
-    -LineaPedidoDAO - idPedido - idArticulo - CANTIDAD (lista de idsPedido - lista idArticulos + cantidad) = sumar esas cantidades
+    iii. Método que calcule la cantidad total de artículos incluidos en todos los pedidos de un año dado.
      */
-    public static List<Pedido> filtrarPedidosAño(DataAccessManager dam) throws SQLException { //calcularCantidadTotalArticulosPedidos
+    public static List<Pedido> filtrarPedidosAño(DataAccessManager dam) throws SQLException {
 
         System.out.println("Dime el año en el que queremos ver los pedidos (ej 2003)");
         int añoInput = tcl.nextInt();
         //Filtro todos los pedidos de un año
-        List<Pedido> listaPedidosAño = dam.listarPedidosPorAño(añoInput);
+        List<Pedido> listaPedidosAño = dam.listarPedidosPorAño(añoInput); //PedidoDAO
 
         // Imprimir los resultados
         if (listaPedidosAño.isEmpty()) {
@@ -1623,19 +1623,20 @@ public class MenuPractica1App {
 
     public static void calcularCantidadTotalArticulosPedidosAño(DataAccessManager dam) throws SQLException {
 
-        //Sumo las cantidades
         double totalArticulos = 0;
-        List<Pedido> listaPedidosAño = filtrarPedidosAño(dam); //Filtro pedidos de un año
+        List<Pedido> listaPedidosAño = filtrarPedidosAño(dam); //Filtro pedidos de un año (metodo anterior)
+
         if (listaPedidosAño.isEmpty()) {
             System.out.println("La lista está vacia");
         } else {
-            // Recorremos los pedidos sacar todos los articulos diferentes
+            // Recorremos los pedidos - (segun la lista de Pedidos de ese año)
             for (Pedido pedido : listaPedidosAño) {
-                //Saco todos los articulos asociados a esos pedidos (lineaPedidoDAO)
-                List<LineaPedido> lineasPedido = dam.filtrarLineasPedidosIdPedido(String.valueOf(pedido.getIdPedido()));
+                //Saco las lineas de pedido de los pedidos de ese año - para luego sacar todos los articulos asociados a esos pedidos
+                List<LineaPedido> lineasPedido = dam.filtrarLineasPedidosIdPedido(String.valueOf(pedido.getIdPedido())); //LineaPedidoDAO
 
-                // Sumamos las cantidades de artículos en cada línea de pedido + printeo cada linea
+                //Recorro lineasPedido de cada pedido
                 for (LineaPedido linea : lineasPedido) {
+                    // Sumo las cantidades de artículos en CADA línea de pedido + printeo cada linea
                     System.out.println(linea.toString());
                     totalArticulos += linea.getCantidad();
                 }
@@ -1643,4 +1644,6 @@ public class MenuPractica1App {
         }
         System.out.println("La cantidad total de los articulos en los pedidos es de " + totalArticulos);
     }
+
+    //----------------------- FIN METODO 3 -----------------------------------------//
 }

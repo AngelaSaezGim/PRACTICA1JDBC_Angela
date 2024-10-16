@@ -168,7 +168,8 @@ public class ArticuloFabricaDAO extends DataAccessObject {
         return filasAfectadas;
     }
 
-    //METODO 1 (3)
+    //METODO 1 - SACAR EL PRECIO DE CADA ARTICULO (que uniremos con lineaPedido y la cantidad)
+    
     protected double sacarPrecioArticulo(String idArticulo) throws SQLException {
 
         double precioArticulo = 0;
@@ -190,6 +191,7 @@ public class ArticuloFabricaDAO extends DataAccessObject {
     protected List<String> filtrarFabricasSinPedido() throws SQLException {
         List<String> fabricasSinPedidos = new ArrayList<>();
         //Subconsulta - uso alias (ArticuloFabrica_iF.idFabrica) y (LineaPedido_iA.IdArticulo)
+        //Fabrica donde no exista un articulo fabrica y que ADEMAS (este articuloFabrica) exista en linea pedido
         String sql = "SELECT f.idFabrica "
                 + "FROM Fabrica f "
                 + "WHERE NOT EXISTS ("

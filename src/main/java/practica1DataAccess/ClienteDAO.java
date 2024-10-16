@@ -157,7 +157,7 @@ public class ClienteDAO extends DataAccessObject {
         return filasAfectadas;
     }
 
-    //METODO 1 (4)
+    //METODO 1 - SACAR EL DESCUENTO DEL CLIENTE PARA APLICARLO EN EL IMPORTE
     protected double sacarDescuento(String idCliente) throws SQLException {
 
         double descuentoCliente = 0; //Por defecto 0 si no hay
