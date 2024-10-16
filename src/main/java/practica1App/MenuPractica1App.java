@@ -741,9 +741,29 @@ public class MenuPractica1App {
         }
     }
 
+    public static void solicitarArticulos(DataAccessManager dam) throws SQLException {
+
+        System.out.print("- Quieres ver los articulos actuales de la base de datos?\n 1 - sí / 0 - no ");
+        int respuesta = tcl.nextInt();
+        if (respuesta == 1) {
+            verArticulos(dam);
+        }
+    }
+
+    public static void solicitarFabricas(DataAccessManager dam) throws SQLException {
+
+        System.out.print("- Quieres ver las fabricas actuales de la base de datos?\n 1 - sí / 0 - no");
+        int respuesta = tcl.nextInt();
+        if (respuesta == 1) {
+            verFabricas(dam);
+        }
+    }
+
     private static void insertarArticuloFabrica(DataAccessManager dam) throws SQLException {
 
         System.out.println("Cual es la id del articulo de esta fabrica");
+        solicitarArticulos(dam);
+        System.out.println("Id del articulo:");
         int idArticulo = tcl.nextInt();
 
         if (!dam.articuloExiste(idArticulo)) {
@@ -752,7 +772,9 @@ public class MenuPractica1App {
             return;
         }
 
-        System.out.print("A que fabrica pertenece este nuevo articulo: ");
+        System.out.println("A que fabrica pertenece este nuevo articulo: ");
+        solicitarFabricas(dam);
+        System.out.println("Id de fabrica: ");
         int idFabrica = tcl.nextInt();
 
         if (!dam.fabricaExiste(idFabrica)) {
@@ -782,7 +804,7 @@ public class MenuPractica1App {
         System.out.print("Escriba el saldo del cliente ");
         double saldo = tcl.nextDouble();
 
-        System.out.print("Escriba el limite de credito del cliente ");
+        System.out.print("Escriba el limite de credito del cliente (no puede superar 18,000) ");
         double limiteCredito = tcl.nextDouble();
 
         if (limiteCredito > 18000) {
@@ -806,6 +828,14 @@ public class MenuPractica1App {
 
     }
 
+    public static void solicitarClientes(DataAccessManager dam) throws SQLException {
+        System.out.print("- Quieres ver los clientes actuales de la base de datos?\n 1 - sí / 0 - no ");
+        int respuesta = tcl.nextInt();
+        if (respuesta == 1) {
+            verClientes(dam);
+        }
+    }
+
     private static void insertarDireccionEnvio(DataAccessManager dam) throws SQLException {
 
         System.out.print("Escriba el número de la dirección: ");
@@ -821,6 +851,8 @@ public class MenuPractica1App {
         String ciudad = tcl.next();
 
         System.out.print("Escriba el ID del cliente asociado a esa direccion: ");
+        solicitarClientes(dam);
+        System.out.println("Id del cliente asociado a esa direccion");
         int idCliente = tcl.nextInt();
 
         if (!dam.clienteExiste(idCliente)) {
@@ -843,10 +875,13 @@ public class MenuPractica1App {
 
     private static void insertarFabricaAlternativa(DataAccessManager dam) throws SQLException {
 
+        System.out.println("Antes de insertar una fabrica alternativa, te recomiendo consultar las fabricas actuales ");
+        solicitarFabricas(dam);
+
         System.out.print("Escriba el id de la fabrica principal asociada a esa fabrica alternativa ");
         int idFabricaPrincipal = tcl.nextInt();
 
-        System.out.print("Escriba el id de la fabrica alternativa ");
+        System.out.print("Escriba el id de la fabrica alternativa (no puede ser el mismo que la fabrica principal)");
         int idFabricaAlternativa = tcl.nextInt();
 
         FabricaAlternativa nuevaFabricaAlternativa = new FabricaAlternativa(idFabricaPrincipal, idFabricaAlternativa);
@@ -896,8 +931,19 @@ public class MenuPractica1App {
 
     }
 
+    public static void solicitarPedidos(DataAccessManager dam) throws SQLException {
+
+        System.out.print("- Quieres ver los pedidos actuales de la base de datos?\n 1 - sí / 0 - no ");
+        int respuesta = tcl.nextInt();
+        if (respuesta == 1) {
+            verPedidos(dam);
+        }
+    }
+
     private static void insertarLineaPedido(DataAccessManager dam) throws SQLException {
 
+        System.out.print("Escriba el ID del pedido: ");
+        solicitarPedidos(dam);
         System.out.print("Escriba el ID del pedido: ");
         int idPedido = tcl.nextInt();
 
@@ -907,6 +953,8 @@ public class MenuPractica1App {
             return;
         }
 
+        System.out.print("Escriba el ID del artículo: ");
+        solicitarArticulos(dam);
         System.out.print("Escriba el ID del artículo: ");
         int idArticulo = tcl.nextInt();
 
@@ -927,6 +975,15 @@ public class MenuPractica1App {
         } catch (SQLException e) {
             System.out.println("Error al insertar la línea de pedido: " + e.getMessage());
             throw e;
+        }
+    }
+
+    public static void solicitarDireccionesEnvio(DataAccessManager dam) throws SQLException {
+
+        System.out.print("- Quieres ver las direcciones de envio actuales de la base de datos?\n 1 - sí / 0 - no ");
+        int respuesta = tcl.nextInt();
+        if (respuesta == 1) {
+            verDireccionesEnvio(dam);
         }
     }
 
@@ -954,6 +1011,8 @@ public class MenuPractica1App {
         int numeroComanda = tcl.nextInt();
 
         System.out.print("Escriba el ID del cliente: ");
+        solicitarClientes(dam);
+        System.out.print("Escriba el ID del cliente: ");
         int idCliente = tcl.nextInt();
 
         if (!dam.clienteExiste(idCliente)) {
@@ -962,6 +1021,8 @@ public class MenuPractica1App {
             return;
         }
 
+        System.out.print("Escriba el ID de la dirección de envío: ");
+        solicitarDireccionesEnvio(dam);
         System.out.print("Escriba el ID de la dirección de envío: ");
         int idDireccion = tcl.nextInt();
 
@@ -990,6 +1051,9 @@ public class MenuPractica1App {
     }
 
     private static void borrarArticulo(DataAccessManager dam) throws SQLException {
+
+        System.out.println("Antes de borrar;");
+        solicitarArticulos(dam);
         String idArticulo = requestContentDelete();
         int columnasAfectadas = dam.borrarArticulo(idArticulo);
         if (columnasAfectadas > 0) {
@@ -999,8 +1063,19 @@ public class MenuPractica1App {
         }
     }
 
+    public static void solicitarArticulosFabrica(DataAccessManager dam) throws SQLException {
+
+        System.out.print("- Quieres ver los articulos de fabrica actuales de la base de datos?\n 1 - sí / 0 - no ");
+        int respuesta = tcl.nextInt();
+        if (respuesta == 1) {
+            verArticulosFabrica(dam);
+        }
+    }
+
     private static void borrarArticuloFabrica(DataAccessManager dam) throws SQLException {
 
+        System.out.println("Antes de borrar;");
+        solicitarArticulosFabrica(dam);
         System.out.println("Id articulo");
         String idArticulo = requestContentDelete();
         System.out.println("Id fabrica");
@@ -1014,6 +1089,9 @@ public class MenuPractica1App {
     }
 
     private static void borrarCliente(DataAccessManager dam) throws SQLException {
+
+        System.out.println("Antes de borrar;");
+        solicitarClientes(dam);
         String idCliente = requestContentDelete();
         int columnasAfectadas = dam.borrarCliente(idCliente);
         if (columnasAfectadas > 0) {
@@ -1024,6 +1102,9 @@ public class MenuPractica1App {
     }
 
     private static void borrarDireccionEnvio(DataAccessManager dam) throws SQLException {
+
+        System.out.println("Antes de borrar;");
+        solicitarDireccionesEnvio(dam);
         String idDireccion = requestContentDelete();
         int columnasAfectadas = dam.borrarDireccionEnvio(idDireccion);
         if (columnasAfectadas > 0) {
@@ -1033,7 +1114,19 @@ public class MenuPractica1App {
         }
     }
 
+    public static void solicitarFabricasAlternativas(DataAccessManager dam) throws SQLException {
+
+        System.out.print("- Quieres ver las fabricas alternativas de la base de datos?\n 1 - sí / 0 - no ");
+        int respuesta = tcl.nextInt();
+        if (respuesta == 1) {
+            verFabricasAlternativas(dam);
+        }
+    }
+
     private static void borrarFabricaAlternativa(DataAccessManager dam) throws SQLException {
+
+        System.out.println("Antes de borrar;");
+        solicitarFabricasAlternativas(dam);
 
         System.out.println("Id fabrica principal asociada a esa fabrica alternativa");
         String idFabricaPrincipal = requestContentDelete();
@@ -1048,6 +1141,10 @@ public class MenuPractica1App {
     }
 
     private static void borrarFabrica(DataAccessManager dam) throws SQLException {
+
+        System.out.println("Antes de borrar;");
+        solicitarFabricas(dam);
+
         String idFabrica = requestContentDelete();
         int columnasAfectadas = dam.borrarFabrica(idFabrica);
         if (columnasAfectadas > 0) {
@@ -1057,7 +1154,20 @@ public class MenuPractica1App {
         }
     }
 
+    public static void solicitarLineasPedido(DataAccessManager dam) throws SQLException {
+
+        System.out.print("- Quieres ver las lineas pedidos actuales de la base de datos?\n 1 - sí / 0 - no ");
+        int respuesta = tcl.nextInt();
+        if (respuesta == 1) {
+            verLineasPedido(dam);
+        }
+    }
+
     private static void borrarLineaPedido(DataAccessManager dam) throws SQLException {
+
+        System.out.println("Antes de borrar;");
+        solicitarLineasPedido(dam);
+
         String idLineaPedido = requestContentDelete();
         int columnasAfectadas = dam.borrarLineaPedido(idLineaPedido);
         if (columnasAfectadas > 0) {
@@ -1068,6 +1178,10 @@ public class MenuPractica1App {
     }
 
     private static void borrarPedido(DataAccessManager dam) throws SQLException {
+
+        System.out.println("Antes de borrar;");
+        solicitarPedidos(dam);
+
         String idPedido = requestContentDelete();
         int columnasAfectadas = dam.borrarPedido(idPedido);
         if (columnasAfectadas > 0) {
@@ -1503,7 +1617,8 @@ public class MenuPractica1App {
     }
 
     //CON LOS PEDIDOS DE ESE CLIENTE - SACAMOS LAS LINEAS Y LAS CALCULAMOS
-    public static void sacarPrecioTotalClientePedidos(DataAccessManager dam) throws SQLException {
+    //Test 1
+    public static double sacarPrecioTotalClientePedidos(DataAccessManager dam) throws SQLException {
 
         System.out.println("Listado de comandas con importe y descuento");
         System.out.println("Escribeme el id del cliente al que queremos ver los pedidos");
@@ -1534,7 +1649,7 @@ public class MenuPractica1App {
                     /*PRECIO ARTICULOS*/
                     double precioPorArticulo = dam.sacarPrecioArticulo(idArticuloStr); //SACAMOS PRECIO (con IDArticulo) - de ArticuloFabricaDAO
                     double totalLinea = precioPorArticulo * linea.getCantidad(); // Lo juntamos CON CANTIDAD de linea pedido (calcular total en cada linea)
-                    precioTotalSinDescuento += totalLinea; //Iremos sumando por cada linea al importe total del cliente
+                    precioTotalSinDescuento += totalLinea; //sumando por cada linea al importe total del cliente
 
                     System.out.println(" - Precio por artículo: " + precioPorArticulo);
                     System.out.println(" - Total por esta línea: " + String.format("%.2f", totalLinea));
@@ -1556,6 +1671,8 @@ public class MenuPractica1App {
         System.out.println("El descuento aplicado es: " + (descuento * 100) + "%");
         System.out.println("El precio total con descuento es: " + String.format("%.2f", precioTotalConDescuento));
         System.out.println("Has pagado " + String.format("%.2f", (precioTotalSinDescuento - precioTotalConDescuento)) + " euros menos ");
+
+        return precioTotalConDescuento;
     }
 
     //-----------------------FIN METODO 1-----------------------------------------//
@@ -1581,7 +1698,8 @@ public class MenuPractica1App {
         return fabricasSinPedidos;
     }
 
-    public static void borrarFabricasSinArticuloPedido(DataAccessManager dam) throws SQLException {
+    //TEST - 2
+    public static int borrarFabricasSinArticuloPedido(DataAccessManager dam) throws SQLException {
 
         List<String> fabricasSinPedidos = FiltrarFabricasSinPedido(dam); //Llamo al metodo anterior
 
@@ -1593,6 +1711,8 @@ public class MenuPractica1App {
         } else {
             System.out.println("No se borró nada.");
         }
+
+        return numFabricasBorradas;
     }
 
     //----------------------- FIN METODO 2 -----------------------------------------//
@@ -1621,9 +1741,10 @@ public class MenuPractica1App {
         return listaPedidosAño;
     }
 
-    public static void calcularCantidadTotalArticulosPedidosAño(DataAccessManager dam) throws SQLException {
+    //Test 3
+    public static int calcularCantidadTotalArticulosPedidosAño(DataAccessManager dam) throws SQLException {
 
-        double totalArticulos = 0;
+        int totalArticulos = 0;
         List<Pedido> listaPedidosAño = filtrarPedidosAño(dam); //Filtro pedidos de un año (metodo anterior)
 
         if (listaPedidosAño.isEmpty()) {
@@ -1643,7 +1764,7 @@ public class MenuPractica1App {
             }
         }
         System.out.println("La cantidad total de los articulos en los pedidos es de " + totalArticulos);
+        return totalArticulos;
     }
-
     //----------------------- FIN METODO 3 -----------------------------------------//
 }
