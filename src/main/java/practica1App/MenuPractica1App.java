@@ -296,7 +296,7 @@ public class MenuPractica1App {
                         break;
                     case QUERY_ARTICULOSAÑO:
                         System.out.println("Cantidad articulos de las comandas en x año");
-                        filtrarPedidosAño(dam);
+                        calcularCantidadTotalArticulosPedidosAño(dam);
                         esperarIntro();
                     case EXIT:
                         break;
@@ -1448,7 +1448,7 @@ public class MenuPractica1App {
 
             System.out.println("Ingrese el nuevo ID de dirección (dejar vacío para no cambiar):");
             String nuevoIdDireccionStr = tcl.nextLine();
-            if (!nuevoIdDireccionStr.isEmpty()) { 
+            if (!nuevoIdDireccionStr.isEmpty()) {
                 int nuevoIdDireccion = Integer.parseInt(nuevoIdDireccionStr);
                 if (dam.direccionExiste(nuevoIdDireccion)) {
                     pedidoAActualizar.setIdDireccion(nuevoIdDireccion);
@@ -1464,7 +1464,7 @@ public class MenuPractica1App {
             if (columnasAfectadas > 0) {
                 System.out.println("Pedido actualizado exitosamente.");
                 Pedido pedidoActualizado = dam.loadPedidoByCode(idPedidoAActualizar);
-                System.out.println(pedidoActualizado.toString()); 
+                System.out.println(pedidoActualizado.toString());
             } else {
                 System.out.println("No se actualizó nada.");
             }
@@ -1472,7 +1472,6 @@ public class MenuPractica1App {
     }
 
     //METODO 1//
-
     //SACAMOS LA LISTA DE PEDIDOS DE ESE CLIENTE
     public static List<Pedido> consultarPedidosCliente(DataAccessManager dam, String idCliente) throws SQLException {
 
@@ -1482,7 +1481,7 @@ public class MenuPractica1App {
             printPedidos(pedidosFilteredByClient);
         } else {
             System.out.println("No se encontraron pedidos con el id de ese cliente.");
-            
+
         }
         return pedidosFilteredByClient;
     }
@@ -1514,7 +1513,7 @@ public class MenuPractica1App {
                     importeTotalCliente += totalLinea;
 
                     System.out.println(" - Precio por artículo: " + precioPorArticulo);
-                    System.out.println(" - Total por esta línea: " + String.format("%.2f",totalLinea));
+                    System.out.println(" - Total por esta línea: " + String.format("%.2f", totalLinea));
                     System.out.println("----------------------------");
                 } else {
                     System.out.println("No se encontró artículo con ID: " + idArticulo);
@@ -1538,7 +1537,7 @@ public class MenuPractica1App {
         //CALCULAR PRECIO CLIENTE + DESCUENTO
         double precioTotalConDescuento = precioTotalSinDescuento * (1 - descuento);
 
-        System.out.println("El precio total sin descuento es: " + String.format("%.2f",precioTotalSinDescuento));
+        System.out.println("El precio total sin descuento es: " + String.format("%.2f", precioTotalSinDescuento));
         System.out.println("El descuento aplicado es: " + (descuento * 100) + "%");
         System.out.println("El precio total con descuento es: " + String.format("%.2f", precioTotalConDescuento));
         System.out.println("Has pagado " + String.format("%.2f", (precioTotalSinDescuento - precioTotalConDescuento)) + " euros menos ");
@@ -1555,37 +1554,35 @@ public class MenuPractica1App {
         precioTotalClienteDescontado(dam, idCliente);
     }
 
-    
     //METODO 2
     /*
     ii. Método que borre todas las fábricas a las que no se haya pedido ningún artículo que se haya incluido en ningún pedido en el momento de consulta de la BD. (2 puntos)
     Fabricas(idFabrica) - borramos por aqui
     ArticuloFabrica(idFabrica,idArticulo)  - Las fabricas tienen articulos (lista idArticulos)
     -articulos vinculados a pedidos (lineaPedido-idPedido-idArticulo)  (de esos idArticulos revisar los que NO se encuentran en LineaPedido)
-    */
-    
-    public static List<String> FiltrarFabricasSinPedido(DataAccessManager dam) throws SQLException{
-        
-        System.out.println("Mostramos las fabricas sin artículos asociados a pedidos.");
-         List<String> fabricasSinPedidos = dam.filtrarFabricasSinPedido();
+     */
+    public static List<String> FiltrarFabricasSinPedido(DataAccessManager dam) throws SQLException {
 
-            // Imprimir los resultados
-            if (fabricasSinPedidos.isEmpty()) {
-                System.out.println("No se encontraron fábricas sin artículos asociados a pedidos.");
-            } else {
-                System.out.println("Id de las fábricas sin artículos asociados a pedidos:");
-                for (String idFabrica : fabricasSinPedidos) {
-                    System.out.println("Id fabrica = " +  idFabrica + " sin artículos asociados a pedidos");
-                }
+        System.out.println("Mostramos las fabricas sin artículos asociados a pedidos.");
+        List<String> fabricasSinPedidos = dam.filtrarFabricasSinPedido();
+
+        // Imprimir los resultados
+        if (fabricasSinPedidos.isEmpty()) {
+            System.out.println("No se encontraron fábricas sin artículos asociados a pedidos.");
+        } else {
+            System.out.println("Id de las fábricas sin artículos asociados a pedidos:");
+            for (String idFabrica : fabricasSinPedidos) {
+                System.out.println("Id fabrica = " + idFabrica + " sin artículos asociados a pedidos");
             }
-            
+        }
+
         return fabricasSinPedidos;
     }
 
     public static void borrarFabricasSinArticuloPedido(DataAccessManager dam) throws SQLException {
 
         List<String> fabricasSinPedidos = FiltrarFabricasSinPedido(dam);
-        
+
         System.out.println("Procedemos a borrar las fabricas sin artículos asociados a pedidos");
         int numFabricasBorradas = dam.borrarFabricasSinArticulosAsociadosAPedido(fabricasSinPedidos);
 
@@ -1596,25 +1593,25 @@ public class MenuPractica1App {
         }
     }
 
-     //METODO 3
+    //METODO 3
     /*
     iii. Método que calcule la cantidad total de artículos incluidos en todos los pedidos de un año dado. (1 punto)
     ¿Cantidad de numero de articulos? (lapiz + boli) o (39 lapices + 40 bolis..)
     -PedidoDAO - atributo fecha - idPedido - (lista de pedidos de un año en concreto) 
     -LineaPedidoDAO - idPedido - idArticulo - CANTIDAD (lista de idsPedido - lista idArticulos + cantidad) = sumar esas cantidades
-    */
-    
-    public static List<Pedido> filtrarPedidosAño(DataAccessManager dam) throws SQLException{ //calcularCantidadTotalArticulosPedidos
-        
-        int añoInput = 2024;
+     */
+    public static List<Pedido> filtrarPedidosAño(DataAccessManager dam) throws SQLException { //calcularCantidadTotalArticulosPedidos
+
+        System.out.println("Dime el año en el que queremos ver los pedidos (ej 2003)");
+        int añoInput = tcl.nextInt();
         //Filtro todos los pedidos de un año
         List<Pedido> listaPedidosAño = dam.listarPedidosPorAño(añoInput);
-        
+
         // Imprimir los resultados
-            if (listaPedidosAño .isEmpty()) {
-                System.out.println("No se encontraron pedidos para ese año");
-            } else {
-                System.out.println("Pedidos realizados en el año " + añoInput);
+        if (listaPedidosAño.isEmpty()) {
+            System.out.println("No se encontraron pedidos para ese año");
+        } else {
+            System.out.println("Pedidos realizados en el año " + añoInput);
             // Imprimir cada pedido filtrado
             for (Pedido pedido : listaPedidosAño) {
                 System.out.println(pedido.toString());
@@ -1624,33 +1621,26 @@ public class MenuPractica1App {
         return listaPedidosAño;
     }
 
-    public static double calcularCantidadTotalArticulosPedidosAño(DataAccessManager dam) throws SQLException {
+    public static void calcularCantidadTotalArticulosPedidosAño(DataAccessManager dam) throws SQLException {
 
-        //Saco todos los articulos asociados a esos pedidos (lineaPedidoDAO)
         //Sumo las cantidades
-        List<Pedido> listaPedidosAño = filtrarPedidosAño(dam);
+        double totalArticulos = 0;
+        List<Pedido> listaPedidosAño = filtrarPedidosAño(dam); //Filtro pedidos de un año
         if (listaPedidosAño.isEmpty()) {
             System.out.println("La lista está vacia");
         } else {
-            
-            double totalArticulos = 0;
-
-            /*
             // Recorremos los pedidos sacar todos los articulos diferentes
             for (Pedido pedido : listaPedidosAño) {
-                // Obtener todas las líneas de pedido asociadas a este pedido
-                List<LineaPedido> lineasPedido = dam.filtrarLineasPedidosIdPedido(pedido.getIdPedido());
+                //Saco todos los articulos asociados a esos pedidos (lineaPedidoDAO)
+                List<LineaPedido> lineasPedido = dam.filtrarLineasPedidosIdPedido(String.valueOf(pedido.getIdPedido()));
 
-                // Sumamos las cantidades de artículos en cada línea de pedido
+                // Sumamos las cantidades de artículos en cada línea de pedido + printeo cada linea
                 for (LineaPedido linea : lineasPedido) {
+                    System.out.println(linea.toString());
                     totalArticulos += linea.getCantidad();
                 }
-            }*/
-
-            return totalArticulos;
+            }
         }
-
-        return 0;
-
+        System.out.println("La cantidad total de los articulos en los pedidos es de " + totalArticulos);
     }
 }

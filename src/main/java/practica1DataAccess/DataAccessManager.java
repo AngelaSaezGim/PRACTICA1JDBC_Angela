@@ -599,6 +599,12 @@ public class DataAccessManager implements AutoCloseable {
         }
         return this.pedidoDAO.listarPedidosPorAño(inputAño);
     }
-    
+     
+    public List<LineaPedido> filtrarLineasPedidosIdPedido(String idPedidoStr) throws SQLException {
+         if (idPedidoStr == null || idPedidoStr.length() == 0) {
+            throw new IllegalArgumentException("Debe indicar el filtro de búsqueda");
+        }
+        return this.lineaPedidoDAO.filtrarLineasPedidosIdPedido(idPedidoStr);
+    }
 
 }
