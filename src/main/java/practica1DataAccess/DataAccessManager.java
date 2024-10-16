@@ -543,10 +543,8 @@ public class DataAccessManager implements AutoCloseable {
         }
         return this.pedidoDAO.updatePedido(idPedido, pedidoActualizar);
     }
-    
-    
+
     //METODO 1 - ACCESO
-    
     // PEDIDODAO
     public List<Pedido> listarPedidosCliente(String idCliente) throws SQLException {
         if (idCliente == null || idCliente.length() == 0) {
@@ -554,25 +552,25 @@ public class DataAccessManager implements AutoCloseable {
         }
         return this.pedidoDAO.listarPedidosCliente(idCliente);
     }
-    
+
     //LINEAPEDIDODAO
-    public List<LineaPedido>  filtrarPedidos(List<Pedido> pedidosCliente) throws SQLException {
+    public List<LineaPedido> filtrarPedidos(List<Pedido> pedidosCliente) throws SQLException {
         if (pedidosCliente == null) {
             throw new IllegalArgumentException("Debe indicar el filtro de búsqueda");
         }
         return this.lineaPedidoDAO.filtrarPedidos(pedidosCliente);
     }
-    
+
     //ARTICULOFABRICADAO
-    public double sacarPrecioArticulo(String idArticulo) throws SQLException{
+    public double sacarPrecioArticulo(String idArticulo) throws SQLException {
         if (idArticulo == null || idArticulo.length() == 0) {
             throw new IllegalArgumentException("Debe indicar el filtro de búsqueda");
         }
         return articuloFabricaDAO.sacarPrecioArticulo(idArticulo);
     }
-    
+
     // CLIENTEDAO
-    public double sacarDescuento(String idCliente) throws SQLException{
+    public double sacarDescuento(String idCliente) throws SQLException {
         if (idCliente == null || idCliente.length() == 0) {
             throw new IllegalArgumentException("Debe indicar el filtro de búsqueda");
         }
@@ -583,25 +581,24 @@ public class DataAccessManager implements AutoCloseable {
     public List<String> filtrarFabricasSinPedido() throws SQLException {
         return this.articuloFabricaDAO.filtrarFabricasSinPedido();
     }
-    
-     public int borrarFabricasSinArticulosAsociadosAPedido( List<String> fabricasSinPedido) throws SQLException {
+
+    public int borrarFabricasSinArticulosAsociadosAPedido(List<String> fabricasSinPedido) throws SQLException {
         if (fabricasSinPedido == null || fabricasSinPedido.isEmpty()) {
             System.out.println("No se encontraron fábricas sin artículos asociados a pedidos.");
         }
         return this.fabricaDAO.borrarFabricasSinArticulosAsociadosAPedido(fabricasSinPedido);
     }
-     
-     //METODO 3
-     
-     public List<Pedido> listarPedidosPorAño(int inputAño) throws SQLException {
-         if (inputAño == 0) {
+
+    //METODO 3
+    public List<Pedido> listarPedidosPorAño(int inputAño) throws SQLException {
+        if (inputAño == 0) {
             throw new IllegalArgumentException("Debe indicar el filtro de búsqueda");
         }
         return this.pedidoDAO.listarPedidosPorAño(inputAño);
     }
-     
+
     public List<LineaPedido> filtrarLineasPedidosIdPedido(String idPedidoStr) throws SQLException {
-         if (idPedidoStr == null || idPedidoStr.length() == 0) {
+        if (idPedidoStr == null || idPedidoStr.length() == 0) {
             throw new IllegalArgumentException("Debe indicar el filtro de búsqueda");
         }
         return this.lineaPedidoDAO.filtrarLineasPedidosIdPedido(idPedidoStr);

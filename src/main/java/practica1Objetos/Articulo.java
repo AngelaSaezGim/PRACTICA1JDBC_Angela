@@ -9,20 +9,20 @@ package practica1Objetos;
  * @author angsaegim
  */
 public class Articulo {
-    
+
     private int idArticulo;
     private String descripcion;
-    
+
     public Articulo(int idArticulo, String descripcion) {
         this.setIdArticulo(idArticulo);
         this.setDescripcion(descripcion);
     }
-    
-    public Articulo(String descripcion){
+
+    public Articulo(String descripcion) {
         this.setDescripcion(descripcion);
     }
-    
-     public Articulo(int idArticulo){
+
+    public Articulo(int idArticulo) {
     }
 
     public int getIdArticulo() {
@@ -40,10 +40,10 @@ public class Articulo {
     public void setDescripcion(String descripcion) {
         this.descripcion = descripcion;
     }
-    
+
     @Override
     public String toString() {
         return "-> Articulo [" + idArticulo + "] " + descripcion;
     }
-    
+
 }

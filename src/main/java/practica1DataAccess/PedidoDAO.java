@@ -47,7 +47,7 @@ public class PedidoDAO extends DataAccessObject {
     protected List<Pedido> loadAllPedidos() throws SQLException {
 
         List<Pedido> pedidos = new ArrayList<>();
-        try (PreparedStatement stmt = cnt.prepareStatement("SELECT * FROM Pedido"); ResultSet result = stmt.executeQuery()) {
+        try ( PreparedStatement stmt = cnt.prepareStatement("SELECT * FROM Pedido");  ResultSet result = stmt.executeQuery()) {
 
             while (result.next()) {
                 Pedido pedido = readPedidoFromResultSet(result);
@@ -83,7 +83,7 @@ public class PedidoDAO extends DataAccessObject {
                 + PedidoTableColumns.COLUMN_IDDIRECCION + ") "
                 + "VALUES (?, ?, ?, ?, ?)";
 
-        try (PreparedStatement stmt = cnt.prepareStatement(sentenciaSQL)) {
+        try ( PreparedStatement stmt = cnt.prepareStatement(sentenciaSQL)) {
 
             int idPedido = obtenerMaxId() + 1;
             stmt.setInt(1, idPedido);
@@ -117,7 +117,7 @@ public class PedidoDAO extends DataAccessObject {
 
     protected boolean direccionExiste(int idDireccion) throws SQLException {
         String sql = "SELECT COUNT(*) FROM DireccionEnvio WHERE idDireccion = ?";
-        try (PreparedStatement stmt = cnt.prepareStatement(sql)) {
+        try ( PreparedStatement stmt = cnt.prepareStatement(sql)) {
             stmt.setInt(1, idDireccion);
             ResultSet rs = stmt.executeQuery();
             return rs.next() && rs.getInt(1) > 0;
@@ -128,7 +128,7 @@ public class PedidoDAO extends DataAccessObject {
 
         int filasAfectadas = 0;
 
-        try (PreparedStatement stmt = cnt.prepareStatement("DELETE FROM Pedido WHERE idPedido = ?")) {
+        try ( PreparedStatement stmt = cnt.prepareStatement("DELETE FROM Pedido WHERE idPedido = ?")) {
             stmt.setString(1, idPedido);
             filasAfectadas = stmt.executeUpdate();
         } catch (SQLException e) {
@@ -142,7 +142,7 @@ public class PedidoDAO extends DataAccessObject {
         Pedido pedido = null;
         String sql = "SELECT * FROM Pedido WHERE idPedido = ?";
 
-        try (PreparedStatement stmt = cnt.prepareStatement(sql)) {
+        try ( PreparedStatement stmt = cnt.prepareStatement(sql)) {
             stmt.setString(1, idPedido);
             ResultSet result = stmt.executeQuery();
 
@@ -160,7 +160,7 @@ public class PedidoDAO extends DataAccessObject {
         int filasAfectadas = 0;
 
         String sql = "UPDATE Pedido SET fecha = ?, numeroComanda = ?, idCliente = ?, idDireccion = ? WHERE idPedido = ?";
-        try (PreparedStatement stmt = cnt.prepareStatement(sql)) {
+        try ( PreparedStatement stmt = cnt.prepareStatement(sql)) {
             stmt.setTimestamp(1, Timestamp.valueOf(pedidoActualizar.getFecha().toLocalDateTime()));
             stmt.setInt(2, pedidoActualizar.getNumeroComanda());
             stmt.setInt(3, pedidoActualizar.getIdCliente());
@@ -174,11 +174,10 @@ public class PedidoDAO extends DataAccessObject {
 
         return filasAfectadas;
     }
-    
+
     //METODO 1 (1)
-    
     protected List<Pedido> listarPedidosCliente(String idCliente) throws SQLException {
-        
+
         List<Pedido> pedidosCliente = new ArrayList<>();
 
         PreparedStatement stmt = cnt.prepareStatement("SELECT * FROM Pedido WHERE idCliente=?");
@@ -188,10 +187,10 @@ public class PedidoDAO extends DataAccessObject {
         while (result.next()) {
             pedidosCliente.add(readPedidoFromResultSet(result));
         }
-        
+
         return pedidosCliente;
     }
-  
+
     //METODO 3
     protected List<Pedido> listarPedidosPorAño(int inputAño) throws SQLException {
 

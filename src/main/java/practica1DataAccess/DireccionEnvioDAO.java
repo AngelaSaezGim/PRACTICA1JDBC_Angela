@@ -48,7 +48,7 @@ public class DireccionEnvioDAO extends DataAccessObject {
     protected List<DireccionEnvio> loadAllDireccionesEnvio() throws SQLException {
 
         List<DireccionEnvio> direccionesEnvios = new ArrayList<>();
-        try (PreparedStatement stmt = cnt.prepareStatement("SELECT * FROM DireccionEnvio"); ResultSet result = stmt.executeQuery()) {
+        try ( PreparedStatement stmt = cnt.prepareStatement("SELECT * FROM DireccionEnvio");  ResultSet result = stmt.executeQuery()) {
 
             while (result.next()) {
                 DireccionEnvio direccionEnvio = readDireccionEnvioFromResultSet(result);
@@ -85,7 +85,7 @@ public class DireccionEnvioDAO extends DataAccessObject {
                 + DireccionEnvioTableColumns.COLUMN_IDCLIENTE + ") "
                 + "VALUES (?, ?, ?, ?, ?, ?)";
 
-        try (PreparedStatement stmt = cnt.prepareStatement(sentenciaSQL)) {
+        try ( PreparedStatement stmt = cnt.prepareStatement(sentenciaSQL)) {
 
             int idDireccion = obtenerMaxId() + 1;
             stmt.setInt(1, idDireccion);
@@ -109,7 +109,7 @@ public class DireccionEnvioDAO extends DataAccessObject {
 
     protected boolean clienteExiste(int idCliente) throws SQLException {
         String sql = "SELECT COUNT(*) FROM Cliente WHERE idCliente = ?";
-        try (PreparedStatement stmt = cnt.prepareStatement(sql)) {
+        try ( PreparedStatement stmt = cnt.prepareStatement(sql)) {
             stmt.setInt(1, idCliente);
             ResultSet rs = stmt.executeQuery();
             if (rs.next()) {
@@ -137,7 +137,7 @@ public class DireccionEnvioDAO extends DataAccessObject {
 
         int filasAfectadas = 0;
 
-        try (PreparedStatement stmt = cnt.prepareStatement("DELETE FROM DireccionEnvio WHERE idDireccion = ?")) {
+        try ( PreparedStatement stmt = cnt.prepareStatement("DELETE FROM DireccionEnvio WHERE idDireccion = ?")) {
             stmt.setString(1, idDireccion);
             filasAfectadas = stmt.executeUpdate();
         } catch (SQLException e) {
@@ -151,7 +151,7 @@ public class DireccionEnvioDAO extends DataAccessObject {
         DireccionEnvio direccionEnvio = null;
 
         String sql = "SELECT * FROM DireccionEnvio WHERE idDireccion = ?";
-        try (PreparedStatement stmt = cnt.prepareStatement(sql)) {
+        try ( PreparedStatement stmt = cnt.prepareStatement(sql)) {
             stmt.setString(1, idDireccion);
             ResultSet result = stmt.executeQuery();
 
@@ -168,7 +168,7 @@ public class DireccionEnvioDAO extends DataAccessObject {
         int filasAfectadas = 0;
 
         String sql = "UPDATE DireccionEnvio SET numero = ?, calle = ?, comuna = ?, ciudad = ?, idCliente = ? WHERE idDireccion = ?";
-        try (PreparedStatement stmt = cnt.prepareStatement(sql)) {
+        try ( PreparedStatement stmt = cnt.prepareStatement(sql)) {
             stmt.setInt(1, direccionEnvioActualizar.getNumero());
             stmt.setString(2, direccionEnvioActualizar.getCalle());
             stmt.setString(3, direccionEnvioActualizar.getComuna());

@@ -41,7 +41,7 @@ public class FabricaAlternativaDAO extends DataAccessObject {
     protected List<FabricaAlternativa> loadAllFabricasAlternativas() throws SQLException {
 
         List<FabricaAlternativa> fabricasAlternativas = new ArrayList<>();
-        try (PreparedStatement stmt = cnt.prepareStatement("SELECT * FROM FabricaAlternativa"); ResultSet result = stmt.executeQuery()) {
+        try ( PreparedStatement stmt = cnt.prepareStatement("SELECT * FROM FabricaAlternativa");  ResultSet result = stmt.executeQuery()) {
 
             while (result.next()) {
                 FabricaAlternativa fabricaAlternativa = readFabricasAlternativaFromResultSet(result);
@@ -102,12 +102,12 @@ public class FabricaAlternativaDAO extends DataAccessObject {
 
         return filasAfectadas;
     }
-    
-     protected FabricaAlternativa loadFabricaAlternativaByCode(String idFabricaPrincipal, String idFabricaAlternativa) throws SQLException {
+
+    protected FabricaAlternativa loadFabricaAlternativaByCode(String idFabricaPrincipal, String idFabricaAlternativa) throws SQLException {
         FabricaAlternativa fabricaAlternativa = null;
 
         String sql = "SELECT * FROM FabricaAlternativa WHERE idFabricaPrincipal = ? AND idFabricaAlternativa = ?";
-        try (PreparedStatement stmt = cnt.prepareStatement(sql)) {
+        try ( PreparedStatement stmt = cnt.prepareStatement(sql)) {
             stmt.setString(1, idFabricaPrincipal);
             stmt.setString(2, idFabricaAlternativa);
             ResultSet result = stmt.executeQuery();
@@ -120,12 +120,12 @@ public class FabricaAlternativaDAO extends DataAccessObject {
         }
         return fabricaAlternativa;
     }
-     
-      protected int updateFabricaAlternativa(String idFabricaPrincipal, String idFabricaAlternativa, FabricaAlternativa fabricaAlternativaActualizar) throws SQLException {
+
+    protected int updateFabricaAlternativa(String idFabricaPrincipal, String idFabricaAlternativa, FabricaAlternativa fabricaAlternativaActualizar) throws SQLException {
         int filasAfectadas = 0;
 
         String sql = "UPDATE FabricaAlternativa SET idFabricaPrincipal = ?, idFabricaAlternativa=? WHERE idFabricaPrincipal = ? AND idFabricaAlternativa = ?";
-        try (PreparedStatement stmt = cnt.prepareStatement(sql)) {
+        try ( PreparedStatement stmt = cnt.prepareStatement(sql)) {
             stmt.setInt(1, fabricaAlternativaActualizar.getIdFabricaPrincipal());
             stmt.setInt(2, fabricaAlternativaActualizar.getIdFabricaAlternativa());
             stmt.setString(3, idFabricaPrincipal);
@@ -137,19 +137,18 @@ public class FabricaAlternativaDAO extends DataAccessObject {
         }
         return filasAfectadas;
     }
-      
+
     public boolean fabricaAlternativaExiste(String idFabricaPrincipal, String idFabricaAlternativa) throws SQLException {
         String query = "SELECT COUNT(*) FROM fabricaAlternativa WHERE idFabricaPrincipal = ? AND idFabricaAlternativa = ?";
-        try (PreparedStatement stmt = cnt.prepareStatement(query)) {
+        try ( PreparedStatement stmt = cnt.prepareStatement(query)) {
             stmt.setString(1, idFabricaPrincipal);
             stmt.setString(2, idFabricaAlternativa);
             ResultSet rs = stmt.executeQuery();
             if (rs.next()) {
-                return rs.getInt(1) > 0; 
+                return rs.getInt(1) > 0;
             }
         }
         return false;
     }
-
 
 }

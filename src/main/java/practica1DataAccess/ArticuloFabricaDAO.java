@@ -43,7 +43,7 @@ public class ArticuloFabricaDAO extends DataAccessObject {
     protected List<ArticuloFabrica> loadAllArticulosFabricas() throws SQLException {
 
         List<ArticuloFabrica> articulosFabrica = new ArrayList<>();
-        try (PreparedStatement stmt = cnt.prepareStatement("SELECT * FROM ArticuloFabrica"); ResultSet result = stmt.executeQuery()) {
+        try ( PreparedStatement stmt = cnt.prepareStatement("SELECT * FROM ArticuloFabrica");  ResultSet result = stmt.executeQuery()) {
 
             while (result.next()) {
                 ArticuloFabrica articuloFabrica = readArticuloFabricaFromResultSet(result);
@@ -81,7 +81,7 @@ public class ArticuloFabricaDAO extends DataAccessObject {
                 + ArticuloFabricaTableColumns.COLUMN_PRECIO + ") "
                 + "VALUES (?, ?, ?, ?)";
 
-        try (PreparedStatement stmt = cnt.prepareStatement(sentenciaSQL)) {
+        try ( PreparedStatement stmt = cnt.prepareStatement(sentenciaSQL)) {
             stmt.setInt(1, articuloFabrica.getIdArticulo());
             stmt.setInt(2, articuloFabrica.getIdFabrica());
             stmt.setInt(3, articuloFabrica.getExistencias());
@@ -89,7 +89,7 @@ public class ArticuloFabricaDAO extends DataAccessObject {
 
             filasAfectadas = stmt.executeUpdate();
         } catch (SQLException e) {
-             throw new SQLException("Error al insertar en ArticuloFabrica: " + e.getMessage(), e);
+            throw new SQLException("Error al insertar en ArticuloFabrica: " + e.getMessage(), e);
         }
 
         return filasAfectadas;
@@ -97,7 +97,7 @@ public class ArticuloFabricaDAO extends DataAccessObject {
 
     protected boolean fabricaExiste(int idFabrica) throws SQLException {
         String sql = "SELECT COUNT(*) FROM Fabrica WHERE idFabrica = ?";
-        try (PreparedStatement stmt = cnt.prepareStatement(sql)) {
+        try ( PreparedStatement stmt = cnt.prepareStatement(sql)) {
             stmt.setInt(1, idFabrica);
             ResultSet rs = stmt.executeQuery();
             if (rs.next()) {
@@ -133,11 +133,10 @@ public class ArticuloFabricaDAO extends DataAccessObject {
 
         return filasAfectadas;
     }
-    
-    
+
     protected ArticuloFabrica loadArticuloFabricaByCode(String idArticulo, String idFabrica) throws SQLException {
-        
-         List<ArticuloFabrica> articuloFabrica = new ArrayList<>();
+
+        List<ArticuloFabrica> articuloFabrica = new ArrayList<>();
 
         PreparedStatement stmt = cnt.prepareStatement("SELECT * FROM ArticuloFabrica WHERE idArticulo = ? AND idFabrica = ?");
         stmt.setString(1, idArticulo);
@@ -156,7 +155,7 @@ public class ArticuloFabricaDAO extends DataAccessObject {
 
         String sql = "UPDATE ArticuloFabrica SET existencias = ?, precio = ? WHERE idArticulo = ? AND idFabrica = ?";
 
-        try (PreparedStatement stmt = cnt.prepareStatement(sql)) {
+        try ( PreparedStatement stmt = cnt.prepareStatement(sql)) {
             stmt.setInt(1, articuloFabricaActualizar.getExistencias());
             stmt.setDouble(2, articuloFabricaActualizar.getPrecio());
             stmt.setString(3, idArticulo);
@@ -191,19 +190,18 @@ public class ArticuloFabricaDAO extends DataAccessObject {
     protected List<String> filtrarFabricasSinPedido() throws SQLException {
         List<String> fabricasSinPedidos = new ArrayList<>();
         //Subconsulta - uso alias (ArticuloFabrica_iF.idFabrica) y (LineaPedido_iA.IdArticulo)
-        String sql = "SELECT f.idFabrica " +
-                 "FROM Fabrica f " +
-                 "WHERE NOT EXISTS (" +
-                 "  SELECT 1 FROM ArticuloFabrica af " +
-                 "  WHERE af.idFabrica = f.idFabrica AND " +
-                 "  EXISTS (" +
-                 "    SELECT 1 FROM LineaPedido lp " +
-                 "    WHERE lp.idArticulo = af.idArticulo" +
-                 "  )" +
-                 ")";
+        String sql = "SELECT f.idFabrica "
+                + "FROM Fabrica f "
+                + "WHERE NOT EXISTS ("
+                + "  SELECT 1 FROM ArticuloFabrica af "
+                + "  WHERE af.idFabrica = f.idFabrica AND "
+                + "  EXISTS ("
+                + "    SELECT 1 FROM LineaPedido lp "
+                + "    WHERE lp.idArticulo = af.idArticulo"
+                + "  )"
+                + ")";
 
-
-        try (PreparedStatement stmt = cnt.prepareStatement(sql); ResultSet rs = stmt.executeQuery()) {
+        try ( PreparedStatement stmt = cnt.prepareStatement(sql);  ResultSet rs = stmt.executeQuery()) {
 
             // Itero - cada idFabrica que cumpla ese requisito la meto en la lista fabricasSinPedidos.
             while (rs.next()) {
@@ -216,7 +214,5 @@ public class ArticuloFabricaDAO extends DataAccessObject {
 
         return fabricasSinPedidos;
     }
-    
-    
 
 }

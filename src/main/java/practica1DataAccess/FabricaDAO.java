@@ -41,7 +41,7 @@ public class FabricaDAO extends DataAccessObject {
     protected List<Fabrica> loadAllFabricas() throws SQLException {
 
         List<Fabrica> fabricas = new ArrayList<>();
-        try (PreparedStatement stmt = cnt.prepareStatement("SELECT * FROM Fabrica"); ResultSet result = stmt.executeQuery()) {
+        try ( PreparedStatement stmt = cnt.prepareStatement("SELECT * FROM Fabrica");  ResultSet result = stmt.executeQuery()) {
 
             while (result.next()) {
                 Fabrica fabrica = readFabricaFromResultSet(result);
@@ -174,7 +174,7 @@ public class FabricaDAO extends DataAccessObject {
             try ( PreparedStatement stmtArticuloFabrica = cnt.prepareStatement("DELETE FROM ArticuloFabrica WHERE idFabrica = ?")) {
                 try ( PreparedStatement stmtFabrica = cnt.prepareStatement("DELETE FROM Fabrica WHERE idFabrica = ?")) {
                     for (String idFabrica : fabricasSinPedidos) {
-                        
+
                         stmtArticuloFabrica.setString(1, idFabrica);
                         stmtArticuloFabrica.executeUpdate();
 
@@ -186,7 +186,7 @@ public class FabricaDAO extends DataAccessObject {
                                     String.valueOf(alternativa.getIdFabricaAlternativa())
                             );
                         }
-                        
+
                         // Borrar fábrica en la tabla Fabrica
                         stmtFabrica.setString(1, idFabrica);
                         numFabricasBorradas += stmtFabrica.executeUpdate();

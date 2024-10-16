@@ -11,13 +11,14 @@ import java.sql.Connection;
  * @author angsaegim
  */
 public class DataAccessObject {
-    
+
     protected Connection cnt;
-    
-    DataAccessObject(Connection cnt){
-        if(cnt==null)
+
+    DataAccessObject(Connection cnt) {
+        if (cnt == null) {
             throw new IllegalArgumentException("Conexión obligatoria");
+        }
         this.cnt = cnt;
     }
-    
+
 }

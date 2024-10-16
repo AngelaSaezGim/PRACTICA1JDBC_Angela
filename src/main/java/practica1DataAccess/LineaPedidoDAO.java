@@ -45,7 +45,7 @@ public class LineaPedidoDAO extends DataAccessObject {
     protected List<LineaPedido> loadAllLineasPedido() throws SQLException {
 
         List<LineaPedido> lineasPedido = new ArrayList<>();
-        try (PreparedStatement stmt = cnt.prepareStatement("SELECT * FROM LineaPedido"); ResultSet result = stmt.executeQuery()) {
+        try ( PreparedStatement stmt = cnt.prepareStatement("SELECT * FROM LineaPedido");  ResultSet result = stmt.executeQuery()) {
 
             while (result.next()) {
                 LineaPedido lineaPedido = readLineaPedidoFromResultSet(result);
@@ -81,7 +81,7 @@ public class LineaPedidoDAO extends DataAccessObject {
                 + LineaPedidoTableColumns.COLUMN_CANTIDAD + ") "
                 + "VALUES (?, ?, ?, ?)";
 
-        try (PreparedStatement stmt = cnt.prepareStatement(sentenciaSQL)) {
+        try ( PreparedStatement stmt = cnt.prepareStatement(sentenciaSQL)) {
 
             // Generar el nuevo id para la línea de pedido (puedes usar una función similar a obtenerMaxId())
             int idLineaPedido = obtenerMaxId() + 1;
@@ -117,7 +117,7 @@ public class LineaPedidoDAO extends DataAccessObject {
 
     protected boolean pedidoExiste(int idPedido) throws SQLException {
         String sql = "SELECT COUNT(*) FROM Pedido WHERE idPedido = ?";
-        try (PreparedStatement stmt = cnt.prepareStatement(sql)) {
+        try ( PreparedStatement stmt = cnt.prepareStatement(sql)) {
             stmt.setInt(1, idPedido);
             ResultSet rs = stmt.executeQuery();
             return rs.next() && rs.getInt(1) > 0;
@@ -126,7 +126,7 @@ public class LineaPedidoDAO extends DataAccessObject {
 
     protected boolean articuloExiste(int idArticulo) throws SQLException {
         String sql = "SELECT COUNT(*) FROM Articulo WHERE idArticulo = ?";
-        try (PreparedStatement stmt = cnt.prepareStatement(sql)) {
+        try ( PreparedStatement stmt = cnt.prepareStatement(sql)) {
             stmt.setInt(1, idArticulo);
             ResultSet rs = stmt.executeQuery();
             return rs.next() && rs.getInt(1) > 0;
@@ -137,7 +137,7 @@ public class LineaPedidoDAO extends DataAccessObject {
 
         int filasAfectadas = 0;
 
-        try (PreparedStatement stmt = cnt.prepareStatement("DELETE FROM LineaPedido WHERE idLineaPedido = ?")) {
+        try ( PreparedStatement stmt = cnt.prepareStatement("DELETE FROM LineaPedido WHERE idLineaPedido = ?")) {
             stmt.setString(1, idLineaPedido);
             filasAfectadas = stmt.executeUpdate();
         } catch (SQLException e) {
@@ -151,7 +151,7 @@ public class LineaPedidoDAO extends DataAccessObject {
         LineaPedido lineaPedido = null;
         String sql = "SELECT * FROM LineaPedido WHERE idLineaPedido = ?";
 
-        try (PreparedStatement stmt = cnt.prepareStatement(sql)) {
+        try ( PreparedStatement stmt = cnt.prepareStatement(sql)) {
             stmt.setString(1, idLineaPedido);
             ResultSet result = stmt.executeQuery();
 
@@ -169,7 +169,7 @@ public class LineaPedidoDAO extends DataAccessObject {
         int filasAfectadas = 0;
 
         String sql = "UPDATE LineaPedido SET idPedido = ?, idArticulo = ?, cantidad = ? WHERE idLineaPedido = ?";
-        try (PreparedStatement stmt = cnt.prepareStatement(sql)) {
+        try ( PreparedStatement stmt = cnt.prepareStatement(sql)) {
             stmt.setInt(1, lineaPedidoActualizar.getIdPedido());
             stmt.setInt(2, lineaPedidoActualizar.getIdArticulo());
             stmt.setInt(3, lineaPedidoActualizar.getCantidad());
@@ -182,9 +182,8 @@ public class LineaPedidoDAO extends DataAccessObject {
 
         return filasAfectadas;
     }
-    
+
     //METODO 1 (2)
-    
     protected List<LineaPedido> filtrarPedidos(List<Pedido> pedidosFilteredByClient) throws SQLException {
 
         List<LineaPedido> listaLineasPedidoCliente = new ArrayList<>();
@@ -192,7 +191,7 @@ public class LineaPedidoDAO extends DataAccessObject {
         if (pedidosFilteredByClient == null || pedidosFilteredByClient.isEmpty()) {
             return listaLineasPedidoCliente;
         }
-        
+
         StringBuilder query = new StringBuilder("SELECT * FROM LineaPedido WHERE idPedido IN (");
 
         // PLACEHOLDER ? PARA CADA PEDIDO - CONSTRUIMOS LA QUERY
@@ -220,35 +219,34 @@ public class LineaPedidoDAO extends DataAccessObject {
         return listaLineasPedidoCliente;
     }
 
-      //METODO 3
+    //METODO 3
     // Obtener todas las líneas de pedido asociadas a estos pedidos
     protected List<LineaPedido> filtrarLineasPedidosIdPedido(String idPedidoStr) throws SQLException {
         List<LineaPedido> listaLineasPedido = new ArrayList<>();
 
         String sql = "SELECT * FROM LineaPedido WHERE idPedido = ?";
 
-        try (PreparedStatement stmt = cnt.prepareStatement(sql)) {
-        stmt.setString(1, idPedidoStr);
-        ResultSet result = stmt.executeQuery();
-        
-        // Procesar el ResultSet y agregar cada línea de pedido a la lista
-        while (result.next()) {
-            int idLineaPedido = result.getInt("idLineaPedido");
-            int idArticulo = result.getInt("idArticulo");
-            int cantidad = result.getInt("cantidad");
-            
-            int idPedido = Integer.parseInt(idPedidoStr);
+        try ( PreparedStatement stmt = cnt.prepareStatement(sql)) {
+            stmt.setString(1, idPedidoStr);
+            ResultSet result = stmt.executeQuery();
 
-            LineaPedido linea = new LineaPedido(idLineaPedido, idPedido, idArticulo, cantidad);
-            listaLineasPedido.add(linea);
+            // Procesar el ResultSet y agregar cada línea de pedido a la lista
+            while (result.next()) {
+                int idLineaPedido = result.getInt("idLineaPedido");
+                int idArticulo = result.getInt("idArticulo");
+                int cantidad = result.getInt("cantidad");
+
+                int idPedido = Integer.parseInt(idPedidoStr);
+
+                LineaPedido linea = new LineaPedido(idLineaPedido, idPedido, idArticulo, cantidad);
+                listaLineasPedido.add(linea);
+            }
+        } catch (SQLException e) {
+            throw new SQLException("Error al listar las líneas del pedido con ID " + idPedidoStr + ": " + e.getMessage());
         }
-    } catch (SQLException e) {
-        throw new SQLException("Error al listar las líneas del pedido con ID " + idPedidoStr + ": " + e.getMessage());
-    }
-        
+
         return listaLineasPedido;
     }
-    
 
     public static String getColumnCantidad() {
         return LineaPedidoTableColumns.COLUMN_CANTIDAD;

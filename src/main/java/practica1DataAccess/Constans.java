@@ -11,8 +11,8 @@ import java.io.File;
  * @author angsaegim
  */
 public class Constans {
-    
-     //path relativo del fichero de configuración que incluye las credenciales y URL configurables
+
+    //path relativo del fichero de configuración que incluye las credenciales y URL configurables
     public final static String DB_CONFIG__FILE_NAME = "resources" + File.separator + "db.properties";
 
     public final static String MYSQL_DB_DRIVER__CLASS_NAME = "com.mysql.cj.jdbc.Driver";
@@ -27,5 +27,5 @@ public class Constans {
     public final static String DEFAULT_DATA_BASE__USER = "tester";
     public final static String DEFAULT_DATA_BASE__PWD = "tester";
     public final static String DEFAULT_DATA_BASE__URL = "jdbc:mysql://localhost:3306/practica1?useSSL=false&useTimezone=true&serverTimezone=UTC&allowPublicKeyRetrieval=true";
-    
+
 }

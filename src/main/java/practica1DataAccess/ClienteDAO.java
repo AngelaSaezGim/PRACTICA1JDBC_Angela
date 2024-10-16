@@ -17,11 +17,11 @@ import practica1Objetos.Cliente;
  * @author angsaegim
  */
 public class ClienteDAO extends DataAccessObject {
-    
+
     ClienteDAO(Connection cnt) {
         super(cnt);
     }
-    
+
     private class ClienteTableColumns {
 
         private final static String COLUMN_IDCLIENTE = "idCliente";
@@ -29,19 +29,19 @@ public class ClienteDAO extends DataAccessObject {
         private final static String COLUMN_LIMITECREDITO = "limiteCredito";
         private final static String COLUMN_DESCUENTO = "descuento";
     }
-    
-     private static Cliente readClienteFromResultSet(ResultSet rs) throws SQLException {
-         
+
+    private static Cliente readClienteFromResultSet(ResultSet rs) throws SQLException {
+
         int idCliente = rs.getInt(ClienteDAO.ClienteTableColumns.COLUMN_IDCLIENTE);
         Double saldo = rs.getDouble(ClienteDAO.ClienteTableColumns.COLUMN_SALDO);
         Double limiteCredito = rs.getDouble(ClienteDAO.ClienteTableColumns.COLUMN_LIMITECREDITO);
         Double descuento = rs.getDouble(ClienteDAO.ClienteTableColumns.COLUMN_DESCUENTO);
-        
-        Cliente cliente = new Cliente(idCliente,saldo,limiteCredito,descuento);
+
+        Cliente cliente = new Cliente(idCliente, saldo, limiteCredito, descuento);
         return cliente;
     }
-     
-      protected List<Cliente> loadAllClientes() throws SQLException {
+
+    protected List<Cliente> loadAllClientes() throws SQLException {
 
         List<Cliente> clientes = new ArrayList<>();
         try ( PreparedStatement stmt = cnt.prepareStatement("SELECT * FROM Cliente");  ResultSet result = stmt.executeQuery()) {
@@ -55,8 +55,8 @@ public class ClienteDAO extends DataAccessObject {
         }
         return clientes;
     }
-      
-      protected List<Cliente> loadClienteContaining(String content) throws SQLException {
+
+    protected List<Cliente> loadClienteContaining(String content) throws SQLException {
         List<Cliente> clientes = new ArrayList<>();
 
         PreparedStatement stmt = cnt.prepareStatement("SELECT * FROM Cliente WHERE idCliente LIKE ?");
@@ -68,7 +68,7 @@ public class ClienteDAO extends DataAccessObject {
         }
         return clientes;
     }
-     
+
     protected int insertCliente(Cliente cliente) throws SQLException {
         int filasAfectadas = 0;
 
@@ -79,9 +79,9 @@ public class ClienteDAO extends DataAccessObject {
                 + ClienteTableColumns.COLUMN_DESCUENTO + ") "
                 + "VALUES (?, ?, ?, ?)";
 
-        try (PreparedStatement stmt = cnt.prepareStatement(sentenciaSQL)) {
+        try ( PreparedStatement stmt = cnt.prepareStatement(sentenciaSQL)) {
 
-            int idCliente = obtenerMaxId() + 1; 
+            int idCliente = obtenerMaxId() + 1;
             stmt.setInt(1, idCliente);
             stmt.setDouble(2, cliente.getSaldo());
             stmt.setDouble(3, cliente.getLimiteCredito());
@@ -96,8 +96,8 @@ public class ClienteDAO extends DataAccessObject {
 
         return filasAfectadas;
     }
-    
-     private Integer obtenerMaxId() throws SQLException {
+
+    private Integer obtenerMaxId() throws SQLException {
 
         PreparedStatement stmt = cnt.prepareStatement("SELECT max(idCliente) FROM Cliente");
         ResultSet result = stmt.executeQuery();
@@ -105,7 +105,7 @@ public class ClienteDAO extends DataAccessObject {
         if (result.next()) {
             return result.getInt(1);
         } else {
-            return 0; 
+            return 0;
         }
     }
 
@@ -122,12 +122,12 @@ public class ClienteDAO extends DataAccessObject {
 
         return filasAfectadas;
     }
-    
-     protected Cliente loadClienteByCode(String idCliente) throws SQLException {
+
+    protected Cliente loadClienteByCode(String idCliente) throws SQLException {
         Cliente cliente = null;
 
         String sql = "SELECT * FROM Cliente WHERE idCliente = ?";
-        try (PreparedStatement stmt = cnt.prepareStatement(sql)) {
+        try ( PreparedStatement stmt = cnt.prepareStatement(sql)) {
             stmt.setString(1, idCliente);
             ResultSet result = stmt.executeQuery();
 
@@ -144,7 +144,7 @@ public class ClienteDAO extends DataAccessObject {
         int filasAfectadas = 0;
 
         String sql = "UPDATE Cliente SET saldo = ?, limiteCredito = ?, descuento = ? WHERE idCliente = ?";
-        try (PreparedStatement stmt = cnt.prepareStatement(sql)) {
+        try ( PreparedStatement stmt = cnt.prepareStatement(sql)) {
             stmt.setDouble(1, clienteActualizar.getSaldo());
             stmt.setDouble(2, clienteActualizar.getLimiteCredito());
             stmt.setDouble(3, clienteActualizar.getDescuento());
@@ -156,11 +156,10 @@ public class ClienteDAO extends DataAccessObject {
         }
         return filasAfectadas;
     }
-    
+
     //METODO 1 (4)
-    
-     protected double sacarDescuento(String idCliente) throws SQLException{
- 
+    protected double sacarDescuento(String idCliente) throws SQLException {
+
         double descuentoCliente = 0; //Por defecto 0 si no hay
 
         String query = "SELECT descuento FROM Cliente WHERE idCliente = ?";
@@ -172,7 +171,7 @@ public class ClienteDAO extends DataAccessObject {
         if (result.next()) {
             descuentoCliente = result.getDouble("descuento");
         }
-        
+
         return descuentoCliente;
     }
 

@@ -38,7 +38,7 @@ public class ArticuloDAO extends DataAccessObject {
     protected List<Articulo> loadAllArticulos() throws SQLException {
 
         List<Articulo> articulos = new ArrayList<>();
-        try (PreparedStatement stmt = cnt.prepareStatement("SELECT * FROM Articulo"); ResultSet result = stmt.executeQuery()) {
+        try ( PreparedStatement stmt = cnt.prepareStatement("SELECT * FROM Articulo");  ResultSet result = stmt.executeQuery()) {
 
             while (result.next()) {
                 Articulo articulo = readArticuloFromResultSet(result);
@@ -72,7 +72,7 @@ public class ArticuloDAO extends DataAccessObject {
                 + ArticuloTableColumns.COLUMN_DESCRIPCION
                 + ") VALUES (?, ?)";
 
-        try (PreparedStatement stmt = cnt.prepareStatement(sentenciaSQL)) {
+        try ( PreparedStatement stmt = cnt.prepareStatement(sentenciaSQL)) {
 
             int idArticulo = obtenerMaxId() + 1;
             stmt.setInt(1, idArticulo);
@@ -104,7 +104,7 @@ public class ArticuloDAO extends DataAccessObject {
 
         int filasAfectadas = 0;
 
-        try (PreparedStatement stmt = cnt.prepareStatement("DELETE FROM Articulo WHERE idArticulo = ?")) {
+        try ( PreparedStatement stmt = cnt.prepareStatement("DELETE FROM Articulo WHERE idArticulo = ?")) {
             stmt.setString(1, idArticulo);
             filasAfectadas = stmt.executeUpdate();
         } catch (SQLException e) {
@@ -132,7 +132,7 @@ public class ArticuloDAO extends DataAccessObject {
 
         String sql = "UPDATE Articulo SET descripcion = ? WHERE idArticulo = ?";
 
-        try (PreparedStatement stmt = cnt.prepareStatement(sql)) {
+        try ( PreparedStatement stmt = cnt.prepareStatement(sql)) {
             stmt.setString(1, articuloActualizar.getDescripcion());
             stmt.setString(2, idArticulo);
 
