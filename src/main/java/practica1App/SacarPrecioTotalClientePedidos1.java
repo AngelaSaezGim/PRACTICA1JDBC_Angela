@@ -1,0 +1,86 @@
+/*
+ * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
+ * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
+ */
+package practica1App;
+
+import java.sql.SQLException;
+import java.util.List;
+import java.util.Scanner;
+import static practica1App.MenuPracticaApp.consultarPedidosCliente;
+import static practica1App.MenuPracticaApp.printArticulo;
+import practica1DataAccess.DataAccessManager;
+import practica1Objetos.Articulo;
+import practica1Objetos.LineaPedido;
+import practica1Objetos.Pedido;
+
+/**
+ *
+ * @author angel
+ */
+public class SacarPrecioTotalClientePedidos1 {
+    
+    static Scanner tcl = new Scanner(System.in);
+
+    
+    //CON LOS PEDIDOS DE ESE CLIENTE - SACAMOS LAS LINEAS Y LAS CALCULAMOS
+    //Test 1
+    public static double sacarPrecioTotalClientePedidos(DataAccessManager dam) throws SQLException {
+
+        System.out.println("Listado de comandas con importe y descuento");
+        System.out.println("Escribeme el id del cliente al que queremos ver los pedidos");
+        String idCliente = tcl.nextLine();
+        List<Pedido> pedidosCliente = consultarPedidosCliente(dam, idCliente); //Llamo al metodo anterior
+
+        // saco las lineas de pedido de la lista de pedidos asociada a un cliente
+        List<LineaPedido> lineasPedidoCliente = dam.filtrarPedidos(pedidosCliente); //LineaPedidoDAO
+
+        double precioTotalSinDescuento = 0;
+
+        if (lineasPedidoCliente != null && !lineasPedidoCliente.isEmpty()) {
+            System.out.println("Líneas de pedido asociadas a estos pedidos:"); 
+            MenuPracticaApp.printLineasPedido(lineasPedidoCliente);
+
+            //SACAMOS EL IMPORTE DE LOS PEDIDOS DEL CLIENTE - USANDO LINEAPEDIDO
+            for (LineaPedido linea : lineasPedidoCliente) {  
+                int idArticulo = linea.getIdArticulo();
+                String idArticuloStr = String.valueOf(idArticulo);
+                Articulo articulo = dam.loadArticuloByCode(idArticuloStr); //PARA PODER PONER LA DESCRIPCION - ArticuloDAO
+
+                if (articulo != null) {
+                    System.out.println("----------------------------");
+                    System.out.println("Información del artículo asociado (ID: " + idArticulo + "):");
+                    printArticulo(articulo);
+                    System.out.println(" - cantidad pedida = " + linea.getCantidad());
+
+                    /*PRECIO ARTICULOS*/
+                    double precioPorArticulo = dam.sacarPrecioArticulo(idArticuloStr); //SACAMOS PRECIO de ArticuloFabricaDAO
+                    double totalLinea = precioPorArticulo * linea.getCantidad(); // (calcular total en cada linea)
+                    precioTotalSinDescuento += totalLinea; //sumando por cada linea al importe total del cliente
+
+                    System.out.println(" - Precio por artículo: " + precioPorArticulo);
+                    System.out.println(" - Total por esta línea: " + String.format("%.2f", totalLinea));
+                    System.out.println("----------------------------");
+                } else {
+                    System.out.println("No se encontró artículo con ID: " + idArticulo);
+                }
+            }
+            System.out.println("");
+        } else {
+            System.out.println("No se encontraron líneas de pedido con los IDs de pedido asociados a ese cliente.");
+        }
+
+        double descuento = dam.sacarDescuento(idCliente) / 100; //ClienteDAO
+        double precioTotalConDescuento = precioTotalSinDescuento * (1 - descuento);
+
+        System.out.println("El precio total sin descuento es: " + String.format("%.2f", precioTotalSinDescuento));
+        System.out.println("El descuento aplicado es: " + (descuento * 100) + "%");
+        System.out.println("El precio total con descuento es: " + String.format("%.2f", precioTotalConDescuento));
+        System.out.println("Has pagado " + String.format("%.2f", (precioTotalSinDescuento - precioTotalConDescuento)) + " euros menos ");
+
+        return precioTotalConDescuento;
+    }
+
+    //-----------------------FIN METODO 1-----------------------------------------//
+    
+}
