@@ -178,7 +178,6 @@ public class ArticuloFabricaDAO extends DataAccessObject {
         stmt.setString(1, idArticulo);
         ResultSet result = stmt.executeQuery();
 
-        // Si se encuentra un artículo, extraemos el precio
         while (result.next()) {
             precioArticulo = result.getDouble("precio");
         }
@@ -190,8 +189,7 @@ public class ArticuloFabricaDAO extends DataAccessObject {
     //FILTRO LAS FABRICAS QUE NO TENGAN PEDIDOS
     protected List<String> filtrarFabricasSinPedido() throws SQLException {
         List<String> fabricasSinPedidos = new ArrayList<>();
-        //Subconsulta - uso alias (ArticuloFabrica_iF.idFabrica) y (LineaPedido_iA.IdArticulo)
-        //Fabrica donde no exista un articulo fabrica y que ADEMAS (este articuloFabrica) exista en linea pedido
+        //Subconsulta - Fabrica donde no exista un articulo fabrica y que ADEMAS (este articuloFabrica) exista en linea pedido
         String sql = "SELECT f.idFabrica "
                 + "FROM Fabrica f "
                 + "WHERE NOT EXISTS ("
@@ -205,7 +203,7 @@ public class ArticuloFabricaDAO extends DataAccessObject {
 
         try ( PreparedStatement stmt = cnt.prepareStatement(sql);  ResultSet rs = stmt.executeQuery()) {
 
-            // Itero - cada idFabrica que cumpla ese requisito la meto en la lista fabricasSinPedidos.
+            // cada idFabrica que cumpla ese requisito la meto en la lista fabricasSinPedidos.
             while (rs.next()) {
                 fabricasSinPedidos.add(rs.getString("idFabrica"));
             }

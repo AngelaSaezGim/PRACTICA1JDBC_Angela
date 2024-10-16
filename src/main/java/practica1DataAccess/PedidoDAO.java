@@ -195,7 +195,7 @@ public class PedidoDAO extends DataAccessObject {
     protected List<Pedido> listarPedidosPorAño(int inputAño) throws SQLException {
 
         List<Pedido> listaPedidosPorAño = new ArrayList<>();
-        String sql = "SELECT * FROM Pedido WHERE YEAR(fecha) = ?"; //Buscamos solo por el año de la fecha
+        String sql = "SELECT * FROM Pedido WHERE YEAR(fecha) = ?"; 
 
         try ( PreparedStatement stmt = cnt.prepareStatement(sql)) {
             stmt.setInt(1, inputAño);

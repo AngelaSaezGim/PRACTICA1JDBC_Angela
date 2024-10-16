@@ -183,7 +183,7 @@ public class LineaPedidoDAO extends DataAccessObject {
         return filasAfectadas;
     }
 
-    //METODO 1 - te saco las lineas de pedido de la lista de pedidos asociada a un cliente
+    //METODO 1 
     protected List<LineaPedido> filtrarPedidos(List<Pedido> pedidosFilteredByClient) throws SQLException {
 
         List<LineaPedido> listaLineasPedidoCliente = new ArrayList<>();
@@ -198,9 +198,9 @@ public class LineaPedidoDAO extends DataAccessObject {
         //CONSTRUCCION DE LA QUERY
         // PLACEHOLDER ? por cada pedido en la lista pedidosFilteredByClient 
         for (int i = 0; i < pedidosFilteredByClient.size(); i++) {
-            query.append("?");  //Cada interrogante será una idPedido
+            query.append("?");
             if (i < pedidosFilteredByClient.size() - 1) {
-                query.append(", "); //coma entre los placeholders (separar idsPedido)
+                query.append(", ");
             }
         }
         query.append(")");
@@ -212,7 +212,6 @@ public class LineaPedidoDAO extends DataAccessObject {
         for (int i = 0; i < pedidosFilteredByClient.size(); i++) {
             stmt.setInt(i + 1, pedidosFilteredByClient.get(i).getIdPedido());
         }
-
         ResultSet result = stmt.executeQuery();
 
         while (result.next()) {
@@ -233,7 +232,6 @@ public class LineaPedidoDAO extends DataAccessObject {
             stmt.setString(1, idPedidoStr);
             ResultSet result = stmt.executeQuery();
 
-            // Procesar el ResultSet y agregar cada línea de pedido a la lista
             while (result.next()) {
                 int idLineaPedido = result.getInt("idLineaPedido");
                 int idArticulo = result.getInt("idArticulo");

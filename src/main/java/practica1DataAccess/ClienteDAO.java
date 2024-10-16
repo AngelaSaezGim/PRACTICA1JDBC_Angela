@@ -157,10 +157,10 @@ public class ClienteDAO extends DataAccessObject {
         return filasAfectadas;
     }
 
-    //METODO 1 - SACAR EL DESCUENTO DEL CLIENTE PARA APLICARLO EN EL IMPORTE
+    //METODO 1
     protected double sacarDescuento(String idCliente) throws SQLException {
 
-        double descuentoCliente = 0; //Por defecto 0 si no hay
+        double descuentoCliente = 0;
 
         String query = "SELECT descuento FROM Cliente WHERE idCliente = ?";
         PreparedStatement stmt = cnt.prepareStatement(query);

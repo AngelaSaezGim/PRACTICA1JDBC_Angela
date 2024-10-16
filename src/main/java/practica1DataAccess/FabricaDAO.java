@@ -165,34 +165,28 @@ public class FabricaDAO extends DataAccessObject {
     protected int borrarFabricasSinArticulosAsociadosAPedido(List<String> fabricasSinPedidos) throws SQLException {
 
         int numFabricasBorradas = 0;
-
-        // Primero eliminar las fábricas alternativas relacionadas - SOLUCIONAR DEPENDENCIA FABRICA ALTERNATIVA
+        //  SOLUCIONAR DEPENDENCIA FABRICA ALTERNATIVA
         FabricaAlternativaDAO fabricaAlternativaDAO = new FabricaAlternativaDAO(cnt);
 
         try {
-            //Para cada fábrica que borramos, primero eliminanamos todas las relaciones de artículos que tiene la fábrica; (DEPENDENCIA)
+            //Para cada fábrica que borramos, primero eliminanamos todas las relaciones de artículos que tiene la fábrica;
             try ( PreparedStatement stmtArticuloFabrica = cnt.prepareStatement("DELETE FROM ArticuloFabrica WHERE idFabrica = ?")) {
-                //Y ahora borramos la fabrica
                 try ( PreparedStatement stmtFabrica = cnt.prepareStatement("DELETE FROM Fabrica WHERE idFabrica = ?")) {
-                    // Recorremos la lista de fabricasSinPedidos. Por cada fabrica sin pedido (por su id)...
-                    for (String idFabrica : fabricasSinPedidos) {
 
-                        stmtArticuloFabrica.setString(1, idFabrica); //para borrar articuloFabrica dependiente
+                    for (String idFabrica : fabricasSinPedidos) {
+                        stmtArticuloFabrica.setString(1, idFabrica); 
                         stmtArticuloFabrica.executeUpdate();
 
                         // Borrar fábricas alternativas dependientes 
-                        // Se carga una lista de FabricaAlternativa relacionada con la fábrica actual (idFabrica) //idFabrica,% (para Idprincipal y Idalternativa)
                         List<FabricaAlternativa> fabricasAlternativas = fabricaAlternativaDAO.loadFabricaAlternativaContaining(idFabrica, "%");
-                        // Para cada fábrica alternativa relacionada... la borramos (pq esta relacionada)
+                        // Para cada fábrica alternativa relacionada... 
                         for (FabricaAlternativa alternativa : fabricasAlternativas) {
                             fabricaAlternativaDAO.deleteFabricaAlternativa(
                                     String.valueOf(alternativa.getIdFabricaPrincipal()),
                                     String.valueOf(alternativa.getIdFabricaAlternativa())
                             );
                         }
-
-                        //DEPENDENCIAS ELIMINADAS
-                        // Borrar fábrica en la tabla Fabrica
+                        
                         stmtFabrica.setString(1, idFabrica);
                         numFabricasBorradas += stmtFabrica.executeUpdate();
                     }
