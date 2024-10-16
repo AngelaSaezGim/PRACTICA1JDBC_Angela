@@ -304,7 +304,7 @@ public class MenuPracticaApp {
             System.out.println("Error de acceso a datos: " + sqe.getMessage());
         }
 
-        System.out.println("\n\n  ADIOS !!!! \n\n");
+        System.out.println("\n\n  PROGRAMA CERRADO \n\n");
         tcl.close();
     }
 
