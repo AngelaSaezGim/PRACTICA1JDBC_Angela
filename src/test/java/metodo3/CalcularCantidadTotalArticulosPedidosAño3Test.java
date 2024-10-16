@@ -4,7 +4,6 @@
  */
 package metodo3;
 
-import java.util.List;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeEach;
@@ -14,12 +13,22 @@ import practica1App.CalcularCantidadTotalArticulosPedidosAño3;
 import static org.junit.jupiter.api.Assertions.*;
 import practica1DataAccess.DataAccessManager;
 import practica1Objetos.Pedido;
+import practica1Objetos.LineaPedido;
+import java.util.List;
 
 /**
  *
  * @author angel
  */
 public class CalcularCantidadTotalArticulosPedidosAño3Test {
+    
+      private DataAccessManager dam;
+    
+    @BeforeEach
+    public void setUp() {
+
+          dam = new DataAccessManagerSimulation();
+    }
     
     public CalcularCantidadTotalArticulosPedidosAño3Test() {
     }
@@ -32,40 +41,76 @@ public class CalcularCantidadTotalArticulosPedidosAño3Test {
     public static void tearDownClass() {
     }
     
-    @BeforeEach
-    public void setUp() {
-    }
-    
     @AfterEach
     public void tearDown() {
     }
-
-    /**
-     * Test of filtrarPedidosAño method, of class CalcularCantidadTotalArticulosPedidosAño3.
-     */
-    @Test
-    public void testFiltrarPedidosAño() throws Exception {
-        System.out.println("filtrarPedidosA\u00f1o");
-        DataAccessManager dam = null;
-        List<Pedido> expResult = null;
-        List<Pedido> result = CalcularCantidadTotalArticulosPedidosAño3.filtrarPedidosAño(dam);
-        assertEquals(expResult, result);
-        // TODO review the generated test code and remove the default call to fail.
-        fail("The test case is a prototype.");
-    }
-
+    
+    //COMPLEJIDAD CICLOMATICA = 4
     /**
      * Test of calcularCantidadTotalArticulosPedidosAño method, of class CalcularCantidadTotalArticulosPedidosAño3.
      */
+    
     @Test
-    public void testCalcularCantidadTotalArticulosPedidosAño() throws Exception {
-        System.out.println("calcularCantidadTotalArticulosPedidosA\u00f1o");
+    public void testCalcularCantidadTotalArticulosPedidosAño1() throws Exception {
+        System.out.println("La lista de pedidos año está vacia");
+        dam = new DataAccessManagerSimulation();
+        int expResult = 0;
+        int result = CalcularCantidadTotalArticulosPedidosAño3.calcularCantidadTotalArticulosPedidosAño(dam);
+        assertEquals(expResult, result);
+    }
+    
+    @Test
+    public void testCalcularCantidadTotalArticulosPedidosAño2() throws Exception {
+        System.out.println("La lista de pedidos año NO está vacia, pero NO HAY LINEAS DE PEDIDO");
+          dam = new DataAccessManagerSimulation() {
+            @Override
+            public List<Pedido> listarPedidosPorAño(int año) {
+                return List.of(new Pedido(1), new Pedido(2)); // Simulamos dos pedidos
+            }
+
+            @Override
+            public List<LineaPedido> filtrarLineasPedidosIdPedido(String idPedido) {
+                return List.of(); //VACIA
+            }
+        };
+        int expResult = 0;
+        int result = CalcularCantidadTotalArticulosPedidosAño3.calcularCantidadTotalArticulosPedidosAño((DataAccessManager) dam);
+        assertEquals(expResult, result);
+    }
+    
+    @Test
+    public void testCalcularCantidadTotalArticulosPedidosAño3() throws Exception {
+        System.out.println("");
         DataAccessManager dam = null;
         int expResult = 0;
         int result = CalcularCantidadTotalArticulosPedidosAño3.calcularCantidadTotalArticulosPedidosAño(dam);
         assertEquals(expResult, result);
-        // TODO review the generated test code and remove the default call to fail.
-        fail("The test case is a prototype.");
     }
     
+    @Test
+    public void testCalcularCantidadTotalArticulosPedidosAño4() throws Exception {
+        System.out.println("");
+        DataAccessManager dam = null;
+        int expResult = 0;
+        int result = CalcularCantidadTotalArticulosPedidosAño3.calcularCantidadTotalArticulosPedidosAño(dam);
+        assertEquals(expResult, result);
+    }
+
+    private static class DataAccessManagerSimulation extends DataAccessManager {
+
+        public DataAccessManagerSimulation() {
+            super(); 
+        }
+
+        @Override
+        public List<Pedido> listarPedidosPorAño(int año) {
+            return List.of(); // Lista vacía para la simulación
+        }
+
+        @Override
+        public List<LineaPedido> filtrarLineasPedidosIdPedido(String idPedido) {
+            return List.of(); // Lista vacía para la simulación
+        }
+    }
+
 }

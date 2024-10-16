@@ -66,6 +66,9 @@ public class CalcularCantidadTotalArticulosPedidosAño3 {
         System.out.println("La cantidad total de los articulos en los pedidos es de " + totalArticulos);
         return totalArticulos;
     }
+    
+    
     //----------------------- FIN METODO 3 -----------------------------------------//
     
+       
 }

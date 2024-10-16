@@ -42,6 +42,7 @@ public class BorrarFabricasSinArticuloPedido2Test {
     /**
      * Test of FiltrarFabricasSinPedido method, of class BorrarFabricasSinArticuloPedido2.
      */
+    //COMPLEJIDAD CICLOMATICA = 2
     @Test
     public void testFiltrarFabricasSinPedido() throws Exception {
         System.out.println("FiltrarFabricasSinPedido");

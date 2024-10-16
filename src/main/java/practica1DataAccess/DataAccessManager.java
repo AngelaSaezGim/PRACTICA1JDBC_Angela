@@ -39,7 +39,7 @@ public class DataAccessManager implements AutoCloseable {
     private static DataAccessManager singleton;
 
     // Instanciamos un único objeto DataAccessManager - SINGLETON
-    private DataAccessManager() {
+    protected DataAccessManager() {
 
     }
 

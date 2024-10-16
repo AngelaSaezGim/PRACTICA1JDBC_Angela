@@ -41,6 +41,7 @@ public class SacarPrecioTotalClientePedidos1Test {
     /**
      * Test of sacarPrecioTotalClientePedidos method, of class SacarPrecioTotalClientePedidos1.
      */
+    //COMPLEJIDAD CICLOMATICA = 4
     @Test
     public void testSacarPrecioTotalClientePedidos() throws Exception {
         System.out.println("sacarPrecioTotalClientePedidos");
