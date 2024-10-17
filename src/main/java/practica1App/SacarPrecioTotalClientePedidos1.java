@@ -17,13 +17,12 @@ import practica1Objetos.Pedido;
  * @author angel
  */
 public class SacarPrecioTotalClientePedidos1 {
-    
-    static Scanner tcl = new Scanner(System.in);
 
-    
     //CON LOS PEDIDOS DE ESE CLIENTE - SACAMOS LAS LINEAS Y LAS CALCULAMOS
     //Test 1
     public static List<Pedido> consultarPedidosCliente(DataAccessManager dam, String idCliente) throws SQLException {
+        
+        
         //SACAMOS LA LISTA DE PEDIDOS DE ESE CLIENTE
         List<Pedido> pedidosFilteredByClient = dam.listarPedidosCliente(idCliente); //PedidoDAO
         if (pedidosFilteredByClient != null) {
@@ -37,7 +36,7 @@ public class SacarPrecioTotalClientePedidos1 {
     }
     
     public static double sacarPrecioTotalClientePedidos(DataAccessManager dam) throws SQLException {
-
+        Scanner tcl = new Scanner(System.in);
         System.out.println("Listado de comandas con importe y descuento");
         System.out.println("Escribeme el id del cliente al que queremos ver los pedidos");
         String idCliente = tcl.nextLine();

@@ -7,6 +7,7 @@ package metodo1;
 import java.io.ByteArrayInputStream;
 import java.sql.Timestamp;
 import java.util.List;
+import java.util.NoSuchElementException;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeEach;
@@ -17,6 +18,7 @@ import static org.junit.jupiter.api.Assertions.*;
 import practica1DataAccess.DataAccessManager;
 import practica1Objetos.LineaPedido;
 import practica1Objetos.Pedido;
+import practica1Objetos.Articulo;
 
 /**
  *
@@ -58,7 +60,7 @@ public class SacarPrecioTotalClientePedidos1Test {
         System.out.println("Test 1 - NO HAY PEDIDOS ASOCIADOS A ESE CLIENTE (lista vacia)");
         System.out.println(" ");
         dam = new DataAccessManagerSimulation() {
-            
+
             @Override
             public List<Pedido> listarPedidosCliente(String idCliente) {
                 return List.of();
@@ -75,49 +77,73 @@ public class SacarPrecioTotalClientePedidos1Test {
         System.out.println("Test 2 - HAY PEDIDOS PERO NO HAY LINEAS PEDIDOS ASOCIADAS A ESE CLIENTE");
         System.out.println(" ");
         dam = new DataAccessManagerSimulation() {
-            
+
             @Override
             public List<Pedido> listarPedidosCliente(String idCliente) {
-                String fechaStr ="2003-09-01 00:30:02";
+                String fechaStr = "2003-09-01 00:30:02";
                 Timestamp fechaPedido = Timestamp.valueOf(fechaStr);
-                return List.of(new Pedido(1, fechaPedido, 1001, 1, 1), new Pedido(2, fechaPedido, 1, 44, 2),
-                        new Pedido(3, fechaPedido, 99, 1, 1), new Pedido(4, fechaPedido, 450, 1, 1)); //Pedido 1 , pedido 2, pedido 3 y pedido 4
+                return List.of(
+                        new Pedido(1, fechaPedido, 1001, 1, 1),
+                        new Pedido(2, fechaPedido, 1, 44, 2),
+                        new Pedido(3, fechaPedido, 99, 1, 1),
+                        new Pedido(4, fechaPedido, 450, 1, 1)
+                ); //Pedido 1 , pedido 2, pedido 3 y pedido 4
             }
+
             @Override
             public List<LineaPedido> filtrarPedidos(List<Pedido> pedidosCliente) {
-                return List.of();
+                return List.of(); // Simulamos que no hay líneas de pedido
             }
+
         };
         double expResult = 0.0;
         double result = SacarPrecioTotalClientePedidos1.sacarPrecioTotalClientePedidos(dam);
         assertEquals(expResult, result, 0);
     }
 
-    /*
+    @Test
     public void testSacarPrecioTotalClientePedidos3() throws Exception {
         System.out.println(" ");
         System.out.println("Test 3 - HAY PEDIDOS Y HAY LINEAS DE PEDIDO ASOCIADAS A ESE CLIENTE PERO NO HAY ARTICULOS");
         System.out.println(" ");
-        DataAccessManager dam = null;
-        double expResult = 0.0;
-        double result = SacarPrecioTotalClientePedidos1.sacarPrecioTotalClientePedidos(dam);
-        assertEquals(expResult, result, 0);
-    }
-    
-        /*
-    Pedidos hechos por el cliente 1
-	-> Pedido [1]  Fecha del pedido = 2024-10-02 16:45:37.0 | Numero Comanda = 1001 | Id cliente relacionado = 1 | Direccion = 1
-	-> Pedido [2]  Fecha del pedido = 2003-09-01 22:20:00.0 | Numero Comanda = 44 | Id cliente relacionado = 1 | Direccion = 2
-	-> Pedido [3]  Fecha del pedido = 2024-10-10 08:53:03.0 | Numero Comanda = 99 | Id cliente relacionado = 1 | Direccion = 1
-	-> Pedido [4]  Fecha del pedido = 2006-07-02 10:20:00.0 | Numero Comanda = 450 | Id cliente relacionado = 1 | Direccion = 1
+        dam = new DataAccessManagerSimulation() {
 
-    Líneas de pedido asociadas a estos pedidos:
-	-> Linea Pedido [1]  Id del pedido relacionado = 1 | Id del articulo relacionado = 1 | Cantidad = 50
-	-> Linea Pedido [2]  Id del pedido relacionado = 2 | Id del articulo relacionado = 3 | Cantidad = 30
-	-> Linea Pedido [3]  Id del pedido relacionado = 3 | Id del articulo relacionado = 4 | Cantidad = 20
-	-> Linea Pedido [4]  Id del pedido relacionado = 3 | Id del articulo relacionado = 4 | Cantidad = 10
-	-> Linea Pedido [5]  Id del pedido relacionado = 4 | Id del articulo relacionado = 8 | Cantidad = 1
-    
+            @Override
+            public List<Pedido> listarPedidosCliente(String idCliente) {
+                String fechaStr = "2003-09-01 00:30:02";
+                Timestamp fechaPedido = Timestamp.valueOf(fechaStr);
+                return List.of(
+                        new Pedido(1, fechaPedido, 1001, 1, 1),
+                        new Pedido(2, fechaPedido, 1, 44, 2),
+                        new Pedido(3, fechaPedido, 99, 1, 1),
+                        new Pedido(4, fechaPedido, 450, 1, 1)
+                ); //Pedido 1 , pedido 2, pedido 3 y pedido 4
+            }
+
+            @Override
+            public List<LineaPedido> filtrarPedidos(List<Pedido> pedidosCliente) {
+                return List.of(
+                        new LineaPedido(1, 1, 1, 50),
+                        new LineaPedido(2, 2, 3, 30),
+                        new LineaPedido(3, 3, 4, 20),
+                        new LineaPedido(4, 3, 4, 10),
+                        new LineaPedido(5, 4, 8, 1)); // Simulación de líneas de pedido sin artículos (no cantidad)
+            }
+
+            @Override
+            public Articulo loadArticuloByCode(String idArticulo) {
+                System.out.println("No se encontraron articulos");
+                throw new NoSuchElementException("No se encontró el artículo con ID: " + idArticulo);
+            }
+
+        };
+
+        assertThrows(NoSuchElementException.class, () -> {
+            SacarPrecioTotalClientePedidos1.sacarPrecioTotalClientePedidos(dam);
+        });
+    }
+
+    /*
     ----------------------------
 Información del artículo asociado (ID: 1):
 Descripción: manzanas
@@ -157,18 +183,48 @@ El precio total sin descuento es: 1114,80
 El descuento aplicado es: 4.0%
 El precio total con descuento es: 1070,21
 Has pagado 44,59 euros menos 
-*/
-/*
+     */
+    @Test
+
     public void testSacarPrecioTotalClientePedidos4() throws Exception {
         System.out.println(" ");
         System.out.println("Test 4 - HAY PEDIDOS Y HAY LINEAS DE PEDIDO ASOCIADAS A ESE CLIENTE Y ADEMAS TIENEN ARTICULOS CON PRECIOS");
         System.out.println(" ");
-        DataAccessManager dam = null;
+        dam = new DataAccessManagerSimulation() {
+
+            @Override
+            public List<Pedido> listarPedidosCliente(String idCliente) {
+                String fechaStr = "2003-09-01 00:30:02";
+                Timestamp fechaPedido = Timestamp.valueOf(fechaStr);
+                return List.of(
+                        new Pedido(1, fechaPedido, 1001, 1, 1),
+                        new Pedido(2, fechaPedido, 1, 44, 2),
+                        new Pedido(3, fechaPedido, 99, 1, 1),
+                        new Pedido(4, fechaPedido, 450, 1, 1)
+                ); //Pedido 1 , pedido 2, pedido 3 y pedido 4
+            }
+
+            @Override
+            public List<LineaPedido> filtrarPedidos(List<Pedido> pedidosCliente) {
+                return List.of(
+                        new LineaPedido(1, 1, 1, 50),
+                        new LineaPedido(2, 2, 3, 30),
+                        new LineaPedido(3, 3, 4, 20),
+                        new LineaPedido(4, 3, 4, 10),
+                        new LineaPedido(5, 4, 8, 1)); // Simulación de líneas de pedido sin artículos (no cantidad)
+            }
+
+            @Override
+            public Articulo loadArticuloByCode(String idArticulo) {
+                return new Articulo("Articulo de prueba");
+            }
+
+        };
         double expResult = 0.0; //PRECIO 
         double result = SacarPrecioTotalClientePedidos1.sacarPrecioTotalClientePedidos(dam);
         assertEquals(expResult, result, 0);
     }
-*/
+
     private static class DataAccessManagerSimulation extends DataAccessManager {
 
         public DataAccessManagerSimulation() {
@@ -186,13 +242,18 @@ Has pagado 44,59 euros menos
         }
 
         @Override
+        public Articulo loadArticuloByCode(String idArticulo) {
+            return new Articulo("Articulo de prueba");
+        }
+
+        @Override
         public double sacarPrecioArticulo(String idArticulo) {
             return 0;
         }
 
         @Override
         public double sacarDescuento(String idCliente) {
-            return 0;
+            return 4;
         }
 
     }

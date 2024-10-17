@@ -8,8 +8,6 @@ import java.io.FileReader;
 import java.io.IOException;
 import java.sql.Connection;
 import java.sql.DriverManager;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.List;
 import java.util.Properties;
@@ -544,8 +542,8 @@ public class DataAccessManager implements AutoCloseable {
         return this.pedidoDAO.updatePedido(idPedido, pedidoActualizar);
     }
 
-    //METODO 1 - ACCESO
-    // PEDIDODAO
+    //METODO 1 
+
     public List<Pedido> listarPedidosCliente(String idCliente) throws SQLException {
         if (idCliente == null || idCliente.length() == 0) {
             throw new IllegalArgumentException("Debe indicar el filtro de búsqueda");
@@ -553,7 +551,7 @@ public class DataAccessManager implements AutoCloseable {
         return this.pedidoDAO.listarPedidosCliente(idCliente);
     }
 
-    //LINEAPEDIDODAO
+
     public List<LineaPedido> filtrarPedidos(List<Pedido> pedidosCliente) throws SQLException {
         if (pedidosCliente == null) {
             throw new IllegalArgumentException("Debe indicar el filtro de búsqueda");
@@ -561,7 +559,7 @@ public class DataAccessManager implements AutoCloseable {
         return this.lineaPedidoDAO.filtrarPedidos(pedidosCliente);
     }
 
-    //ARTICULOFABRICADAO
+
     public double sacarPrecioArticulo(String idArticulo) throws SQLException {
         if (idArticulo == null || idArticulo.length() == 0) {
             throw new IllegalArgumentException("Debe indicar el filtro de búsqueda");
@@ -569,7 +567,7 @@ public class DataAccessManager implements AutoCloseable {
         return articuloFabricaDAO.sacarPrecioArticulo(idArticulo);
     }
 
-    // CLIENTEDAO
+
     public double sacarDescuento(String idCliente) throws SQLException {
         if (idCliente == null || idCliente.length() == 0) {
             throw new IllegalArgumentException("Debe indicar el filtro de búsqueda");
