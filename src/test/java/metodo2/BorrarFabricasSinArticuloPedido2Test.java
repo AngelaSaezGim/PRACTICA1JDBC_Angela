@@ -50,7 +50,9 @@ public class BorrarFabricasSinArticuloPedido2Test {
     //COMPLEJIDAD CICLOMATICA = 2
     @Test
     public void testBorrarFabricasSinArticuloPedido1() throws Exception {
-        System.out.println("borrarFabricasSinArticuloPedido numero fabricas pedido es 0 - No hay fabricas sin pedidos de artículos");
+        System.out.println(" ");
+        System.out.println("Test 1 - Numero fabricas pedido es 0 - NO HAY FABRICAS sin pedidos de artículos");
+        System.out.println(" ");
          dam = new DataAccessManagerSimulation() {
             @Override
             public List<String> filtrarFabricasSinPedido() {
@@ -69,7 +71,10 @@ public class BorrarFabricasSinArticuloPedido2Test {
 
     @Test
     public void testBorrarFabricasSinArticuloPedido2() throws Exception {
-        System.out.println("borrarFabricasSinArticuloPedido numero fabricas pedido es mayor a 0 (tengo 2 fabricas sin articulos asociados a productos)");
+        System.out.println(" ");
+        System.out.println("Test 2 - Numero fabricas pedido es 0 - TENGO 2 FABRICAS sin articulos asociados a productos");
+        System.out.println(" ");
+        System.out.println("borrarFabricasSinArticuloPedido");
          // Simulamos que hay fábricas sin pedidos de artículos
         dam = new DataAccessManagerSimulation() {
             

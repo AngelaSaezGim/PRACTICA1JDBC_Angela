@@ -61,8 +61,9 @@ public class CalcularCantidadTotalArticulosPedidosAño3Test {
      */
     @Test
     public void testCalcularCantidadTotalArticulosPedidosAño1() throws Exception {
-
+        System.out.println("");
         System.out.println("TEST 1 - La lista de pedidos año está vacia");
+        System.out.println("");
         dam = new DataAccessManagerSimulation() {
             @Override
             public List<Pedido> listarPedidosPorAño(int año) {
@@ -77,7 +78,9 @@ public class CalcularCantidadTotalArticulosPedidosAño3Test {
     @Test
     public void testCalcularCantidadTotalArticulosPedidosAño2() throws Exception {
         
+        System.out.println("");
         System.out.println("TEST 2 - La lista de pedidos año NO está vacia, pero NO HAY LINEAS DE PEDIDO");
+        System.out.println("");
         dam = new DataAccessManagerSimulation() {
             @Override
             public List<Pedido> listarPedidosPorAño(int año) { //(formato: YYYY-MM-DD HH:MM:SS) - fecha -2003
@@ -99,7 +102,9 @@ public class CalcularCantidadTotalArticulosPedidosAño3Test {
     @Test
     public void testCalcularCantidadTotalArticulosPedidosAño3() throws Exception {
         
+        System.out.println("");
         System.out.println("TEST 3 - La lista de pedidos año NO está vacia, y las lineas de Pedido tienen cantidades de artículos");
+        System.out.println("");
         dam = new DataAccessManagerSimulation() {
             @Override
             public List<Pedido> listarPedidosPorAño(int año) {
@@ -130,7 +135,9 @@ public class CalcularCantidadTotalArticulosPedidosAño3Test {
 
     @Test
     public void testCalcularCantidadTotalArticulosPedidosAño4() throws Exception {
+        System.out.println("");
         System.out.println("TEST 4 - La lista de pedidos año NO está vacia, pero algunas lineas de pedido tienen cantidad 0");
+        System.out.println("");
         dam = new DataAccessManagerSimulation() {
             @Override
             public List<Pedido> listarPedidosPorAño(int año) {

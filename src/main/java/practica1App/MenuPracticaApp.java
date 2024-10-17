@@ -18,7 +18,6 @@ public class MenuPracticaApp {
 
     private static Scanner tcl = new Scanner(System.in);
 
-    //Opciones del menú principal
     private enum MenuOption {
         QUERY_ALL, QUERY_BY_CODE, QUERY_INSERT, QUERY_DELETE, QUERY_UPDATE, QUERY_LISTARCOMANDES, QUERY_BORRARFABRICASNOCOMANDA,
         QUERY_ARTICULOSAÑO, EXIT
