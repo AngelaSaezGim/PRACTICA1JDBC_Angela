@@ -4,22 +4,11 @@
  */
 package practica1App;
 
-import java.util.List;
 import java.util.Scanner;
 
 import practica1DataAccess.DataAccessManager;
 
-import practica1Objetos.Articulo;
-import practica1Objetos.ArticuloFabrica;
-import practica1Objetos.Cliente;
-import practica1Objetos.DireccionEnvio;
-import practica1Objetos.Fabrica;
-import practica1Objetos.FabricaAlternativa;
-import practica1Objetos.LineaPedido;
-import practica1Objetos.Pedido;
-
 import java.sql.SQLException;
-import java.sql.Timestamp;
 
 /**
  *
