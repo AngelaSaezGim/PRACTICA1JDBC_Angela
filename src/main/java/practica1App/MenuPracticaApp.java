@@ -19,7 +19,7 @@ public class MenuPracticaApp {
     private static Scanner tcl = new Scanner(System.in);
 
     private enum MenuOption {
-        QUERY_ALL, QUERY_BY_CODE, QUERY_INSERT, QUERY_DELETE, QUERY_UPDATE, QUERY_LISTARCOMANDES, QUERY_BORRARFABRICASNOCOMANDA,
+        QUERY_ALL, QUERY_BY_CODE, QUERY_INSERT, QUERY_DELETE, QUERY_UPDATE, QUERY_TOTALARTICULOSFABRICA,QUERY_LISTARCOMANDES, QUERY_BORRARFABRICASNOCOMANDA,
         QUERY_ARTICULOSAÑO, EXIT
     };
 
@@ -273,6 +273,10 @@ public class MenuPracticaApp {
                             }
                         } while (opcionElegidaUpdate != MenuOption5.ATRAS);
                         break;
+                    case QUERY_TOTALARTICULOSFABRICA:
+                        MetodosMenu.getTotalArticulosPorFabrica(dam);
+                         MetodosMenu.esperarIntro();
+                        break;
                     case QUERY_LISTARCOMANDES:
                         SacarPrecioTotalClientePedidos1.sacarPrecioTotalClientePedidos(dam);
                         MetodosMenu.esperarIntro();
@@ -306,10 +310,11 @@ public class MenuPracticaApp {
                 .append("\t3)Insertar...\n")
                 .append("\t4)Borrar...\n")
                 .append("\t5)Actualizar...\n")
-                .append("\t6)Listar pedidos cliente (importe + descuento) \n")
-                .append("\t7)Borrar fabricas sin artículos asociados a pedidos\n")
-                .append("\t8)Total de artículos incluidos en todos los pedidos de un año\n")
-                .append("\t9)Salir\n")
+                .append("\t6) Ver cuantos articulos provee cada fabrica \n")
+                .append("\t7)Listar pedidos cliente (importe + descuento) \n")
+                .append("\t8)Borrar fabricas sin artículos asociados a pedidos\n")
+                .append("\t9)Total de artículos incluidos en todos los pedidos de un año\n")
+                .append("\t10)Salir\n")
                 .append("Opción: ");
         System.out.print(sb.toString());
     }

@@ -71,6 +71,7 @@ CREATE TABLE ArticuloFabrica (
   idArticulo INT,
   idFabrica INT,
   existencias INT,
+	precio DECIMAL(10, 2),
   PRIMARY KEY (idArticulo, idFabrica), -- Clave primaria compuesta (tipo artículo que existe en una fábrica)
 	CONSTRAINT fk_ArticuloFabrica_Articulo FOREIGN KEY (idArticulo) REFERENCES Articulo(idArticulo) ON DELETE CASCADE ,
 	CONSTRAINT fk_ArticuloFabrica_Fabrica FOREIGN KEY (idFabrica) REFERENCES Fabrica(idFabrica) ON DELETE CASCADE 
@@ -109,12 +110,13 @@ GROUP BY idFabrica; -- suma de las existencias se calcula de manera independient
 /*INSERTANDO DATOS PRUEBA*/
 GRANT ALL PRIVILEGES ON `practica1`.* TO 'root'@'localhost';
 
-
 INSERT INTO Cliente(saldo,limiteCredito,descuento)VALUES(15,15000,4);
 SELECT * FROM Cliente;
 
 
 INSERT INTO Articulo(descripcion)VALUES("lapiz");
+INSERT INTO Articulo (descripcion) VALUES ('Peras');
+INSERT INTO Articulo (descripcion) VALUES ('Manzanas');
 SELECT * FROM Articulo;
 
 
@@ -138,21 +140,19 @@ SELECT * FROM LineaPedido;
 
 INSERT INTO Fabrica(telefonoContacto) VALUES('66666666');
 INSERT INTO Fabrica (telefonoContacto) VALUES ('77777777'); -- Hago 2 para fabricaAlternativa
+INSERT INTO Fabrica (telefonoContacto) VALUES ('123456789');
+INSERT INTO Fabrica (telefonoContacto) VALUES ('987654321');
 SELECT * FROM fabrica;
 
 
-
-INSERT INTO ArticuloFabrica(idArticulo,idFabrica,existencias)
-VALUES(1,1,200);
-SELECT * FROM ArticuloFabrica;
-
-
+INSERT INTO ArticuloFabrica (idArticulo, idFabrica, existencias, precio) VALUES (2, 2, 100, 15.50);
+INSERT INTO ArticuloFabrica (idArticulo, idFabrica, existencias, precio) VALUES (3, 3, 50, 20);
 
 INSERT INTO FabricaAlternativa (idFabricaPrincipal, idFabricaAlternativa) VALUES (1, 2); -- La fábrica 1 tiene como alternativa la fábrica 2
 -- EN codigo = no podria coincidir - ej 1,1
 SELECT * FROM FabricaAlternativa;
 
-/* Aplicar ON CASCADE
+
 DROP TABLE IF EXISTS FabricaAlternativa;
 DROP TABLE IF EXISTS ArticuloFabrica;
 DROP TABLE IF EXISTS LineaPedido;
@@ -160,4 +160,4 @@ DROP TABLE IF EXISTS Pedido;
 DROP TABLE IF EXISTS DireccionEnvio;
 DROP TABLE IF EXISTS Articulo;
 DROP TABLE IF EXISTS Fabrica;
-DROP TABLE IF EXISTS Cliente;*/
+DROP TABLE IF EXISTS Cliente;

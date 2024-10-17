@@ -542,6 +542,10 @@ public class DataAccessManager implements AutoCloseable {
         return this.pedidoDAO.updatePedido(idPedido, pedidoActualizar);
     }
 
+    public List<Fabrica> getTotalArticulosPorFabrica() throws SQLException {
+        return this.fabricaDAO.getTotalArticulosPorFabrica();
+    }
+
     //METODO 1 
 
     public List<Pedido> listarPedidosCliente(String idCliente) throws SQLException {

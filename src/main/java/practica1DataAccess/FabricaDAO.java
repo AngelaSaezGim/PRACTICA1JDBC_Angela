@@ -161,6 +161,27 @@ public class FabricaDAO extends DataAccessObject {
         return filasAfectadas;
     }
 
+    //USO VISTA - SE DESEAN SABER CUANTOS ARTICULOS EN TOTAL PROVEE LA FABRICA
+    protected List<Fabrica> getTotalArticulosPorFabrica() throws SQLException {
+        List<Fabrica> ListaTotalArticulosfabricas = new ArrayList<>();
+        String sql = "SELECT idFabrica, SUM(existencias) AS totalArticulos FROM ArticuloPorFabrica GROUP BY idFabrica";
+
+        try (PreparedStatement stmt = cnt.prepareStatement(sql); ResultSet rs = stmt.executeQuery()) {
+
+            while (rs.next()) {
+                int idFabrica = rs.getInt("idFabrica");
+                int totalArticulos = rs.getInt("totalArticulos");
+
+                Fabrica fabrica = new Fabrica(idFabrica);
+                System.out.println("Total de artículos en la fábrica " + idFabrica + ": " + totalArticulos);
+                ListaTotalArticulosfabricas.add(fabrica);
+            }
+        } catch (SQLException e) {
+            throw new SQLException("Error al obtener artículos por fábrica: " + e.getMessage());
+        }
+        return ListaTotalArticulosfabricas;
+    }
+
     //METODO 2
     protected int borrarFabricasSinArticulosAsociadosAPedido(List<String> fabricasSinPedidos) throws SQLException {
 

@@ -1184,4 +1184,19 @@ public class MetodosMenu {
         }
     }
 
+    public static void getTotalArticulosPorFabrica(DataAccessManager dam) throws SQLException {
+
+        try {
+            // Llamar al método para obtener las fábricas y el total de artículos
+            List<Fabrica> listaFabricasTotalArticulos = dam.getTotalArticulosPorFabrica();
+
+            // Recorrer la lista de fábricas y mostrar la información
+            for (Fabrica fabrica : listaFabricasTotalArticulos) {
+                System.out.println(fabrica.toString());
+            }
+        } catch (SQLException e) {
+            System.err.println("Error al obtener los artículos por fábrica: " + e.getMessage());
+        }
+    }
+
 }
