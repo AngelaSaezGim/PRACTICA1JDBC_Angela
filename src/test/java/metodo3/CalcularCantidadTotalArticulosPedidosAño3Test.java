@@ -76,6 +76,7 @@ public class CalcularCantidadTotalArticulosPedidosAño3Test {
 
     @Test
     public void testCalcularCantidadTotalArticulosPedidosAño2() throws Exception {
+        
         System.out.println("TEST 2 - La lista de pedidos año NO está vacia, pero NO HAY LINEAS DE PEDIDO");
         dam = new DataAccessManagerSimulation() {
             @Override
@@ -165,7 +166,7 @@ public class CalcularCantidadTotalArticulosPedidosAño3Test {
         }
 
         @Override
-        public List<Pedido> listarPedidosPorAño(int año) { //AÑO 2003 PREDETERMINADO
+        public List<Pedido> listarPedidosPorAño(int año) {
             return List.of();
         }
 

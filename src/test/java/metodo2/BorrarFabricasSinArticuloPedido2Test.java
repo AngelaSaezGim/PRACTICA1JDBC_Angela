@@ -49,9 +49,19 @@ public class BorrarFabricasSinArticuloPedido2Test {
      */
     //COMPLEJIDAD CICLOMATICA = 2
     @Test
-    public void testBorrarFabricasSinArticuloPedido() throws Exception {
-        System.out.println("borrarFabricasSinArticuloPedido numero fabricas pedido es 0");
-        DataAccessManager dam = null;
+    public void testBorrarFabricasSinArticuloPedido1() throws Exception {
+        System.out.println("borrarFabricasSinArticuloPedido numero fabricas pedido es 0 - No hay fabricas sin pedidos de artículos");
+         dam = new DataAccessManagerSimulation() {
+            @Override
+            public List<String> filtrarFabricasSinPedido() {
+                return List.of(); 
+            }
+            
+            @Override
+            public int borrarFabricasSinArticulosAsociadosAPedido(List<String> idsFabricas) {
+                return idsFabricas.size();
+            }
+        };
         int expResult = 0;
         int result = BorrarFabricasSinArticuloPedido2.borrarFabricasSinArticuloPedido(dam);
         assertEquals(expResult, result);
@@ -59,9 +69,21 @@ public class BorrarFabricasSinArticuloPedido2Test {
 
     @Test
     public void testBorrarFabricasSinArticuloPedido2() throws Exception {
-        System.out.println("borrarFabricasSinArticuloPedido numero fabricas pedido es mayor a 0");
-        DataAccessManager dam = null;
-        int expResult = 0;
+        System.out.println("borrarFabricasSinArticuloPedido numero fabricas pedido es mayor a 0 (tengo 2 fabricas sin articulos asociados a productos)");
+         // Simulamos que hay fábricas sin pedidos de artículos
+        dam = new DataAccessManagerSimulation() {
+            
+            @Override
+            public List<String> filtrarFabricasSinPedido() {
+                return List.of("Fabrica1", "Fabrica2"); 
+            }
+
+            @Override
+            public int borrarFabricasSinArticulosAsociadosAPedido(List<String> idsFabricas) {
+                return idsFabricas.size(); 
+            }
+        };
+        int expResult = 2;
         int result = BorrarFabricasSinArticuloPedido2.borrarFabricasSinArticuloPedido(dam);
         assertEquals(expResult, result);
     }
@@ -70,6 +92,16 @@ public class BorrarFabricasSinArticuloPedido2Test {
 
         public DataAccessManagerSimulation() {
             super();
+        }
+        
+        @Override
+        public List<String> filtrarFabricasSinPedido() {
+            return List.of();
+        }
+
+        @Override
+        public int borrarFabricasSinArticulosAsociadosAPedido(List<String> idsFabricas) {
+            return 0;
         }
 
     }
