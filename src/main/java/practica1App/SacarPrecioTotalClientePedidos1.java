@@ -7,8 +7,6 @@ package practica1App;
 import java.sql.SQLException;
 import java.util.List;
 import java.util.Scanner;
-import static practica1App.MenuPracticaApp.consultarPedidosCliente;
-import static practica1App.MenuPracticaApp.printArticulo;
 import practica1DataAccess.DataAccessManager;
 import practica1Objetos.Articulo;
 import practica1Objetos.LineaPedido;
@@ -25,6 +23,19 @@ public class SacarPrecioTotalClientePedidos1 {
     
     //CON LOS PEDIDOS DE ESE CLIENTE - SACAMOS LAS LINEAS Y LAS CALCULAMOS
     //Test 1
+    public static List<Pedido> consultarPedidosCliente(DataAccessManager dam, String idCliente) throws SQLException {
+        //SACAMOS LA LISTA DE PEDIDOS DE ESE CLIENTE
+        List<Pedido> pedidosFilteredByClient = dam.listarPedidosCliente(idCliente); //PedidoDAO
+        if (pedidosFilteredByClient != null) {
+            System.out.println("Pedidos hechos por el cliente " + idCliente);
+            MetodosMenu.printPedidos(pedidosFilteredByClient);
+        } else {
+            System.out.println("No se encontraron pedidos con el id de ese cliente.");
+
+        }
+        return pedidosFilteredByClient;
+    }
+    
     public static double sacarPrecioTotalClientePedidos(DataAccessManager dam) throws SQLException {
 
         System.out.println("Listado de comandas con importe y descuento");
@@ -39,7 +50,7 @@ public class SacarPrecioTotalClientePedidos1 {
 
         if (lineasPedidoCliente != null && !lineasPedidoCliente.isEmpty()) {
             System.out.println("Líneas de pedido asociadas a estos pedidos:"); 
-            MenuPracticaApp.printLineasPedido(lineasPedidoCliente);
+            MetodosMenu.printLineasPedido(lineasPedidoCliente);
 
             //SACAMOS EL IMPORTE DE LOS PEDIDOS DEL CLIENTE - USANDO LINEAPEDIDO
             for (LineaPedido linea : lineasPedidoCliente) {  
@@ -50,7 +61,7 @@ public class SacarPrecioTotalClientePedidos1 {
                 if (articulo != null) {
                     System.out.println("----------------------------");
                     System.out.println("Información del artículo asociado (ID: " + idArticulo + "):");
-                    printArticulo(articulo);
+                    MetodosMenu.printArticulo(articulo);
                     System.out.println(" - cantidad pedida = " + linea.getCantidad());
 
                     /*PRECIO ARTICULOS*/

@@ -24,8 +24,8 @@ CREATE TABLE DireccionEnvio (
   calle VARCHAR(100) NOT NULL,
   comuna VARCHAR(100) NOT NULL,
   ciudad VARCHAR(100) NOT NULL,
-  idCliente INT, -- Clave ajena a cliente
-	CONSTRAINT fk_Direccion_Cliente FOREIGN KEY (idCliente) REFERENCES Cliente(idCliente) -- -- Nombrar la clave foránea Relación con la tabla Cliente
+  idCliente INT, 
+	CONSTRAINT fk_Direccion_Cliente FOREIGN KEY (idCliente) REFERENCES Cliente(idCliente) ON DELETE CASCADE  -- -- Nombrar la clave foránea Relación con la tabla Cliente
 );
 
 -- Para cada pedido:
@@ -33,12 +33,12 @@ CREATE TABLE DireccionEnvio (
 -- cliente (id), dirección de envío (idDireccion) y fecha del pedido.
 CREATE TABLE Pedido (
   idPedido INT PRIMARY KEY AUTO_INCREMENT,
-  fecha DATETIME, -- DATETIME (fehca y hora) -- Una fecha incluye la hora.
-  numeroComanda INT,  -- Número de la comanda (para identificar)
-  idCliente INT, -- Pedido - dependiente cliente (un pedido no puede existir sin cliente)
-  idDireccion INT, -- Numero direccion envio asociado
-  CONSTRAINT fk_Pedido_Cliente FOREIGN KEY (idCliente) REFERENCES Cliente(idCliente),
-  CONSTRAINT fk_Pedido_Direccion FOREIGN KEY (idDireccion) REFERENCES DireccionEnvio(idDireccion)
+  fecha DATETIME, 
+  numeroComanda INT,  
+  idCliente INT, 
+  idDireccion INT, 
+  CONSTRAINT fk_Pedido_Cliente FOREIGN KEY (idCliente) REFERENCES Cliente(idCliente) ON DELETE CASCADE ,
+  CONSTRAINT fk_Pedido_Direccion FOREIGN KEY (idDireccion) REFERENCES DireccionEnvio(idDireccion) ON DELETE CASCADE 
 );
 
 -- Tablas auxiliares: LineasPedido para las líneas de un pedido.
@@ -48,8 +48,8 @@ CREATE TABLE LineaPedido (
   idPedido INT,
   idArticulo INT,
   cantidad INT,
-  CONSTRAINT fk_LineaPedido_Pedido FOREIGN KEY (idPedido) REFERENCES Pedido(idPedido),
-  CONSTRAINT fk_LineaPedido_Articulo FOREIGN KEY (idArticulo) REFERENCES Articulo(idArticulo)
+  CONSTRAINT fk_LineaPedido_Pedido FOREIGN KEY (idPedido) REFERENCES Pedido(idPedido) ON DELETE CASCADE ,
+  CONSTRAINT fk_LineaPedido_Articulo FOREIGN KEY (idArticulo) REFERENCES Articulo(idArticulo) ON DELETE CASCADE 
 );
 
 -- Además, se ha determinado que se debe almacenar la información de las fábricas. No obstante, -- dado el uso de distribuidores, se usará:
@@ -72,8 +72,8 @@ CREATE TABLE ArticuloFabrica (
   idFabrica INT,
   existencias INT,
   PRIMARY KEY (idArticulo, idFabrica), -- Clave primaria compuesta (tipo artículo que existe en una fábrica)
-	CONSTRAINT fk_ArticuloFabrica_Articulo FOREIGN KEY (idArticulo) REFERENCES Articulo(idArticulo),
-	CONSTRAINT fk_ArticuloFabrica_Fabrica FOREIGN KEY (idFabrica) REFERENCES Fabrica(idFabrica) -- Se podría almacenar una fábrica de la cual no se tenga ningún artículo.
+	CONSTRAINT fk_ArticuloFabrica_Articulo FOREIGN KEY (idArticulo) REFERENCES Articulo(idArticulo) ON DELETE CASCADE ,
+	CONSTRAINT fk_ArticuloFabrica_Fabrica FOREIGN KEY (idFabrica) REFERENCES Fabrica(idFabrica) ON DELETE CASCADE 
 );
 
 -- TABLA FABRICAS ALTERNATIVAS - posibilidad de regitrar fabricas alternativas
@@ -82,12 +82,12 @@ CREATE TABLE ArticuloFabrica (
 CREATE TABLE FabricaAlternativa (
   idFabricaPrincipal INT,             
   idFabricaAlternativa INT,            -- Fábrica alternativa (posible proveedor alternativo)
-  PRIMARY KEY (idFabricaPrincipal, idFabricaAlternativa),  -- Clave primaria compuesta (principal y alternativa) - PARA TENER FABRICA ALTERNATIVA
+  PRIMARY KEY (idFabricaPrincipal, idFabricaAlternativa),  -- Clave primaria compuesta (principal y alternativa)
   -- Fabrica alternativa y principal = Ambas deben estar presentes en la tabla Fabrica
   -- Cada valor en idFabricaPrincipal debe existir en la columna idFabrica de la tabla Fabrica
-  CONSTRAINT fk_FabricaAlternativa_idFabricaPrincipalFabrica FOREIGN KEY (idFabricaPrincipal) REFERENCES Fabrica(idFabrica),   
+  CONSTRAINT fk_FabricaAlternativa_idFabricaPrincipalFabrica FOREIGN KEY (idFabricaPrincipal) REFERENCES Fabrica(idFabrica) ON DELETE CASCADE ,   
   -- Cada valor en idFabricaAlternativa debe existir en la columna idFabrica de la tabla Fabrica.
-  CONSTRAINT fk_FabricaAlternativa_idFabricaAlternativaFabrica FOREIGN KEY (idFabricaAlternativa) REFERENCES Fabrica(idFabrica)  
+  CONSTRAINT fk_FabricaAlternativa_idFabricaAlternativaFabrica FOREIGN KEY (idFabricaAlternativa) REFERENCES Fabrica(idFabrica) ON DELETE CASCADE   
 );
 
 -- Además, se desea ver cuántos artículos (en total) provee la fábrica.--
@@ -107,48 +107,57 @@ FROM ArticuloFabrica -- cantidad de cada artículo disponible en cada fábrica
 GROUP BY idFabrica; -- suma de las existencias se calcula de manera independiente para cada fábrica
 
 /*INSERTANDO DATOS PRUEBA*/
-/*GRANT ALL PRIVILEGES ON `practica1`.* TO 'root'@'localhost';*/
+GRANT ALL PRIVILEGES ON `practica1`.* TO 'root'@'localhost';
 
-/*
+
 INSERT INTO Cliente(saldo,limiteCredito,descuento)VALUES(15,15000,4);
 SELECT * FROM Cliente;
-*/
-/*
+
+
 INSERT INTO Articulo(descripcion)VALUES("lapiz");
 SELECT * FROM Articulo;
-*/
-/*
+
+
 INSERT INTO DireccionEnvio(numero,calle,comuna,ciudad,idCliente)VALUES(2,'calle 2','comuna1','Madrid',1);
 SELECT * FROM DireccionEnvio;
-*/
-/*
+
+
 INSERT INTO Pedido (fecha, numeroComanda, idCliente, idDireccion) 
 VALUES (NOW(), 1001, 1, 1);
 INSERT INTO Pedido (fecha, numeroComanda, idCliente, idDireccion) 
 VALUES ('2013-03-02 14:00:00', 1000, 1, 1);
 SELECT * FROM Pedido;
-*/
 
-/*
+
+
 INSERT INTO LineaPedido (idPedido, idArticulo, cantidad) 
 VALUES (1, 1, 50);
 SELECT * FROM LineaPedido;
-*/
 
-/*
+
+
 INSERT INTO Fabrica(telefonoContacto) VALUES('66666666');
 INSERT INTO Fabrica (telefonoContacto) VALUES ('77777777'); -- Hago 2 para fabricaAlternativa
 SELECT * FROM fabrica;
-*/
 
-/*
+
+
 INSERT INTO ArticuloFabrica(idArticulo,idFabrica,existencias)
 VALUES(1,1,200);
 SELECT * FROM ArticuloFabrica;
-*/
 
-/*
+
+
 INSERT INTO FabricaAlternativa (idFabricaPrincipal, idFabricaAlternativa) VALUES (1, 2); -- La fábrica 1 tiene como alternativa la fábrica 2
 -- EN codigo = no podria coincidir - ej 1,1
 SELECT * FROM FabricaAlternativa;
-*/
+
+/* Aplicar ON CASCADE
+DROP TABLE IF EXISTS FabricaAlternativa;
+DROP TABLE IF EXISTS ArticuloFabrica;
+DROP TABLE IF EXISTS LineaPedido;
+DROP TABLE IF EXISTS Pedido;
+DROP TABLE IF EXISTS DireccionEnvio;
+DROP TABLE IF EXISTS Articulo;
+DROP TABLE IF EXISTS Fabrica;
+DROP TABLE IF EXISTS Cliente;*/
