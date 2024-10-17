@@ -41,9 +41,7 @@ public class SacarPrecioTotalClientePedidos1 {
         String idClienteStr = tcl.nextLine();
         double precioTotalConDescuento = 0;
         int idCliente = Integer.parseInt(idClienteStr);
-        if(!dam.clienteExiste(idCliente)){
-            throw new Exception("El cliente con " + idCliente + " no existe");
-        }else{   
+
         List<Pedido> pedidosCliente = consultarPedidosCliente(dam, idClienteStr); //Llamo al metodo anterior
 
         // saco las lineas de pedido de la lista de pedidos asociada a un cliente
@@ -91,7 +89,7 @@ public class SacarPrecioTotalClientePedidos1 {
         System.out.println("El descuento aplicado es: " + (descuento * 100) + "%");
         System.out.println("El precio total con descuento es: " + String.format("%.2f", precioTotalConDescuento));
         System.out.println("Has pagado " + String.format("%.2f", (precioTotalSinDescuento - precioTotalConDescuento)) + " euros menos ");
-        }
+
         return precioTotalConDescuento;
     }
 

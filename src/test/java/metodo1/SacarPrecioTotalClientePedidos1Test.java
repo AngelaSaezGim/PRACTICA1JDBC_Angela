@@ -31,8 +31,9 @@ public class SacarPrecioTotalClientePedidos1Test {
     @BeforeEach
     public void setUp() {
         dam = new DataAccessManagerSimulation();
-        // Simulamos la entrada del cliente como 1 para todos los tests
+        // Simulamos la entrada del cliente como 1 para todos los tests - descuento 4%
         System.setIn(new ByteArrayInputStream("1\n".getBytes()));
+        //HABRA QUE CONFIGURARLO
     }
 
     public SacarPrecioTotalClientePedidos1Test() {
@@ -63,6 +64,7 @@ public class SacarPrecioTotalClientePedidos1Test {
 
             @Override
             public List<Pedido> listarPedidosCliente(String idCliente) {
+                System.out.println("ID del cliente simulado: " + idCliente);
                 return List.of();
             }
 
@@ -85,7 +87,7 @@ public class SacarPrecioTotalClientePedidos1Test {
                 Timestamp fechaPedido = Timestamp.valueOf(fechaStr);
                 return List.of(
                         new Pedido(1, fechaPedido, 1001, 1, 1),
-                        new Pedido(2, fechaPedido, 1, 44, 2),
+                        new Pedido(2, fechaPedido, 1, 1, 2),
                         new Pedido(3, fechaPedido, 99, 1, 1),
                         new Pedido(4, fechaPedido, 450, 1, 1)
                 ); //Pedido 1 , pedido 2, pedido 3 y pedido 4
@@ -212,7 +214,7 @@ public class SacarPrecioTotalClientePedidos1Test {
             }
 
         };
-        double expResult = 1070.21; //PRECIO 
+        double expResult = 1070.21; //PRECIO - con clienteid1 
         double resultNoRedondeado = SacarPrecioTotalClientePedidos1.sacarPrecioTotalClientePedidos(dam);
         double result = Math.round(resultNoRedondeado * 100.0) / 100.0;
         assertEquals(expResult, result, 0);
