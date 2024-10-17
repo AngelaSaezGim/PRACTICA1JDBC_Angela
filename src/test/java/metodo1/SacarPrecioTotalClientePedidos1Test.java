@@ -19,6 +19,15 @@ import practica1DataAccess.DataAccessManager;
  */
 public class SacarPrecioTotalClientePedidos1Test {
     
+    private DataAccessManager dam;
+    
+        
+    @BeforeEach
+    public void setUp() {
+        dam = new DataAccessManagerSimulation();
+    }
+    
+    
     public SacarPrecioTotalClientePedidos1Test() {
     }
     
@@ -29,11 +38,7 @@ public class SacarPrecioTotalClientePedidos1Test {
     @AfterAll
     public static void tearDownClass() {
     }
-    
-    @BeforeEach
-    public void setUp() {
-    }
-    
+
     @AfterEach
     public void tearDown() {
     }
@@ -43,7 +48,7 @@ public class SacarPrecioTotalClientePedidos1Test {
      */
     //COMPLEJIDAD CICLOMATICA = 4
     @Test
-    public void testSacarPrecioTotalClientePedidos() throws Exception {
+    public void testSacarPrecioTotalClientePedidos1() throws Exception {
         System.out.println("sacarPrecioTotalClientePedidos");
         DataAccessManager dam = null;
         double expResult = 0.0;
@@ -51,6 +56,44 @@ public class SacarPrecioTotalClientePedidos1Test {
         assertEquals(expResult, result, 0);
         // TODO review the generated test code and remove the default call to fail.
         fail("The test case is a prototype.");
+    }
+    
+    public void testSacarPrecioTotalClientePedidos2() throws Exception {
+        System.out.println("sacarPrecioTotalClientePedidos");
+        DataAccessManager dam = null;
+        double expResult = 0.0;
+        double result = SacarPrecioTotalClientePedidos1.sacarPrecioTotalClientePedidos(dam);
+        assertEquals(expResult, result, 0);
+        // TODO review the generated test code and remove the default call to fail.
+        fail("The test case is a prototype.");
+    }
+    
+    public void testSacarPrecioTotalClientePedidos3() throws Exception {
+        System.out.println("sacarPrecioTotalClientePedidos");
+        DataAccessManager dam = null;
+        double expResult = 0.0;
+        double result = SacarPrecioTotalClientePedidos1.sacarPrecioTotalClientePedidos(dam);
+        assertEquals(expResult, result, 0);
+        // TODO review the generated test code and remove the default call to fail.
+        fail("The test case is a prototype.");
+    }
+    
+    public void testSacarPrecioTotalClientePedidos4() throws Exception {
+        System.out.println("sacarPrecioTotalClientePedidos");
+        DataAccessManager dam = null;
+        double expResult = 0.0;
+        double result = SacarPrecioTotalClientePedidos1.sacarPrecioTotalClientePedidos(dam);
+        assertEquals(expResult, result, 0);
+        // TODO review the generated test code and remove the default call to fail.
+        fail("The test case is a prototype.");
+    }
+    
+    private static class DataAccessManagerSimulation extends DataAccessManager {
+
+        public DataAccessManagerSimulation() {
+            super(); 
+        }
+
     }
     
 }

@@ -70,7 +70,7 @@ public class CalcularCantidadTotalArticulosPedidosAño3Test {
 
             @Override
             public List<LineaPedido> filtrarLineasPedidosIdPedido(String idPedido) {
-                return List.of(); //VACIA
+                return List.of(); 
             }
         };
         int expResult = 0;

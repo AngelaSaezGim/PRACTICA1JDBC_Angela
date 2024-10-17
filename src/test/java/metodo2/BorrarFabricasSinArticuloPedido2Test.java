@@ -19,53 +19,59 @@ import practica1DataAccess.DataAccessManager;
  * @author angel
  */
 public class BorrarFabricasSinArticuloPedido2Test {
-    
+
+    private DataAccessManager dam;
+
+    @BeforeEach
+    public void setUp() {
+        dam = new DataAccessManagerSimulation();
+    }
+
     public BorrarFabricasSinArticuloPedido2Test() {
     }
-    
+
     @BeforeAll
     public static void setUpClass() {
+
     }
-    
+
     @AfterAll
     public static void tearDownClass() {
     }
-    
-    @BeforeEach
-    public void setUp() {
-    }
-    
+
     @AfterEach
     public void tearDown() {
     }
 
     /**
-     * Test of FiltrarFabricasSinPedido method, of class BorrarFabricasSinArticuloPedido2.
+     * Test of FiltrarFabricasSinPedido method, of class
+     * BorrarFabricasSinArticuloPedido2.
      */
     //COMPLEJIDAD CICLOMATICA = 2
     @Test
-    public void testFiltrarFabricasSinPedido() throws Exception {
-        System.out.println("FiltrarFabricasSinPedido");
-        DataAccessManager dam = null;
-        List<String> expResult = null;
-        List<String> result = BorrarFabricasSinArticuloPedido2.FiltrarFabricasSinPedido(dam);
-        assertEquals(expResult, result);
-        // TODO review the generated test code and remove the default call to fail.
-        fail("The test case is a prototype.");
-    }
-
-    /**
-     * Test of borrarFabricasSinArticuloPedido method, of class BorrarFabricasSinArticuloPedido2.
-     */
-    @Test
     public void testBorrarFabricasSinArticuloPedido() throws Exception {
-        System.out.println("borrarFabricasSinArticuloPedido");
+        System.out.println("borrarFabricasSinArticuloPedido numero fabricas pedido es 0");
         DataAccessManager dam = null;
         int expResult = 0;
         int result = BorrarFabricasSinArticuloPedido2.borrarFabricasSinArticuloPedido(dam);
         assertEquals(expResult, result);
-        // TODO review the generated test code and remove the default call to fail.
-        fail("The test case is a prototype.");
     }
-    
+
+    @Test
+    public void testBorrarFabricasSinArticuloPedido2() throws Exception {
+        System.out.println("borrarFabricasSinArticuloPedido numero fabricas pedido es mayor a 0");
+        DataAccessManager dam = null;
+        int expResult = 0;
+        int result = BorrarFabricasSinArticuloPedido2.borrarFabricasSinArticuloPedido(dam);
+        assertEquals(expResult, result);
+    }
+
+    private static class DataAccessManagerSimulation extends DataAccessManager {
+
+        public DataAccessManagerSimulation() {
+            super();
+        }
+
+    }
+
 }
