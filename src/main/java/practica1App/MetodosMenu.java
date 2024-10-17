@@ -6,6 +6,7 @@ package practica1App;
 
 import java.sql.SQLException;
 import java.sql.Timestamp;
+import java.util.InputMismatchException;
 import java.util.List;
 import java.util.Scanner;
 import practica1DataAccess.DataAccessManager;
@@ -769,12 +770,22 @@ public class MetodosMenu {
     /* UPDATE */
     public static void actualizarArticulo(DataAccessManager dam) throws SQLException {
 
+        Scanner tcl = new Scanner(System.in);
+
         System.out.println("Antes de actualizar = ");
         solicitarArticulos(dam);
 
-        System.out.print("Ingrese el ID del artículo que desea actualizar: ");
-        String idArticuloAActualizarStr = tcl.nextLine();
-
+        int idArticulo = 0;
+        try {
+            System.out.println("Dime la id del articulo a actualizar");
+            idArticulo = tcl.nextInt();
+            tcl.nextLine();
+        } catch (InputMismatchException e) {
+            System.out.println("Por favor, ingrese un número entero válido.");
+            tcl.next();
+            return;
+        }
+        String idArticuloAActualizarStr = Integer.toString(idArticulo);
         // Carga el artículo actual desde la base de datos
         Articulo articuloAActualizar = dam.loadArticuloByCode(idArticuloAActualizarStr);
 
@@ -801,10 +812,12 @@ public class MetodosMenu {
     }
 
     public static void actualizarArticuloFabrica(DataAccessManager dam) throws SQLException {
-
+        
+        Scanner tcl = new Scanner(System.in);
+  
         System.out.println("Antes de actualizar = ");
         solicitarArticulosFabrica(dam);
-
+        
         System.out.print("Ingrese el ID del artículo asociado a una fabrica que desea actualizar: ");
         String idArticuloFabrica1AActualizarStr = tcl.nextLine();
 
@@ -856,8 +869,17 @@ public class MetodosMenu {
         System.out.println("Antes de actualizar = ");
         solicitarClientes(dam);
 
-        System.out.print("Ingrese el ID del cliente que desea actualizar: ");
-        String idClienteAActualizarStr = tcl.nextLine();
+        int idCliente = 0;
+        try {
+            System.out.println("Ingrese el ID del cliente que desea actualizar: ");
+            idCliente = tcl.nextInt();
+            tcl.nextLine();
+        } catch (InputMismatchException e) {
+            System.out.println("Por favor, ingrese un número entero válido.");
+            tcl.next();
+            return;
+        }
+        String idClienteAActualizarStr = Integer.toString(idCliente);
 
         Cliente clienteAActualizar = dam.loadClienteByCode(idClienteAActualizarStr);
 
@@ -915,9 +937,18 @@ public class MetodosMenu {
 
         System.out.println("Antes de actualizar = ");
         solicitarDireccionesEnvio(dam);
-
-        System.out.print("Ingrese el ID de la dirección de envío que desea actualizar: ");
-        String idDireccionAActualizarStr = tcl.nextLine();
+        
+        int idDireccionEnvio = 0;
+        try {
+            System.out.println("Ingrese el ID de la direccion de envio que desea actualizar: ");
+            idDireccionEnvio = tcl.nextInt();
+            tcl.nextLine();
+        } catch (InputMismatchException e) {
+            System.out.println("Por favor, ingrese un número entero válido.");
+            tcl.next();
+            return;
+        }
+        String idDireccionAActualizarStr = Integer.toString(idDireccionEnvio);
 
         DireccionEnvio direccionEnvioAActualizar = dam.loadDireccionEnvioByCode(idDireccionAActualizarStr);
 
@@ -981,13 +1012,18 @@ public class MetodosMenu {
 
     public static void actualizarFabricaAlternativa(DataAccessManager dam) throws SQLException {
 
+        Scanner tcl = new Scanner(System.in);
+        
         System.out.println("Antes de actualizar = ");
         solicitarFabricasAlternativas(dam);
+        
+        System.out.println("Antes de actualizar = ");
+        solicitarFabricas(dam);
 
         System.out.print("Ingrese el ID de la fábrica principal que desea actualizar: ");
-        String idFabricaPrincipalStr = tcl.nextLine();
+        String idFabricaPrincipalStr = tcl.nextLine().trim();;
         System.out.print("Ingrese el ID de la fábrica alternativa que desea actualizar: ");
-        String idFabricaAlternativaStr = tcl.nextLine();
+        String idFabricaAlternativaStr = tcl.nextLine().trim();;
 
         FabricaAlternativa fabricaAlternativaAActualizar = dam.loadFabricaAlternativaByCode(idFabricaPrincipalStr, idFabricaAlternativaStr);
 
@@ -996,7 +1032,7 @@ public class MetodosMenu {
             return;
         } else {
             System.out.println("Ingrese el nuevo ID de la fábrica principal (dejar vacío para no cambiar):");
-            String nuevoIdFabricaPrincipalStr = tcl.nextLine();
+            String nuevoIdFabricaPrincipalStr = tcl.nextLine().trim();
             if (!nuevoIdFabricaPrincipalStr.isEmpty()) {
                 int nuevoIdFabricaPrincipal = Integer.parseInt(nuevoIdFabricaPrincipalStr);
                 if (!dam.fabricaExiste(nuevoIdFabricaPrincipal)) {
@@ -1007,7 +1043,7 @@ public class MetodosMenu {
                 fabricaAlternativaAActualizar.setIdFabricaPrincipal(nuevoIdFabricaPrincipal);
             }
             System.out.println("Ingrese el nuevo ID de la fábrica alternativa asociada a esa fabrica principal (dejar vacío para no cambiar):");
-            String nuevoIdFabricaAlternativaStr = tcl.nextLine();
+            String nuevoIdFabricaAlternativaStr = tcl.nextLine().trim();
             if (!nuevoIdFabricaAlternativaStr.isEmpty()) {
                 int nuevoIdFabricaAlternativa = Integer.parseInt(nuevoIdFabricaAlternativaStr);
                 if (!dam.fabricaExiste(nuevoIdFabricaAlternativa)) {
@@ -1024,18 +1060,12 @@ public class MetodosMenu {
                 return;
             }
 
-            if (!dam.fabricaAlternativaExiste(nuevoIdFabricaPrincipalStr, nuevoIdFabricaAlternativaStr)) {
-                System.out.println("Error: La combinación de ID principal " + nuevoIdFabricaPrincipalStr + " y ID alternativa " + nuevoIdFabricaAlternativaStr + " ya existe.");
-                return;
-            }
-
             System.out.println("Actualizando la fábrica alternativa con ID principal " + idFabricaPrincipalStr + " y alternativa " + idFabricaAlternativaStr);
 
             int columnasAfectadas = dam.updateFabricaAlternativa(idFabricaPrincipalStr, idFabricaAlternativaStr, fabricaAlternativaAActualizar);
             if (columnasAfectadas > 0) {
                 System.out.println("Fábrica alternativa actualizada exitosamente.");
                 FabricaAlternativa fabricaAlternativaActualizada = dam.loadFabricaAlternativaByCode(idFabricaPrincipalStr, idFabricaAlternativaStr);
-                System.out.println(fabricaAlternativaActualizada.toString());
             } else {
                 System.out.println("No se actualizó nada.");
             }
@@ -1046,10 +1076,18 @@ public class MetodosMenu {
 
         System.out.println("Antes de actualizar = ");
         solicitarFabricas(dam);
-
-        System.out.print("Ingrese el ID de la fábrica que desea actualizar: ");
-        String idFabricaAActualizarStr = tcl.nextLine();
-
+        
+        int idFabrica = 0;
+        try {
+            System.out.println("Ingrese el ID de la fabrica que desea actualizar: ");
+            idFabrica = tcl.nextInt();
+            tcl.nextLine();
+        } catch (InputMismatchException e) {
+            System.out.println("Por favor, ingrese un número entero válido.");
+            tcl.next();
+            return;
+        }
+        String idFabricaAActualizarStr = Integer.toString(idFabrica);
         Fabrica fabricaAActualizar = dam.loadFabricaByCode(idFabricaAActualizarStr);
 
         if (fabricaAActualizar == null) {
@@ -1079,10 +1117,18 @@ public class MetodosMenu {
 
         System.out.println("Antes de actualizar = ");
         solicitarLineasPedido(dam);
-
-        System.out.print("Ingrese el ID de la línea de pedido que desea actualizar: ");
-        String idLineaPedidoAActualizar = tcl.nextLine();
-
+        
+        int idLineaPedido = 0;
+        try {
+             System.out.print("Ingrese el ID de la línea de pedido que desea actualizar: ");
+            idLineaPedido = tcl.nextInt();
+            tcl.nextLine();
+        } catch (InputMismatchException e) {
+            System.out.println("Por favor, ingrese un número entero válido.");
+            tcl.next();
+            return;
+        }
+         String idLineaPedidoAActualizar = Integer.toString(idLineaPedido);
         LineaPedido lineaPedidoAActualizar = dam.loadLineaPedidoByCode(idLineaPedidoAActualizar);
 
         if (lineaPedidoAActualizar == null) {
@@ -1136,9 +1182,17 @@ public class MetodosMenu {
 
         System.out.println("Antes de actualizar = ");
         solicitarPedidos(dam);
-
-        System.out.print("Ingrese el ID del pedido que desea actualizar: ");
-        String idPedidoAActualizar = tcl.nextLine();
+        int idPedido = 0;
+        try {
+             System.out.print("Ingrese el ID del pedido que desea actualizar: ");
+            idPedido = tcl.nextInt();
+            tcl.nextLine();
+        } catch (InputMismatchException e) {
+            System.out.println("Por favor, ingrese un número entero válido.");
+            tcl.next();
+            return;
+        }
+         String idPedidoAActualizar = Integer.toString(idPedido);
 
         Pedido pedidoAActualizar = dam.loadPedidoByCode(idPedidoAActualizar);
 
