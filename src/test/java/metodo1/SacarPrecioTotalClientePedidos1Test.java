@@ -54,8 +54,6 @@ public class SacarPrecioTotalClientePedidos1Test {
         double expResult = 0.0;
         double result = SacarPrecioTotalClientePedidos1.sacarPrecioTotalClientePedidos(dam);
         assertEquals(expResult, result, 0);
-        // TODO review the generated test code and remove the default call to fail.
-        fail("The test case is a prototype.");
     }
     
     public void testSacarPrecioTotalClientePedidos2() throws Exception {
@@ -64,8 +62,6 @@ public class SacarPrecioTotalClientePedidos1Test {
         double expResult = 0.0;
         double result = SacarPrecioTotalClientePedidos1.sacarPrecioTotalClientePedidos(dam);
         assertEquals(expResult, result, 0);
-        // TODO review the generated test code and remove the default call to fail.
-        fail("The test case is a prototype.");
     }
     
     public void testSacarPrecioTotalClientePedidos3() throws Exception {
@@ -74,8 +70,6 @@ public class SacarPrecioTotalClientePedidos1Test {
         double expResult = 0.0;
         double result = SacarPrecioTotalClientePedidos1.sacarPrecioTotalClientePedidos(dam);
         assertEquals(expResult, result, 0);
-        // TODO review the generated test code and remove the default call to fail.
-        fail("The test case is a prototype.");
     }
     
     public void testSacarPrecioTotalClientePedidos4() throws Exception {
@@ -84,8 +78,6 @@ public class SacarPrecioTotalClientePedidos1Test {
         double expResult = 0.0;
         double result = SacarPrecioTotalClientePedidos1.sacarPrecioTotalClientePedidos(dam);
         assertEquals(expResult, result, 0);
-        // TODO review the generated test code and remove the default call to fail.
-        fail("The test case is a prototype.");
     }
     
     private static class DataAccessManagerSimulation extends DataAccessManager {

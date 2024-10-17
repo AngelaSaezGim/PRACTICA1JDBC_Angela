@@ -4,6 +4,7 @@
  */
 package metodo3;
 
+import java.sql.Timestamp;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeEach;
@@ -21,77 +22,129 @@ import java.util.List;
  * @author angel
  */
 public class CalcularCantidadTotalArticulosPedidosAño3Test {
-    
-      private DataAccessManager dam;
-    
+
+    private DataAccessManager dam;
+
     @BeforeEach
     public void setUp() {
 
-          dam = new DataAccessManagerSimulation();
+        dam = new DataAccessManagerSimulation();
+        
     }
-    
+
     public CalcularCantidadTotalArticulosPedidosAño3Test() {
     }
-    
+
     @BeforeAll
     public static void setUpClass() {
     }
-    
+
     @AfterAll
     public static void tearDownClass() {
     }
-    
+
     @AfterEach
     public void tearDown() {
     }
-    
+
     //COMPLEJIDAD CICLOMATICA = 4
     /**
-     * Test of calcularCantidadTotalArticulosPedidosAño method, of class CalcularCantidadTotalArticulosPedidosAño3.
+     * Test of calcularCantidadTotalArticulosPedidosAño method, of class
+     * CalcularCantidadTotalArticulosPedidosAño3.
      */
-    
     @Test
     public void testCalcularCantidadTotalArticulosPedidosAño1() throws Exception {
         System.out.println("La lista de pedidos año está vacia");
-        dam = new DataAccessManagerSimulation();
+         dam = new DataAccessManagerSimulation() {
+            @Override
+            public List<Pedido> listarPedidosPorAño(int año) {
+                return List.of();
+            }
+        };
         int expResult = 0;
         int result = CalcularCantidadTotalArticulosPedidosAño3.calcularCantidadTotalArticulosPedidosAño(dam);
         assertEquals(expResult, result);
     }
-    
+
     @Test
     public void testCalcularCantidadTotalArticulosPedidosAño2() throws Exception {
         System.out.println("La lista de pedidos año NO está vacia, pero NO HAY LINEAS DE PEDIDO");
-          dam = new DataAccessManagerSimulation() {
+        dam = new DataAccessManagerSimulation() {
             @Override
-            public List<Pedido> listarPedidosPorAño(int año) {
-                return List.of(new Pedido(1), new Pedido(2)); // Simulamos dos pedidos
+            public List<Pedido> listarPedidosPorAño(int año) { //(formato: YYYY-MM-DD HH:MM:SS) - fecha -2003
+                String fechaStr="01:09:2003 00:30:02";
+                 Timestamp fechaPedido = Timestamp.valueOf(fechaStr);
+                return List.of(new Pedido(1,fechaPedido , 1, 1, 1), new Pedido(2,fechaPedido, 1, 1, 1)); //Pedido 1 y pedido 2
             }
 
             @Override
             public List<LineaPedido> filtrarLineasPedidosIdPedido(String idPedido) {
-                return List.of(); 
+                return List.of();
             }
         };
         int expResult = 0;
         int result = CalcularCantidadTotalArticulosPedidosAño3.calcularCantidadTotalArticulosPedidosAño((DataAccessManager) dam);
         assertEquals(expResult, result);
     }
-    
+
     @Test
     public void testCalcularCantidadTotalArticulosPedidosAño3() throws Exception {
-        System.out.println("");
-        DataAccessManager dam = null;
-        int expResult = 0;
+        System.out.println("La lista de pedidos año NO está vacia, y las lineas de Pedido tienen cantidades de artículos");
+        dam = new DataAccessManagerSimulation() {
+            @Override
+            public List<Pedido> listarPedidosPorAño(int año) {
+                String fechaStr="01:09:2003 00:30:02";
+                Timestamp fechaPedido = Timestamp.valueOf(fechaStr);
+                return List.of(new Pedido(1,fechaPedido , 1, 1, 1), new Pedido(2,fechaPedido, 1, 1, 1)); //Pedido 1 y pedido 2
+            }
+
+            @Override
+            public List<LineaPedido> filtrarLineasPedidosIdPedido(String idPedido) {
+                if (idPedido.equals("1")) {
+                    return List.of(
+                            new LineaPedido(1, 1, 1, 10), //IdLineaPedido - 1, IdPedido - 1, Articulo - 1, Cantidad - 10
+                            new LineaPedido(2, 1, 2, 3)
+                    );
+                } else if (idPedido.equals("2")) {
+                    return List.of(
+                            new LineaPedido(3, 2, 3, 2) // Pedido 2, Articulo 3, Cantidad 2
+                    );
+                }
+                return List.of();
+            }
+        };
+        int expResult = 15;
         int result = CalcularCantidadTotalArticulosPedidosAño3.calcularCantidadTotalArticulosPedidosAño(dam);
         assertEquals(expResult, result);
     }
-    
+
     @Test
     public void testCalcularCantidadTotalArticulosPedidosAño4() throws Exception {
-        System.out.println("");
-        DataAccessManager dam = null;
-        int expResult = 0;
+        System.out.println("La lista de pedidos año NO está vacia, pero algunas lineas de pedido tienen cantidad 0");
+        dam = new DataAccessManagerSimulation() {
+            @Override
+            public List<Pedido> listarPedidosPorAño(int año) {
+                String fechaStr="01:09:2003 00:30:02";
+                Timestamp fechaPedido = Timestamp.valueOf(fechaStr);
+                return List.of(new Pedido(1,fechaPedido , 1, 1, 1), new Pedido(2,fechaPedido, 1, 1, 1)); //Pedido 1 y pedido 2
+            }
+
+            @Override
+            public List<LineaPedido> filtrarLineasPedidosIdPedido(String idPedido) {
+                if (idPedido.equals("1")) {
+                    return List.of(
+                            new LineaPedido(1, 1, 1, 10), //Cantidad - 10
+                            new LineaPedido(2, 1, 2, 0) // Cantidad 0
+                    );
+                } else if (idPedido.equals("2")) {
+                    return List.of(
+                            new LineaPedido(3, 2, 3, 0) 
+                    );
+                }
+                return List.of();
+            }
+        };
+        int expResult = 10;
         int result = CalcularCantidadTotalArticulosPedidosAño3.calcularCantidadTotalArticulosPedidosAño(dam);
         assertEquals(expResult, result);
     }
@@ -99,17 +152,17 @@ public class CalcularCantidadTotalArticulosPedidosAño3Test {
     private static class DataAccessManagerSimulation extends DataAccessManager {
 
         public DataAccessManagerSimulation() {
-            super(); 
+            super();
         }
 
         @Override
         public List<Pedido> listarPedidosPorAño(int año) {
-            return List.of(); // Lista vacía para la simulación
+            return List.of();
         }
 
         @Override
         public List<LineaPedido> filtrarLineasPedidosIdPedido(String idPedido) {
-            return List.of(); // Lista vacía para la simulación
+            return List.of();
         }
     }
 
