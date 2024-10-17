@@ -48,7 +48,7 @@ public class MenuPracticaApp {
         QUERY_FABRICASALTERNATIVAS, QUERY_FABRICAS, QUERY_LINEASPEDIDO, QUERY_PEDIDOS, ATRAS
     };
 
-    public static void main(String[] args) {
+    public static void main(String[] args) throws Exception {
 
         MenuOption opcionElegida = null;
         MenuOption1 opcionElegidaAll = null;
@@ -310,7 +310,7 @@ public class MenuPracticaApp {
                 .append("\t3)Insertar...\n")
                 .append("\t4)Borrar...\n")
                 .append("\t5)Actualizar...\n")
-                .append("\t6) Ver cuantos articulos provee cada fabrica \n")
+                .append("\t6)Ver cuantos articulos provee cada fabrica \n")
                 .append("\t7)Listar pedidos cliente (importe + descuento) \n")
                 .append("\t8)Borrar fabricas sin artículos asociados a pedidos\n")
                 .append("\t9)Total de artículos incluidos en todos los pedidos de un año\n")
