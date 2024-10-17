@@ -19,9 +19,8 @@ import practica1Objetos.Pedido;
 public class SacarPrecioTotalClientePedidos1 {
 
     //CON LOS PEDIDOS DE ESE CLIENTE - SACAMOS LAS LINEAS Y LAS CALCULAMOS
-    //Test 1
+
     public static List<Pedido> consultarPedidosCliente(DataAccessManager dam, String idCliente) throws SQLException {
-        
         
         //SACAMOS LA LISTA DE PEDIDOS DE ESE CLIENTE
         List<Pedido> pedidosFilteredByClient = dam.listarPedidosCliente(idCliente); //PedidoDAO
@@ -91,6 +90,5 @@ public class SacarPrecioTotalClientePedidos1 {
         return precioTotalConDescuento;
     }
 
-    //-----------------------FIN METODO 1-----------------------------------------//
     
 }

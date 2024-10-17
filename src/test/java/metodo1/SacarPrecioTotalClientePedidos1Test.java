@@ -65,6 +65,7 @@ public class SacarPrecioTotalClientePedidos1Test {
             public List<Pedido> listarPedidosCliente(String idCliente) {
                 return List.of();
             }
+
         };
         double expResult = 0.0;
         double result = SacarPrecioTotalClientePedidos1.sacarPrecioTotalClientePedidos(dam);
@@ -142,48 +143,6 @@ public class SacarPrecioTotalClientePedidos1Test {
             SacarPrecioTotalClientePedidos1.sacarPrecioTotalClientePedidos(dam);
         });
     }
-
-    /*
-    ----------------------------
-Información del artículo asociado (ID: 1):
-Descripción: manzanas
- - cantidad pedida = 50
- - Precio por artículo: 6.0
- - Total por esta línea: 300,00
-----------------------------
-----------------------------
-Información del artículo asociado (ID: 3):
-Descripción: Alfombras
- - cantidad pedida = 30
- - Precio por artículo: 18.0
- - Total por esta línea: 540,00
-----------------------------
-----------------------------
-Información del artículo asociado (ID: 4):
-Descripción: Sandias
- - cantidad pedida = 20
- - Precio por artículo: 8.56
- - Total por esta línea: 171,20
-----------------------------
-----------------------------
-Información del artículo asociado (ID: 4):
-Descripción: Sandias
- - cantidad pedida = 10
- - Precio por artículo: 8.56
- - Total por esta línea: 85,60
-----------------------------
-----------------------------
-Información del artículo asociado (ID: 8):
-Descripción: Anillos
- - cantidad pedida = 1
- - Precio por artículo: 18.0
- - Total por esta línea: 18,00
-    
-El precio total sin descuento es: 1114,80
-El descuento aplicado es: 4.0%
-El precio total con descuento es: 1070,21
-Has pagado 44,59 euros menos 
-     */
     @Test
 
     public void testSacarPrecioTotalClientePedidos4() throws Exception {
@@ -201,7 +160,7 @@ Has pagado 44,59 euros menos
                         new Pedido(2, fechaPedido, 1, 44, 2),
                         new Pedido(3, fechaPedido, 99, 1, 1),
                         new Pedido(4, fechaPedido, 450, 1, 1)
-                ); //Pedido 1 , pedido 2, pedido 3 y pedido 4
+                ); 
             }
 
             @Override
@@ -211,17 +170,51 @@ Has pagado 44,59 euros menos
                         new LineaPedido(2, 2, 3, 30),
                         new LineaPedido(3, 3, 4, 20),
                         new LineaPedido(4, 3, 4, 10),
-                        new LineaPedido(5, 4, 8, 1)); // Simulación de líneas de pedido sin artículos (no cantidad)
+                        new LineaPedido(5, 4, 8, 1)); 
             }
 
             @Override
             public Articulo loadArticuloByCode(String idArticulo) {
-                return new Articulo("Articulo de prueba");
+
+                switch (idArticulo) {
+                    case "1":
+                        return new Articulo(1, "articuloId1"); // Descripcion del artículo 1..
+                    case "3":
+                        return new Articulo(3, "articuloId3");
+                    case "4":
+                        return new Articulo(4, "articuloId4");
+                    case "8":
+                        return new Articulo(8, "articuloId8");
+                    default:
+                        throw new NoSuchElementException("No se encontró el artículo con ID: " + idArticulo);
+                }
+            }
+
+            @Override
+            public double sacarPrecioArticulo(String idArticulo) {
+                switch (idArticulo) {
+                    case "1":
+                        return 6.0; // Precio del artículo 1..
+                    case "3":
+                        return 18.0; 
+                    case "4":
+                        return 8.56;  
+                    case "8":
+                        return 18.0; 
+                    default:
+                        throw new NoSuchElementException("No se encontró el artículo con ID: " + idArticulo);
+                }
+            }
+
+            @Override
+            public double sacarDescuento(String idCliente) {
+                return 4; //descuento del idCliente 1
             }
 
         };
-        double expResult = 0.0; //PRECIO 
-        double result = SacarPrecioTotalClientePedidos1.sacarPrecioTotalClientePedidos(dam);
+        double expResult = 1070.21; //PRECIO 
+        double resultNoRedondeado = SacarPrecioTotalClientePedidos1.sacarPrecioTotalClientePedidos(dam);
+        double result = Math.round(resultNoRedondeado * 100.0) / 100.0;
         assertEquals(expResult, result, 0);
     }
 
@@ -253,7 +246,7 @@ Has pagado 44,59 euros menos
 
         @Override
         public double sacarDescuento(String idCliente) {
-            return 4;
+            return 0;
         }
 
     }
