@@ -108,6 +108,7 @@ SELECT af.idFabrica, SUM(af.existencias) AS totalArticulos
 FROM ArticuloFabrica af
 GROUP BY af.idFabrica;
 
+DESCRIBE ArticuloFabrica;
 DESCRIBE ArticuloPorFabrica;
 
 SELECT idFabrica, SUM(existencias) AS totalArticulos
