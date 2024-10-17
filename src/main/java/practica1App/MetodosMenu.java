@@ -269,6 +269,8 @@ public class MetodosMenu {
 
     //DEVUELVEN LISTAS (MOSTRAR POR...)
     public static void searchArticuloByCode(DataAccessManager dam) throws SQLException {
+        System.out.println("Vamos a filtar un articulo concreto por su ID");
+        solicitarArticulos(dam);
         String idArticulo = requestContentLike();
         List<Articulo> articulosFilteredByCode = dam.loadArticulosContaining(idArticulo);
         if (articulosFilteredByCode != null) {
@@ -279,6 +281,9 @@ public class MetodosMenu {
     }
 
     public static void searchArticuloFabricaByCode(DataAccessManager dam) throws SQLException {
+        
+        System.out.println("Vamos a filtar un articulo de fabrica concreto por su ID");
+        solicitarArticulosFabrica(dam);
         System.out.println("ID del articulo");
         String idArticulo = requestContentLike();
         System.out.println("ID de la Fabrica asociada al articulo");
@@ -294,6 +299,8 @@ public class MetodosMenu {
     }
 
     public static void searchClienteByCode(DataAccessManager dam) throws SQLException {
+        System.out.println("Vamos a filtar un cliente concreto por su ID");
+        solicitarClientes(dam);
         String idCliente = requestContentLike();
         List<Cliente> clientesFilteredByCode = dam.loadClientesContaining(idCliente);
         if (clientesFilteredByCode != null) {
@@ -304,6 +311,8 @@ public class MetodosMenu {
     }
 
     public static void searchDireccionEnvioByCode(DataAccessManager dam) throws SQLException {
+        System.out.println("Vamos a filtar una direccion concreta por su ID");
+        solicitarDireccionesEnvio(dam);
         String idDireccionEnvio = requestContentLike();
         List<DireccionEnvio> direccionesEnvioFilteredByCode = dam.loadDireccionEnvioContaining(idDireccionEnvio);
         if (direccionesEnvioFilteredByCode != null) {
@@ -314,6 +323,8 @@ public class MetodosMenu {
     }
 
     public static void searchFabricaAlternativaByCode(DataAccessManager dam) throws SQLException {
+        System.out.println("Vamos a filtar una fabrica alternativa concreta por sus IDs");
+        solicitarFabricasAlternativas(dam);
         System.out.println("ID de la fabrica principal");
         String idFabricaPrincipal = requestContentLike();
         System.out.println("ID de la fabrica alternativa asociada a esa fabrica principal");
@@ -329,6 +340,8 @@ public class MetodosMenu {
     }
 
     public static void searchFabricaByCode(DataAccessManager dam) throws SQLException {
+        System.out.println("Vamos a filtar una fabrica concreta por sus IDs");
+        solicitarFabricas(dam);
         String idFabrica = requestContentLike();
         List<Fabrica> fabricasFilteredByCode = dam.loadFabricasContaining(idFabrica);
         if (fabricasFilteredByCode != null) {
@@ -339,6 +352,8 @@ public class MetodosMenu {
     }
 
     public static void searchLineaPedidoByCode(DataAccessManager dam) throws SQLException {
+        System.out.println("Vamos a filtar una linea pedido concreta por sus ID");
+        solicitarLineasPedido(dam);
         String idLineaPedido = requestContentLike();
         List<LineaPedido> lineasPedidoFilteredByCode = dam.loadLineasPedidoContaining(idLineaPedido);
         if (lineasPedidoFilteredByCode != null) {
@@ -349,6 +364,8 @@ public class MetodosMenu {
     }
 
     public static void searchPedidoByCode(DataAccessManager dam) throws SQLException {
+        System.out.println("Vamos a filtar un pedido concreto por su ID");
+        solicitarPedidos(dam);
         String idPedido = requestContentLike();
         List<Pedido> pedidosFilteredByCode = dam.loadPedidosContaining(idPedido);
         if (pedidosFilteredByCode != null) {
@@ -1187,13 +1204,8 @@ public class MetodosMenu {
     public static void getTotalArticulosPorFabrica(DataAccessManager dam) throws SQLException {
 
         try {
-            // Llamar al método para obtener las fábricas y el total de artículos
             List<Fabrica> listaFabricasTotalArticulos = dam.getTotalArticulosPorFabrica();
-
-            // Recorrer la lista de fábricas y mostrar la información
-            for (Fabrica fabrica : listaFabricasTotalArticulos) {
-                System.out.println(fabrica.toString());
-            }
+            
         } catch (SQLException e) {
             System.err.println("Error al obtener los artículos por fábrica: " + e.getMessage());
         }

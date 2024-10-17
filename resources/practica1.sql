@@ -57,7 +57,8 @@ CREATE TABLE LineaPedido (
 -- Teléfono de contacto
 CREATE TABLE Fabrica (
   idFabrica INT PRIMARY KEY AUTO_INCREMENT,
-  telefonoContacto VARCHAR(20)
+  telefonoContacto VARCHAR(20),
+  totalArticulos INT
 );
 
 -- Tabla de relación: ArticulosFabricas para relacionar artículos con fábricas y almacenar existencias.
@@ -102,10 +103,16 @@ Para cada fábrica (idFabrica), suma las cantidades de los diferentes artículos
 -- Vista = obtener una lista de fábricas junto con el número total de artículos que provee cada una
 -- ALMACENO LA CONSULTA EN UNA VISTA
 
-CREATE VIEW ArticuloPorFabrica AS
-SELECT idFabrica, SUM(existencias) AS totalArticulos -- se suma las existencias de los artículos en cada fábrica.
-FROM ArticuloFabrica -- cantidad de cada artículo disponible en cada fábrica
-GROUP BY idFabrica; -- suma de las existencias se calcula de manera independiente para cada fábrica
+CREATE OR REPLACE VIEW ArticuloPorFabrica AS
+SELECT af.idFabrica, SUM(af.existencias) AS totalArticulos
+FROM ArticuloFabrica af
+GROUP BY af.idFabrica;
+
+DESCRIBE ArticuloPorFabrica;
+
+SELECT idFabrica, SUM(existencias) AS totalArticulos
+FROM ArticuloFabrica
+GROUP BY idFabrica;
 
 /*INSERTANDO DATOS PRUEBA*/
 GRANT ALL PRIVILEGES ON `practica1`.* TO 'root'@'localhost';
@@ -113,16 +120,13 @@ GRANT ALL PRIVILEGES ON `practica1`.* TO 'root'@'localhost';
 INSERT INTO Cliente(saldo,limiteCredito,descuento)VALUES(15,15000,4);
 SELECT * FROM Cliente;
 
-
 INSERT INTO Articulo(descripcion)VALUES("lapiz");
 INSERT INTO Articulo (descripcion) VALUES ('Peras');
 INSERT INTO Articulo (descripcion) VALUES ('Manzanas');
 SELECT * FROM Articulo;
 
-
 INSERT INTO DireccionEnvio(numero,calle,comuna,ciudad,idCliente)VALUES(2,'calle 2','comuna1','Madrid',1);
 SELECT * FROM DireccionEnvio;
-
 
 INSERT INTO Pedido (fecha, numeroComanda, idCliente, idDireccion) 
 VALUES (NOW(), 1001, 1, 1);
@@ -130,29 +134,27 @@ INSERT INTO Pedido (fecha, numeroComanda, idCliente, idDireccion)
 VALUES ('2013-03-02 14:00:00', 1000, 1, 1);
 SELECT * FROM Pedido;
 
-
-
 INSERT INTO LineaPedido (idPedido, idArticulo, cantidad) 
 VALUES (1, 1, 50);
 SELECT * FROM LineaPedido;
 
-
-
-INSERT INTO Fabrica(telefonoContacto) VALUES('66666666');
-INSERT INTO Fabrica (telefonoContacto) VALUES ('77777777'); -- Hago 2 para fabricaAlternativa
-INSERT INTO Fabrica (telefonoContacto) VALUES ('123456789');
-INSERT INTO Fabrica (telefonoContacto) VALUES ('987654321');
+INSERT INTO Fabrica(telefonoContacto,totalArticulos) VALUES('66666666',0);
+INSERT INTO Fabrica (telefonoContacto,totalArticulos) VALUES ('77777777',0); -- Hago 2 para fabricaAlternativa
+INSERT INTO Fabrica (telefonoContacto,totalArticulos) VALUES ('123456789',0);
+INSERT INTO Fabrica (telefonoContacto,totalArticulos) VALUES ('987654321',0);
 SELECT * FROM fabrica;
 
-
 INSERT INTO ArticuloFabrica (idArticulo, idFabrica, existencias, precio) VALUES (2, 2, 100, 15.50);
+INSERT INTO ArticuloFabrica (idArticulo, idFabrica, existencias, precio) VALUES (1, 2, 80, 2.30);
 INSERT INTO ArticuloFabrica (idArticulo, idFabrica, existencias, precio) VALUES (3, 3, 50, 20);
+SELECT * FROM ArticuloFabrica;
 
-INSERT INTO FabricaAlternativa (idFabricaPrincipal, idFabricaAlternativa) VALUES (1, 2); -- La fábrica 1 tiene como alternativa la fábrica 2
+INSERT INTO FabricaAlternativa (idFabricaPrincipal, idFabricaAlternativa) VALUES (2, 5); -- La fábrica 2 tiene como alternativa la fábrica 5
 -- EN codigo = no podria coincidir - ej 1,1
 SELECT * FROM FabricaAlternativa;
+SELECT * FROM Fabrica
 
-
+/*
 DROP TABLE IF EXISTS FabricaAlternativa;
 DROP TABLE IF EXISTS ArticuloFabrica;
 DROP TABLE IF EXISTS LineaPedido;
@@ -160,4 +162,4 @@ DROP TABLE IF EXISTS Pedido;
 DROP TABLE IF EXISTS DireccionEnvio;
 DROP TABLE IF EXISTS Articulo;
 DROP TABLE IF EXISTS Fabrica;
-DROP TABLE IF EXISTS Cliente;
+DROP TABLE IF EXISTS Cliente;*/

@@ -27,14 +27,16 @@ public class FabricaDAO extends DataAccessObject {
 
         private final static String COLUMN_IDFABRICA = "idFabrica";
         private final static String COLUMN_TELEFONOCONTACTO = "telefonoContacto";
+         private final static String COLUMN_TOTALARTICULOS = "totalArticulos";
     }
 
     private static Fabrica readFabricaFromResultSet(ResultSet rs) throws SQLException {
 
         int idFabrica = rs.getInt(FabricaDAO.FabricaTableColumns.COLUMN_IDFABRICA);
         String telefonoContacto = rs.getString(FabricaDAO.FabricaTableColumns.COLUMN_TELEFONOCONTACTO);
+        int totalArticulos = rs.getInt(FabricaDAO.FabricaTableColumns.COLUMN_TOTALARTICULOS);
 
-        Fabrica fabrica = new Fabrica(idFabrica, telefonoContacto);
+        Fabrica fabrica = new Fabrica(idFabrica, telefonoContacto, totalArticulos);
         return fabrica;
     }
 
@@ -164,7 +166,7 @@ public class FabricaDAO extends DataAccessObject {
     //USO VISTA - SE DESEAN SABER CUANTOS ARTICULOS EN TOTAL PROVEE LA FABRICA
     protected List<Fabrica> getTotalArticulosPorFabrica() throws SQLException {
         List<Fabrica> ListaTotalArticulosfabricas = new ArrayList<>();
-        String sql = "SELECT idFabrica, SUM(existencias) AS totalArticulos FROM ArticuloPorFabrica GROUP BY idFabrica";
+        String sql = "SELECT idFabrica, totalArticulos FROM ArticuloPorFabrica"; 
 
         try (PreparedStatement stmt = cnt.prepareStatement(sql); ResultSet rs = stmt.executeQuery()) {
 
@@ -172,12 +174,12 @@ public class FabricaDAO extends DataAccessObject {
                 int idFabrica = rs.getInt("idFabrica");
                 int totalArticulos = rs.getInt("totalArticulos");
 
-                Fabrica fabrica = new Fabrica(idFabrica);
+                Fabrica fabrica = new Fabrica(idFabrica, totalArticulos);
                 System.out.println("Total de artículos en la fábrica " + idFabrica + ": " + totalArticulos);
                 ListaTotalArticulosfabricas.add(fabrica);
             }
         } catch (SQLException e) {
-            throw new SQLException("Error al obtener artículos por fábrica: " + e.getMessage());
+            System.err.println("Error al obtener artículos por fábrica: " + e.getMessage());
         }
         return ListaTotalArticulosfabricas;
     }

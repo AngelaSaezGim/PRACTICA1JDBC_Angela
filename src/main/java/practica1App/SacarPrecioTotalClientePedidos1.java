@@ -34,12 +34,17 @@ public class SacarPrecioTotalClientePedidos1 {
         return pedidosFilteredByClient;
     }
     
-    public static double sacarPrecioTotalClientePedidos(DataAccessManager dam) throws SQLException {
+    public static double sacarPrecioTotalClientePedidos(DataAccessManager dam) throws SQLException, Exception {
         Scanner tcl = new Scanner(System.in);
         System.out.println("Listado de comandas con importe y descuento");
         System.out.println("Escribeme el id del cliente al que queremos ver los pedidos");
-        String idCliente = tcl.nextLine();
-        List<Pedido> pedidosCliente = consultarPedidosCliente(dam, idCliente); //Llamo al metodo anterior
+        String idClienteStr = tcl.nextLine();
+        double precioTotalConDescuento = 0;
+        int idCliente = Integer.parseInt(idClienteStr);
+        if(!dam.clienteExiste(idCliente)){
+            throw new Exception("El cliente con " + idCliente + " no existe");
+        }else{   
+        List<Pedido> pedidosCliente = consultarPedidosCliente(dam, idClienteStr); //Llamo al metodo anterior
 
         // saco las lineas de pedido de la lista de pedidos asociada a un cliente
         List<LineaPedido> lineasPedidoCliente = dam.filtrarPedidos(pedidosCliente); //LineaPedidoDAO
@@ -79,14 +84,14 @@ public class SacarPrecioTotalClientePedidos1 {
             System.out.println("No se encontraron líneas de pedido con los IDs de pedido asociados a ese cliente.");
         }
 
-        double descuento = dam.sacarDescuento(idCliente) / 100; //ClienteDAO
-        double precioTotalConDescuento = precioTotalSinDescuento * (1 - descuento);
+        double descuento = dam.sacarDescuento(idClienteStr) / 100; //ClienteDAO
+        precioTotalConDescuento = precioTotalSinDescuento * (1 - descuento);
 
         System.out.println("El precio total sin descuento es: " + String.format("%.2f", precioTotalSinDescuento));
         System.out.println("El descuento aplicado es: " + (descuento * 100) + "%");
         System.out.println("El precio total con descuento es: " + String.format("%.2f", precioTotalConDescuento));
         System.out.println("Has pagado " + String.format("%.2f", (precioTotalSinDescuento - precioTotalConDescuento)) + " euros menos ");
-
+        }
         return precioTotalConDescuento;
     }
 
