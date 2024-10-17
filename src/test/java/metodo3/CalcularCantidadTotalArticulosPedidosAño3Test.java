@@ -4,6 +4,8 @@
  */
 package metodo3;
 
+import java.io.ByteArrayInputStream;
+import java.sql.SQLException;
 import java.sql.Timestamp;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.AfterAll;
@@ -16,6 +18,7 @@ import practica1DataAccess.DataAccessManager;
 import practica1Objetos.Pedido;
 import practica1Objetos.LineaPedido;
 import java.util.List;
+import java.util.Scanner;
 
 /**
  *
@@ -28,8 +31,11 @@ public class CalcularCantidadTotalArticulosPedidosAño3Test {
     @BeforeEach
     public void setUp() {
 
+        // Simulamos la entrada del año como 2003 para todos los tests
+        // Buscado - SerIn redirige la entrada estándar (System.in) para que el Scanner lea siempre "2003"
+        System.setIn(new ByteArrayInputStream("2003\n".getBytes()));
         dam = new DataAccessManagerSimulation();
-        
+
     }
 
     public CalcularCantidadTotalArticulosPedidosAño3Test() {
@@ -45,6 +51,7 @@ public class CalcularCantidadTotalArticulosPedidosAño3Test {
 
     @AfterEach
     public void tearDown() {
+        System.setIn(System.in);
     }
 
     //COMPLEJIDAD CICLOMATICA = 4
@@ -54,8 +61,9 @@ public class CalcularCantidadTotalArticulosPedidosAño3Test {
      */
     @Test
     public void testCalcularCantidadTotalArticulosPedidosAño1() throws Exception {
-        System.out.println("La lista de pedidos año está vacia");
-         dam = new DataAccessManagerSimulation() {
+
+        System.out.println("TEST 1 - La lista de pedidos año está vacia");
+        dam = new DataAccessManagerSimulation() {
             @Override
             public List<Pedido> listarPedidosPorAño(int año) {
                 return List.of();
@@ -68,13 +76,13 @@ public class CalcularCantidadTotalArticulosPedidosAño3Test {
 
     @Test
     public void testCalcularCantidadTotalArticulosPedidosAño2() throws Exception {
-        System.out.println("La lista de pedidos año NO está vacia, pero NO HAY LINEAS DE PEDIDO");
+        System.out.println("TEST 2 - La lista de pedidos año NO está vacia, pero NO HAY LINEAS DE PEDIDO");
         dam = new DataAccessManagerSimulation() {
             @Override
             public List<Pedido> listarPedidosPorAño(int año) { //(formato: YYYY-MM-DD HH:MM:SS) - fecha -2003
-                String fechaStr="01:09:2003 00:30:02";
-                 Timestamp fechaPedido = Timestamp.valueOf(fechaStr);
-                return List.of(new Pedido(1,fechaPedido , 1, 1, 1), new Pedido(2,fechaPedido, 1, 1, 1)); //Pedido 1 y pedido 2
+                String fechaStr ="2003-09-01 00:30:02";
+                Timestamp fechaPedido = Timestamp.valueOf(fechaStr);
+                return List.of(new Pedido(1, fechaPedido, 1, 1, 1), new Pedido(2, fechaPedido, 1, 1, 1)); //Pedido 1 y pedido 2
             }
 
             @Override
@@ -83,17 +91,18 @@ public class CalcularCantidadTotalArticulosPedidosAño3Test {
             }
         };
         int expResult = 0;
-        int result = CalcularCantidadTotalArticulosPedidosAño3.calcularCantidadTotalArticulosPedidosAño((DataAccessManager) dam);
+        int result = CalcularCantidadTotalArticulosPedidosAño3.calcularCantidadTotalArticulosPedidosAño(dam);
         assertEquals(expResult, result);
     }
 
     @Test
     public void testCalcularCantidadTotalArticulosPedidosAño3() throws Exception {
-        System.out.println("La lista de pedidos año NO está vacia, y las lineas de Pedido tienen cantidades de artículos");
+        
+        System.out.println("TEST 3 - La lista de pedidos año NO está vacia, y las lineas de Pedido tienen cantidades de artículos");
         dam = new DataAccessManagerSimulation() {
             @Override
             public List<Pedido> listarPedidosPorAño(int año) {
-                String fechaStr="01:09:2003 00:30:02";
+                String fechaStr="2003-09-01 00:30:00";
                 Timestamp fechaPedido = Timestamp.valueOf(fechaStr);
                 return List.of(new Pedido(1,fechaPedido , 1, 1, 1), new Pedido(2,fechaPedido, 1, 1, 1)); //Pedido 1 y pedido 2
             }
@@ -120,11 +129,11 @@ public class CalcularCantidadTotalArticulosPedidosAño3Test {
 
     @Test
     public void testCalcularCantidadTotalArticulosPedidosAño4() throws Exception {
-        System.out.println("La lista de pedidos año NO está vacia, pero algunas lineas de pedido tienen cantidad 0");
+        System.out.println("TEST 4 - La lista de pedidos año NO está vacia, pero algunas lineas de pedido tienen cantidad 0");
         dam = new DataAccessManagerSimulation() {
             @Override
             public List<Pedido> listarPedidosPorAño(int año) {
-                String fechaStr="01:09:2003 00:30:02";
+                String fechaStr="2003-09-01 00:30:00";
                 Timestamp fechaPedido = Timestamp.valueOf(fechaStr);
                 return List.of(new Pedido(1,fechaPedido , 1, 1, 1), new Pedido(2,fechaPedido, 1, 1, 1)); //Pedido 1 y pedido 2
             }
@@ -148,7 +157,7 @@ public class CalcularCantidadTotalArticulosPedidosAño3Test {
         int result = CalcularCantidadTotalArticulosPedidosAño3.calcularCantidadTotalArticulosPedidosAño(dam);
         assertEquals(expResult, result);
     }
-
+    
     private static class DataAccessManagerSimulation extends DataAccessManager {
 
         public DataAccessManagerSimulation() {
@@ -156,7 +165,7 @@ public class CalcularCantidadTotalArticulosPedidosAño3Test {
         }
 
         @Override
-        public List<Pedido> listarPedidosPorAño(int año) {
+        public List<Pedido> listarPedidosPorAño(int año) { //AÑO 2003 PREDETERMINADO
             return List.of();
         }
 

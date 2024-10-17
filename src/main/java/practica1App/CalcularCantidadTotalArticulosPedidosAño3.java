@@ -17,7 +17,7 @@ import practica1Objetos.Pedido;
  */
 public class CalcularCantidadTotalArticulosPedidosAño3 {
     
-    static Scanner tcl = new Scanner(System.in);
+   
     
     //----------------------- METODO 3 -----------------------------------------//
     /*
@@ -25,6 +25,8 @@ public class CalcularCantidadTotalArticulosPedidosAño3 {
      */
     
     public static List<Pedido> filtrarPedidosAño(DataAccessManager dam) throws SQLException {
+        
+        Scanner tcl = new Scanner(System.in);
 
         System.out.println("Dime el año en el que queremos ver los pedidos (ej 2003)");
         int añoInput = tcl.nextInt();
